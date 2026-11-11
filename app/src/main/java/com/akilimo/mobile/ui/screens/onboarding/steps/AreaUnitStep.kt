@@ -4,20 +4,28 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumAreaUnit
@@ -27,6 +35,10 @@ import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import com.akilimo.mobile.utils.MathHelper
+
+/** Accepts "1,5" as well as "1.5" (many keyboards in the region type a comma). */
+internal fun parseFarmSize(text: String): Double? =
+    text.trim().replace(',', '.').toDoubleOrNull()?.takeIf { it.isFinite() }
 
 @Composable
 fun AreaUnitStep(
@@ -38,6 +50,8 @@ fun AreaUnitStep(
     errors: Map<String, String>,
     onEvent: (OnboardingViewModel.Event) -> Unit,
     modifier: Modifier = Modifier,
+    /** False when the unit was remembered earlier: only the farm size is asked */
+    showUnitPicker: Boolean = true,
 ) {
     val context = LocalContext.current
     val areaUnitOptions = remember(country) {
@@ -68,9 +82,11 @@ fun AreaUnitStep(
     val selectedSizeOption = if (customFarmSize) null else fieldSizeOptions.find { it.second == farmSize }
     // Keyed only on customFarmSize: keying on farmSize would reset the text on every
     // keystroke (each edit updates farmSize), turning "2" into "2.0" mid-typing.
-    var customSizeText by remember(customFarmSize) {
+    var customSizeText by rememberSaveable(customFarmSize) {
         mutableStateOf(if (customFarmSize) (if (farmSize > 0) farmSize.toString() else "") else "")
     }
+    val notANumber = customSizeText.isNotBlank() && parseFarmSize(customSizeText) == null
+    val numberError = stringResource(R.string.error_farm_size_number)
 
     Column(
         modifier = modifier
@@ -79,14 +95,16 @@ fun AreaUnitStep(
     ) {
         Text(stringResource(R.string.lbl_area_unit), style = MaterialTheme.typography.headlineMedium)
 
-        AkilimoDropdown(
-            label = stringResource(R.string.lbl_select_area_unit),
-            options = areaUnitOptions,
-            selectedOption = areaUnit,
-            onOptionSelected = { onEvent(OnboardingViewModel.Event.AreaUnitSelected(it)) },
-            displayText = { it.label(context) },
-            error = errors["areaUnit"],
-        )
+        if (showUnitPicker) {
+            AkilimoDropdown(
+                label = stringResource(R.string.lbl_select_area_unit),
+                options = areaUnitOptions,
+                selectedOption = areaUnit,
+                onOptionSelected = { onEvent(OnboardingViewModel.Event.AreaUnitSelected(it)) },
+                displayText = { it.label(context) },
+                error = errors["areaUnit"],
+            )
+        }
 
         AkilimoDropdown(
             label = stringResource(R.string.lbl_farm_size),
@@ -100,7 +118,7 @@ fun AreaUnitStep(
                 }
             },
             displayText = { it.first },
-            error = errors["farmSize"],
+            error = if (customFarmSize) null else errors["farmSize"],
         )
 
         if (customFarmSize) {
@@ -108,21 +126,35 @@ fun AreaUnitStep(
                 value = customSizeText,
                 onValueChange = { text ->
                     customSizeText = text
-                    val parsed = text.toDoubleOrNull() ?: 0.0
+                    // Invalid text keeps size at 0 so Submit still refuses it; the inline error explains why
+                    val parsed = parseFarmSize(text) ?: 0.0
                     onEvent(OnboardingViewModel.Event.FarmSizeSelected(parsed, true))
                 },
                 label = stringResource(R.string.lbl_cassava_field_size, areaUnit.label(context)),
-                error = errors["farmSize"],
+                error = if (notANumber) numberError else errors["farmSize"],
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Done,
+                ),
             )
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(
-                checked = rememberAreaUnit,
-                onCheckedChange = { onEvent(OnboardingViewModel.Event.RememberAreaUnitChanged(it)) },
-            )
-            Spacer(Modifier.width(8.dp))
-            Text(stringResource(R.string.lbl_remember_pref))
+        if (showUnitPicker) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp)
+                    .toggleable(
+                        value = rememberAreaUnit,
+                        role = Role.Checkbox,
+                        onValueChange = { onEvent(OnboardingViewModel.Event.RememberAreaUnitChanged(it)) },
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Checkbox(checked = rememberAreaUnit, onCheckedChange = null)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.lbl_remember_pref))
+            }
         }
     }
 }

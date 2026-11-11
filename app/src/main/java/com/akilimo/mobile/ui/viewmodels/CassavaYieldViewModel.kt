@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.entities.CassavaYield
+import com.akilimo.mobile.entities.SelectedCassavaMarket
+import io.sentry.Sentry
+import kotlinx.coroutines.CancellationException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.akilimo.mobile.enums.EnumAdvice
@@ -28,8 +31,14 @@ class CassavaYieldViewModel @Inject constructor(
 ) : ViewModel() {
 
     data class UiState(
+        val isLoading: Boolean = true,
         val yields: List<CassavaYield> = emptyList(),
+        /** The option highlighted on screen; starts at the saved yield, changed by taps. */
         val selectedYieldId: Int? = null,
+        val isGridLayout: Boolean = true,
+        val isSaving: Boolean = false,
+        val saveFailed: Boolean = false,
+        val saved: Boolean = false,
         /** Non-null when DB is empty and the screen must supply a seed list. */
         val seedRequest: EnumAreaUnit? = null,
         val areaUnit: EnumAreaUnit = EnumAreaUnit.ACRE,
@@ -39,12 +48,18 @@ class CassavaYieldViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    /** True once the user tapped an option, so a later DB emission does not override it. */
+    private var userPicked = false
+
     init {
         viewModelScope.launch { loadData(appSettings.akilimoUser) }
     }
 
     fun loadData(userName: String) = viewModelScope.launch {
-        val user = userRepo.getUser(userName) ?: return@launch
+        val user = userRepo.getUser(userName) ?: run {
+            _uiState.update { it.copy(isLoading = false) }
+            return@launch
+        }
         val userId = user.id ?: 0
         val areaUnit = EnumAreaUnit.entries.firstOrNull { it == user.enumAreaUnit } ?: EnumAreaUnit.ACRE
         val useCase = user.activeAdvise ?: EnumAdvice.FERTILIZER_RECOMMENDATIONS
@@ -63,8 +78,9 @@ class CassavaYieldViewModel @Inject constructor(
             } else {
                 _uiState.update {
                     it.copy(
+                        isLoading = false,
                         yields = repoList,
-                        selectedYieldId = selectedYieldId,
+                        selectedYieldId = if (userPicked) it.selectedYieldId else selectedYieldId,
                         seedRequest = null
                     )
                 }
@@ -78,17 +94,39 @@ class CassavaYieldViewModel @Inject constructor(
         // observeAll() will re-emit automatically once saved
     }
 
-    fun selectYield(cassavaYield: CassavaYield) = viewModelScope.launch {
-        val user = userRepo.getUser(appSettings.akilimoUser) ?: return@launch
-        val userId = user.id ?: 0
-        val current = selectedRepo.getSelectedByUser(userId)?.selectedCassavaMarket
-        val updated = current?.copy(yieldId = cassavaYield.id)
-            ?: com.akilimo.mobile.entities.SelectedCassavaMarket(
-                userId = userId,
-                yieldId = cassavaYield.id
-            )
-        selectedRepo.select(updated)
+    /** Highlights an option; nothing is written until [saveSelection]. */
+    fun selectYield(cassavaYield: CassavaYield) {
+        userPicked = true
         _uiState.update { it.copy(selectedYieldId = cassavaYield.id) }
     }
 
+    fun toggleLayout() = _uiState.update { it.copy(isGridLayout = !it.isGridLayout) }
+
+    /** Persists the highlighted yield; the screen pops once [UiState.saved] is set. */
+    fun saveSelection() {
+        val state = _uiState.value
+        val yieldId = state.selectedYieldId ?: return
+        if (state.isSaving) return
+        _uiState.update { it.copy(isSaving = true, saveFailed = false) }
+        viewModelScope.launch {
+            try {
+                val user = userRepo.getUser(appSettings.akilimoUser) ?: error("No profile for current user")
+                val userId = user.id ?: 0
+                val current = selectedRepo.getSelectedByUser(userId)?.selectedCassavaMarket
+                val updated = current?.copy(yieldId = yieldId)
+                    ?: SelectedCassavaMarket(userId = userId, yieldId = yieldId)
+                selectedRepo.select(updated)
+                _uiState.update { it.copy(saved = true) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Sentry.captureException(e)
+                _uiState.update { it.copy(isSaving = false, saveFailed = true) }
+            }
+        }
+    }
+
+    fun onSaveHandled() = _uiState.update { it.copy(saved = false, isSaving = false) }
+
+    fun onSaveErrorShown() = _uiState.update { it.copy(saveFailed = false) }
 }

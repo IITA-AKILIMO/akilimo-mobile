@@ -10,7 +10,9 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.FieldOperationCostsRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.sentry.Sentry
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,10 +31,13 @@ class ManualTillageCostViewModel @Inject constructor(
         val userId: Int = 0,
         val farmSize: Double = 1.0,
         val enumAreaUnit: EnumAreaUnit = EnumAreaUnit.ACRE,
+        val currencyCode: String = "",
         val manualPloughCost: Double? = null,
         val manualRidgeCost: Double? = null,
         val performPloughing: Boolean = true,
         val performRidging: Boolean = true,
+        val isSaving: Boolean = false,
+        val saveFailed: Boolean = false,
         val saved: Boolean = false
     )
 
@@ -53,6 +58,7 @@ class ManualTillageCostViewModel @Inject constructor(
                 userId = userId,
                 farmSize = user.farmSize,
                 enumAreaUnit = user.enumAreaUnit,
+                currencyCode = user.enumCountry.currencyCode,
                 manualPloughCost = cost?.manualPloughCost,
                 manualRidgeCost = cost?.manualRidgeCost,
                 performPloughing = practice?.performPloughing ?: true,
@@ -66,35 +72,49 @@ class ManualTillageCostViewModel @Inject constructor(
         ploughingCost: Double?,
         performPloughing: Boolean,
         performRidging: Boolean
-    ) = viewModelScope.launch {
-        val userId = _uiState.value.userId.takeIf { it != 0 } ?: return@launch
+    ) {
+        val state = _uiState.value
+        val userId = state.userId.takeIf { it != 0 } ?: return
+        if (state.isSaving) return
+        _uiState.update { it.copy(isSaving = true, saveFailed = false) }
 
-        val newCosts = FieldOperationCost(
-            userId = userId,
-            manualRidgeCost = ridingCost ?: 0.0,
-            manualPloughCost = ploughingCost ?: 0.0
-        )
-        val existing = costsRepo.getCostForUser(userId)
-        val merged = existing?.copy(
-            manualRidgeCost = newCosts.manualRidgeCost,
-            manualPloughCost = newCosts.manualPloughCost
-        ) ?: newCosts
-        costsRepo.saveCost(merged)
+        viewModelScope.launch {
+            try {
+                val newCosts = FieldOperationCost(
+                    userId = userId,
+                    manualRidgeCost = ridingCost ?: 0.0,
+                    manualPloughCost = ploughingCost ?: 0.0
+                )
+                val existing = costsRepo.getCostForUser(userId)
+                val merged = existing?.copy(
+                    manualRidgeCost = newCosts.manualRidgeCost,
+                    manualPloughCost = newCosts.manualPloughCost
+                ) ?: newCosts
+                costsRepo.saveCost(merged)
 
-        val existingPractice = currentPracticeRepo.getPracticeForUser(userId)
-        val updatedPractice = existingPractice?.copy(
-            performPloughing = performPloughing,
-            performRidging = performRidging
-        ) ?: CurrentPractice(
-            userId = userId,
-            performPloughing = performPloughing,
-            performRidging = performRidging
-        )
-        currentPracticeRepo.savePractice(updatedPractice)
+                val existingPractice = currentPracticeRepo.getPracticeForUser(userId)
+                val updatedPractice = existingPractice?.copy(
+                    performPloughing = performPloughing,
+                    performRidging = performRidging
+                ) ?: CurrentPractice(
+                    userId = userId,
+                    performPloughing = performPloughing,
+                    performRidging = performRidging
+                )
+                currentPracticeRepo.savePractice(updatedPractice)
 
-        _uiState.update { it.copy(saved = true) }
+                _uiState.update { it.copy(saved = true) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Sentry.captureException(e)
+                _uiState.update { it.copy(isSaving = false, saveFailed = true) }
+            }
+        }
     }
 
-    fun onSaveHandled() = _uiState.update { it.copy(saved = false) }
+    fun onSaveHandled() = _uiState.update { it.copy(saved = false, isSaving = false) }
+
+    fun onSaveErrorShown() = _uiState.update { it.copy(saveFailed = false) }
 
 }

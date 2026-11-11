@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.data.ThemeMode
+import com.akilimo.mobile.data.toNightMode
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -31,7 +33,7 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     data class UiState(
-        val darkMode: Boolean = false,
+        val themeMode: ThemeMode = ThemeMode.SYSTEM,
         val languageTag: String = Locales.english.toLanguageTag(),
         val rememberAreaUnit: Boolean = false,
         val fertilizerGrid: Boolean = false,
@@ -52,8 +54,8 @@ class SettingsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            appSettings.darkModeFlow.collect { dark ->
-                _uiState.update { it.copy(darkMode = dark) }
+            appSettings.themeModeFlow.collect { mode ->
+                _uiState.update { it.copy(themeMode = mode) }
             }
         }
         viewModelScope.launch {
@@ -78,13 +80,10 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun setDarkMode(enabled: Boolean) {
+    fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
-            appSettings.setDarkMode(enabled)
-            AppCompatDelegate.setDefaultNightMode(
-                if (enabled) AppCompatDelegate.MODE_NIGHT_YES
-                else AppCompatDelegate.MODE_NIGHT_NO
-            )
+            appSettings.setThemeMode(mode)
+            AppCompatDelegate.setDefaultNightMode(mode.toNightMode())
         }
     }
 

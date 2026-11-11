@@ -12,9 +12,11 @@ import com.akilimo.mobile.network.dto.StarchFactoryDto
 import com.akilimo.mobile.network.dto.UserFeedBackRequest
 import com.akilimo.mobile.network.dto.RecommendationResponse
 import com.akilimo.mobile.network.request.RecommendationRequest
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -85,6 +87,17 @@ interface AkilimoApi {
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
     ): PagedResponse<MaizePriceDto>
+
+    /**
+     * GeoJSON of the area where AKILIMO can compute a recommendation for [country] (ISO alpha-2).
+     * Answers 304 when [etag] still matches, 404 when the API has no area for the country.
+     */
+    @Headers(CLIENT_ID_HEADER)
+    @GET("v1/coverage/{country}")
+    suspend fun getCoverage(
+        @Path("country") country: String,
+        @Header("If-None-Match") etag: String? = null,
+    ): Response<ResponseBody>
 
     @Headers(CLIENT_ID_HEADER)
     @POST("v1/recommendations/compute")

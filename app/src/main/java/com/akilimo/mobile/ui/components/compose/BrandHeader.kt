@@ -37,8 +37,10 @@ fun BrandHeader(
     title: String? = null,
     subtitle: String? = null,
 ) {
+    // Depth shading starts fully transparent at the top so the block blends into a primary
+    // top bar above it with no visible edge, and deepens gently towards the bottom.
     val depthOverlay = Brush.verticalGradient(
-        colors = listOf(Color.Black.copy(alpha = 0.12f), Color.Transparent),
+        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.12f)),
     )
 
     Box(

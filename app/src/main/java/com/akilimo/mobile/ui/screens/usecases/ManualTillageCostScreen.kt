@@ -1,21 +1,20 @@
 package com.akilimo.mobile.ui.screens.usecases
 
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,10 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -36,11 +34,12 @@ import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.ManualTillageCostViewModel
 import com.akilimo.mobile.utils.AmountInput
-import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ManualTillageCostScreen(
     navController: NavHostController,
@@ -48,6 +47,8 @@ fun ManualTillageCostScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val numberFormat = rememberNumberFormat()
 
     var usePlough by rememberSaveable { mutableStateOf(true) }
     var useRidge by rememberSaveable { mutableStateOf(true) }
@@ -71,8 +72,13 @@ fun ManualTillageCostScreen(
     // unparseable value (e.g. "12,000") was saved as 0.
     fun costOk(enabled: Boolean, text: String) =
         !enabled || (AmountInput.parse(text) ?: 0.0) > 0.0
-    val canSave = (usePlough || useRidge) &&
-            costOk(usePlough, ploughingCost) && costOk(useRidge, ridgingCost)
+    val anySelected = usePlough || useRidge
+    val canSave = anySelected && costOk(usePlough, ploughingCost) && costOk(useRidge, ridgingCost)
+    val disabledReason = if (!anySelected) {
+        stringResource(R.string.msg_select_tillage_operation)
+    } else {
+        stringResource(R.string.msg_enter_cost_for_each)
+    }
     val invalidAmount = stringResource(R.string.error_amount_invalid)
     fun errorFor(text: String) =
         invalidAmount.takeIf { AmountInput.isInvalid(text, requirePositive = true) }
@@ -83,9 +89,10 @@ fun ManualTillageCostScreen(
             viewModel.onSaveHandled()
         }
     }
+    SaveErrorEffect(state.saveFailed, snackbarHostState, viewModel::onSaveErrorShown)
 
     val areaUnitLabel = state.enumAreaUnit.label(context)
-    val farmSize = state.farmSize
+    fun fill(template: String) = fillFarmSizeTemplate(template, state.farmSize, areaUnitLabel, numberFormat)
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
@@ -98,26 +105,40 @@ fun ManualTillageCostScreen(
                 scrollBehavior = scrollBehavior,
                 onBack = { navController.popBackStackSafely() },
             )
-        }
+        },
+        bottomBar = {
+            FormSaveBar(
+                enabled = canSave,
+                isSaving = state.isSaving,
+                disabledReason = disabledReason,
+                onSave = {
+                    viewModel.saveCosts(
+                        ridingCost = if (useRidge) AmountInput.parse(ridgingCost) else 0.0,
+                        ploughingCost = if (usePlough) AmountInput.parse(ploughingCost) else 0.0,
+                        performPloughing = usePlough,
+                        performRidging = useRidge
+                    )
+                },
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         ScrollableFormColumn(padding = padding) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
             Text(
-                text = stringResource(R.string.lbl_manual_tillage_cost)
-                    .replace("{farm_size}", farmSize.toString())
-                    .replace("{size_unit}", areaUnitLabel),
+                text = fill(stringResource(R.string.lbl_manual_tillage_cost)),
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
 
             Text(
                 text = stringResource(R.string.lbl_plough_op_type),
                 style = MaterialTheme.typography.titleSmall
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Row {
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xxs))
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs)) {
                 FilterChip(
                     selected = usePlough,
                     onClick = {
@@ -125,7 +146,6 @@ fun ManualTillageCostScreen(
                         if (!usePlough) ploughingCost = ""
                     },
                     label = { Text(stringResource(R.string.lbl_ploughing)) },
-                    modifier = Modifier.padding(end = 8.dp)
                 )
                 FilterChip(
                     selected = useRidge,
@@ -137,52 +157,33 @@ fun ManualTillageCostScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
 
             if (usePlough) {
                 AkilimoTextField(
                     value = ploughingCost,
                     onValueChange = { ploughingCost = it },
-                    label = stringResource(R.string.lbl_manual_tillage_cost_hint)
-                        .replace("{farm_size}", farmSize.toString())
-                        .replace("{size_unit}", areaUnitLabel),
+                    label = fill(stringResource(R.string.lbl_manual_tillage_cost_hint)),
                     error = errorFor(ploughingCost),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                    trailingIcon = currencySuffix(state.currencyCode),
+                    keyboardOptions = amountKeyboard(isLast = !useRidge)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
             }
 
             if (useRidge) {
                 AkilimoTextField(
                     value = ridgingCost,
                     onValueChange = { ridgingCost = it },
-                    label = stringResource(R.string.lbl_manual_ridge_cost_hint)
-                        .replace("{farm_size}", farmSize.toString())
-                        .replace("{size_unit}", areaUnitLabel),
+                    label = fill(stringResource(R.string.lbl_manual_ridge_cost_hint)),
                     error = errorFor(ridgingCost),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                    trailingIcon = currencySuffix(state.currencyCode),
+                    keyboardOptions = amountKeyboard(isLast = true)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                onClick = {
-                    viewModel.saveCosts(
-                        ridingCost = if (useRidge) AmountInput.parse(ridgingCost) else 0.0,
-                        ploughingCost = if (usePlough) AmountInput.parse(ploughingCost) else 0.0,
-                        performPloughing = usePlough,
-                        performRidging = useRidge
-                    )
-                },
-                enabled = canSave,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.lbl_save))
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.md))
         }
     }
 }

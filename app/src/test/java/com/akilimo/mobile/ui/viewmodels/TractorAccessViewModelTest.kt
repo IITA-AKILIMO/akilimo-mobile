@@ -207,6 +207,62 @@ class TractorAccessViewModelTest {
     }
 
     @Test
+    fun `saveBlocker allows saving when no tractor`() {
+        assertEquals(
+            TractorAccessViewModel.SaveBlocker.NONE,
+            TractorAccessViewModel.saveBlocker(false, listOf(false to "", false to "", false to ""))
+        )
+    }
+
+    @Test
+    fun `saveBlocker requires at least one implement when tractor available`() {
+        assertEquals(
+            TractorAccessViewModel.SaveBlocker.NO_IMPLEMENT,
+            TractorAccessViewModel.saveBlocker(true, listOf(false to "", false to "", false to ""))
+        )
+    }
+
+    @Test
+    fun `saveBlocker requires a positive cost for each selected implement`() {
+        assertEquals(
+            TractorAccessViewModel.SaveBlocker.MISSING_COST,
+            TractorAccessViewModel.saveBlocker(true, listOf(true to "100", true to "", false to ""))
+        )
+        assertEquals(
+            TractorAccessViewModel.SaveBlocker.NONE,
+            TractorAccessViewModel.saveBlocker(true, listOf(true to "100", true to "1,500", false to ""))
+        )
+    }
+
+    @Test
+    fun `loadData exposes the country currency`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns testUser
+        coEvery { costsRepo.getCostForUser(1) } returns null
+
+        viewModel.loadData("user1")
+        advanceUntilIdle()
+
+        assertEquals(EnumCountry.NG.currencyCode, viewModel.uiState.value.currencyCode)
+    }
+
+    @Test
+    fun `saveCosts failure sets saveFailed and clears isSaving`() = runTest {
+        coEvery { userRepo.getUser("user1") } returns testUser
+        coEvery { costsRepo.getCostForUser(1) } returns null
+        coEvery { costsRepo.saveCost(any()) } throws IllegalStateException("db error")
+        viewModel.loadData("user1")
+        advanceUntilIdle()
+
+        viewModel.saveCosts(true, 10.0, 20.0, 30.0)
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state.saveFailed)
+        assertFalse(state.isSaving)
+        assertFalse(state.saved)
+    }
+
+    @Test
     fun `loadData does nothing when user not found`() = runTest {
         coEvery { userRepo.getUser("unknown") } returns null
 

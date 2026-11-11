@@ -284,10 +284,9 @@ dependencies {
     implementation(libs.applocale)
     implementation(libs.reword)
     implementation(libs.viewpump)
-    implementation(libs.worldcountrydata)
     implementation(libs.jakewharton.timber)
 
-    implementation(libs.country.code.picker)
+    implementation(libs.libphonenumber)
 
     implementation(libs.viewpager2)
 

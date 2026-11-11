@@ -7,6 +7,7 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CassavaMarketPriceRepo
 import com.akilimo.mobile.repos.CassavaUnitRepo
 import com.akilimo.mobile.repos.CassavaYieldRepo
+import com.akilimo.mobile.repos.CoverageRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.FieldOperationCostsRepo
 import com.akilimo.mobile.repos.InvestmentRepo
@@ -19,6 +20,8 @@ import com.akilimo.mobile.repos.FertilizerPriceRepo
 import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
+import com.akilimo.mobile.utils.LibPhoneNumberHelper
+import com.akilimo.mobile.utils.PhoneNumberHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,6 +42,11 @@ object AppModule {
     @Singleton
     fun provideAkilimoUserRepo(db: AppDatabase): AkilimoUserRepo =
         AkilimoUserRepo(db.akilimoUserDao())
+
+    @Provides
+    @Singleton
+    fun provideCoverageRepo(@ApplicationContext context: Context): CoverageRepo =
+        CoverageRepo(context)
 
     @Provides
     @Singleton
@@ -119,4 +127,9 @@ object AppModule {
     @Singleton
     fun provideProduceMarketRepo(db: AppDatabase): ProduceMarketRepo =
         ProduceMarketRepo(db.produceMarketDao())
+
+    @Provides
+    @Singleton
+    fun providePhoneNumberHelper(@ApplicationContext context: Context): PhoneNumberHelper =
+        LibPhoneNumberHelper(context)
 }
