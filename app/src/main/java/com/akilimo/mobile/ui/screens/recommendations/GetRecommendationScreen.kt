@@ -18,6 +18,13 @@ import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.filled.ScreenRotation
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.Card
@@ -249,6 +256,20 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
         }
         onDispose {}
     }
+    // In landscape the status and navigation bars are hidden too (swipe from the edge shows them).
+    val view = LocalView.current
+    DisposableEffect(landscapeLocked) {
+        val window = activity?.window
+        val controller = window?.let { WindowCompat.getInsetsController(it, view) }
+        if (landscapeLocked) {
+            controller?.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            controller?.hide(WindowInsetsCompat.Type.systemBars())
+        } else {
+            controller?.show(WindowInsetsCompat.Type.systemBars())
+        }
+        onDispose { controller?.show(WindowInsetsCompat.Type.systemBars()) }
+    }
     // Leaving the screen: go back to portrait, then hand rotation back to the system.
     DisposableEffect(Unit) {
         onDispose {
@@ -278,11 +299,17 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
         }
     }
 
+    // The app bar slides away while reading down and returns on the slightest scroll up,
+    // giving the advice the whole screen.
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             BackTopAppBar(
                 title = stringResource(R.string.lbl_recommendations),
-                onBack = { navController.popBackStackSafely() }
+                onBack = { navController.popBackStackSafely() },
+                scrollBehavior = scrollBehavior,
             )
         },
         floatingActionButton = {
