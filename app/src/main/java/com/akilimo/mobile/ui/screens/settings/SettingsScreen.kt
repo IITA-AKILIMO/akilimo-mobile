@@ -55,7 +55,7 @@ import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.SettingsViewModel
-import dev.b3nedikt.app_locale.AppLocale
+import com.akilimo.mobile.data.AppLanguage
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
@@ -79,28 +79,16 @@ fun SettingsScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
+                // Settings are already persisted by the ViewModel before these effects
                 is SettingsViewModel.Effect.LanguageChanged -> {
-                    AppCompatDelegate.setApplicationLocales(
-                        LocaleListCompat.forLanguageTags(effect.languageTag),
-                    )
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                        (context as? Activity)?.recreate()
-                    }
+                    // Picking a language turns the override on, so it always applies
+                    AppLanguage.apply(effect.languageTag)
+                    if (AppLanguage.needsManualRecreate) (context as? Activity)?.recreate()
                 }
                 is SettingsViewModel.Effect.LockAppLanguageChanged -> {
-                    if (effect.locked) {
-                        AppLocale.supportedLocales = Locales.supportedLocales
-                        AppLocale.desiredLocale = Locales.supportedLocales
-                            .find { it.toLanguageTag() == effect.languageTag } ?: Locales.english
-                    } else {
-                        AppLocale.desiredLocale = java.util.Locale.getDefault()
-                    }
-                    AppCompatDelegate.setApplicationLocales(
-                        LocaleListCompat.forLanguageTags(effect.languageTag),
-                    )
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                        (context as? Activity)?.recreate()
-                    }
+                    // On: use the picked language. Off: follow the phone's language.
+                    AppLanguage.apply(if (effect.locked) effect.languageTag else null)
+                    if (AppLanguage.needsManualRecreate) (context as? Activity)?.recreate()
                 }
                 is SettingsViewModel.Effect.ShowSnackbar -> {
                     scope.launch { snackbarHostState.showSnackbar(effect.message) }

@@ -89,7 +89,7 @@ class WelcomeViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
 
-        coVerify { appSettings.setLanguageTag("sw-TZ") }
+        coVerify { appSettings.setLanguageTagAndOverride("sw-TZ") }
         coVerify { prefsRepo.save(any()) }
     }
 }

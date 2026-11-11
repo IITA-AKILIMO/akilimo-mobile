@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.akilimo.mobile.data.toNightMode
 import androidx.core.os.LocaleListCompat
-import dev.b3nedikt.app_locale.AppLocale
+import com.akilimo.mobile.data.AppLanguage
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
@@ -129,14 +129,10 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
     }
 
     private fun initLocale() {
-        val tag = appSettings.getLanguageTagSync()
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
-        if (appSettings.lockAppLanguage) {
-            AppLocale.supportedLocales = Locales.supportedLocales
-            AppLocale.desiredLocale = Locales.supportedLocales
-                .find { it.toLanguageTag() == tag } ?: Locales.english
-        }
-        Log.d("Akilimo", "Locale initialized to: $tag (locked=${appSettings.lockAppLanguage})")
+        // null = follow the phone's language ("Override system language" off)
+        val tag = appSettings.appliedLanguageTag
+        AppLanguage.apply(tag)
+        Log.d("Akilimo", "Locale initialized to: ${tag ?: "system"}")
     }
 
     private fun initDarkMode() {
