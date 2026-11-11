@@ -42,4 +42,8 @@ interface FertilizerDao {
     @Update
     suspend fun update(fertilizer: Fertilizer)
 
+    /** Removes fertilizers the API no longer lists; a saved pick of one goes with it. */
+    @Query("DELETE FROM fertilizers WHERE id NOT IN (:keepIds)")
+    suspend fun deleteStale(keepIds: List<Int>)
+
 }

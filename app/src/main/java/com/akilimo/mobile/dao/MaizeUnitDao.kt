@@ -14,4 +14,7 @@ interface MaizeUnitDao {
 
     @Upsert
     suspend fun upsertAll(units: List<MaizeUnit>)
+
+    @Query("DELETE FROM maize_units WHERE id NOT IN (:keepIds)")
+    suspend fun deleteStale(keepIds: List<Int>)
 }

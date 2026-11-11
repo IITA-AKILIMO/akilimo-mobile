@@ -16,6 +16,12 @@ class FertilizerRepo(private val dao: FertilizerDao) {
     }
 
 
+    /** Drops cached fertilizers missing from [current], the full list just fetched. */
+    suspend fun pruneStale(current: List<Fertilizer>) {
+        val ids = current.mapNotNull { it.id }
+        if (ids.isNotEmpty()) dao.deleteStale(ids)
+    }
+
     suspend fun byCountry(countryCode: EnumCountry): List<Fertilizer> =
         dao.findAllByCountry(countryCode)
 

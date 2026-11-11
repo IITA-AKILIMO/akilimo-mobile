@@ -47,4 +47,5 @@ class FertilizerWorker(
         repo.saveAll(items)
     }
 
+    override suspend fun afterAllPagesSaved(allItems: List<Fertilizer>) = repo.pruneStale(allItems)
 }

@@ -30,4 +30,6 @@ class MaizeUnitWorker(
         Timber.d("Saving ${items.size} maize units")
         repo.saveAll(items)
     }
+
+    override suspend fun afterAllPagesSaved(allItems: List<MaizeUnit>) = repo.pruneStale(allItems)
 }

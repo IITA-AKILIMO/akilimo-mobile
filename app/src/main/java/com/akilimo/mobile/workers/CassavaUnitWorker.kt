@@ -47,4 +47,6 @@ class CassavaUnitWorker(
         Timber.d("Saving ${items.size} cassava units")
         repo.saveAll(items)
     }
+
+    override suspend fun afterAllPagesSaved(allItems: List<CassavaUnit>) = repo.pruneStale(allItems)
 }
