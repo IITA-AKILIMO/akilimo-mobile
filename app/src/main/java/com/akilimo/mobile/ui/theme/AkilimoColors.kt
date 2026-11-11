@@ -7,10 +7,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 
 // ── Light palette ────────────────────────────────────────────────────────────
-private val Primary = Color(0xFF2E5900)
+private val Primary = Color(0xFF006F45) // logo deep green
 private val OnPrimary = Color(0xFFFFFFFF)
-private val PrimaryContainer = Color(0xFFD3EABC) // Refined for better vibrancy
-private val OnPrimaryContainer = Color(0xFF0E2400)
+private val PrimaryContainer = Color(0xFFE4F2C6) // tint of the logo lime
+private val OnPrimaryContainer = Color(0xFF1F3300)
 
 private val Secondary = Color(0xFF58624E) // Neutral olive
 private val OnSecondary = Color(0xFFFFFFFF)
@@ -39,10 +39,10 @@ private val OutlineVariant = Color(0xFFC1C9B2)
 private val Scrim = Color(0xFF000000)
 
 // ── Dark palette ─────────────────────────────────────────────────────────────
-private val DarkPrimary = Color(0xFF91C660) // Adjusted (was 0xFF9DD768)
-private val DarkOnPrimary = Color(0xFF132F00) // Adjusted
-private val DarkPrimaryContainer = Color(0xFF244400) // Adjusted
-private val DarkOnPrimaryContainer = Color(0xFF91C660) // Adjusted
+private val DarkPrimary = Color(0xFF9ACA3C) // logo lime
+private val DarkOnPrimary = Color(0xFF1F3300)
+private val DarkPrimaryContainer = Color(0xFF00553A)
+private val DarkOnPrimaryContainer = Color(0xFFC9E88F)
 
 private val DarkSecondary = Color(0xFFAEB95B) // Adjusted
 private val DarkOnSecondary = Color(0xFF232700) // Adjusted

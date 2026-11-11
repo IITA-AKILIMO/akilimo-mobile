@@ -21,53 +21,54 @@ import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 
 /**
- * "[title]  [progressLabel]" over a progress bar: how far through a multi-step task the
- * farmer is (for example "Steps completed - 3 of 8"). [progress] is clamped to 0..1.
+ * Prominent summary at the top of a multi-step screen: a small [title], a large [figure]
+ * ("3 of 8") with its [caption], a progress bar and a [footer] line. [progress] is clamped to 0..1.
  */
 @Composable
 fun ProgressSummaryCard(
     title: String,
-    progressLabel: String,
+    figure: String,
+    caption: String,
     progress: Float,
+    footer: String,
     modifier: Modifier = Modifier,
 ) {
+    val onHero = MaterialTheme.colorScheme.onPrimary
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Column(
             modifier = Modifier.padding(AkilimoSpacing.md),
             verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+            Text(text = title, style = MaterialTheme.typography.labelLarge, color = onHero)
+            Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs)) {
                 Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.weight(1f),
+                    text = figure,
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = onHero,
                 )
                 Text(
-                    text = progressLabel,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    text = caption,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = onHero,
+                    modifier = Modifier.padding(bottom = AkilimoSpacing.xxs),
                 )
             }
             LinearProgressIndicator(
                 progress = { progress.coerceIn(0f, 1f) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(10.dp)
+                    .height(8.dp)
                     .clip(CircleShape),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surface,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                trackColor = onHero.copy(alpha = 0.25f),
             )
+            Text(text = footer, style = MaterialTheme.typography.bodyMedium, color = onHero)
         }
     }
 }

@@ -52,6 +52,9 @@ import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.RadioButtonRow
 import com.akilimo.mobile.ui.components.compose.SectionHeader
+import com.akilimo.mobile.ui.components.compose.StatItem
+import com.akilimo.mobile.ui.components.compose.StatSummaryCard
+import com.akilimo.mobile.ui.components.compose.StatusTone
 import com.akilimo.mobile.ui.components.compose.SelectionCard
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
@@ -131,6 +134,19 @@ fun FertilizerScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
+            if (state.fertilizers.isNotEmpty()) {
+                StatSummaryCard(
+                    stats = listOf(
+                        StatItem(stringResource(R.string.lbl_available), state.fertilizers.size.toString()),
+                        StatItem(
+                            stringResource(R.string.lbl_selected),
+                            state.selectedIds.size.toString(),
+                            if (state.selectedIds.isEmpty()) StatusTone.Neutral else StatusTone.Success,
+                        ),
+                    ),
+                    modifier = Modifier.padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xs),
+                )
+            }
             SectionHeader(
                 title = stringResource(R.string.lbl_select_fertilizers),
                 modifier = Modifier.padding(horizontal = AkilimoSpacing.md)

@@ -7,12 +7,12 @@ import androidx.compose.ui.unit.dp
 val AkilimoShapes = Shapes(
     // ExtraSmall (4dp) — chips, segmented-button tracks, compact inputs
     extraSmall = RoundedCornerShape(4.dp),
-    // Small (12dp) — text fields, radio rows, small cards (M3 default is 8dp)
-    small = RoundedCornerShape(12.dp),
-    // Medium (20dp) — cards, primary buttons (M3 default is 12dp)
-    medium = RoundedCornerShape(20.dp),
-    // Large (32dp) — large containers, navigation drawers (M3 default is 16dp)
-    large = RoundedCornerShape(32.dp),
-    // ExtraLarge (40dp) — dialogs, bottom sheets (M3 default is 28dp)
-    extraLarge = RoundedCornerShape(40.dp),
+    // Small (8dp) — text fields, radio rows, small cards
+    small = RoundedCornerShape(8.dp),
+    // Medium (12dp) — cards, primary buttons
+    medium = RoundedCornerShape(12.dp),
+    // Large (16dp) — large containers, navigation drawers
+    large = RoundedCornerShape(16.dp),
+    // ExtraLarge (28dp) — dialogs, bottom sheets
+    extraLarge = RoundedCornerShape(28.dp),
 )

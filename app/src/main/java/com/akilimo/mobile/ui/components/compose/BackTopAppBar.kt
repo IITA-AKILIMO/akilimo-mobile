@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -66,10 +66,12 @@ fun BackTopAppBar(
                 onClick = onBack,
                 modifier = Modifier.size(48.dp),
             ) {
+                // Light outlined icon at 22dp: quieter than the filled arrow, tap area stays 48dp
                 Icon(
-                    imageVector = if (isClose) Icons.Filled.Close else Icons.AutoMirrored.Filled.ArrowBack,
+                    imageVector = if (isClose) Icons.Filled.Close else Icons.AutoMirrored.Outlined.ArrowBack,
                     contentDescription = stringResource(if (isClose) R.string.cmp_close else R.string.lbl_back),
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f),
+                    modifier = Modifier.size(22.dp),
                 )
             }
         }

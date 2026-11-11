@@ -9,8 +9,12 @@
     <string name="error_rec_server_busy">The AKILIMO service is busy right now. Please try again later.</string>
 
     <!-- Use case step list -->
-    <string name="lbl_steps_remaining_title">Steps to complete</string>
-    <string name="msg_steps_remaining">%1$d of %2$d steps are not complete yet. Complete them for more accurate advice.</string>
+    <string name="lbl_your_progress">Your progress</string>
+    <string name="msg_steps_done_of">%1$d of %2$d</string>
+    <string name="lbl_steps_done">steps done</string>
+    <string name="msg_steps_left">%1$d steps left. Complete them for more accurate advice.</string>
+    <string name="msg_all_steps_done">All steps are done</string>
+    <string name="lbl_available">Available</string>
     <string name="lbl_incomplete_steps_title">Some steps are not complete</string>
     <string name="msg_incomplete_steps">These steps are not complete:\n%1$s\n\nAKILIMO will use default values for them, so the advice may be less accurate.</string>
     <string name="lbl_continue_anyway">Continue anyway</string>
