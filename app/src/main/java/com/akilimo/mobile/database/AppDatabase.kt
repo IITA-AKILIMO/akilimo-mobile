@@ -9,6 +9,7 @@ import com.akilimo.mobile.dao.AdviceCompletionDao
 import com.akilimo.mobile.dao.AkilimoUserDao
 import com.akilimo.mobile.dao.CassavaMarketPriceDao
 import com.akilimo.mobile.dao.CassavaUnitDao
+import com.akilimo.mobile.dao.MaizeUnitDao
 import com.akilimo.mobile.dao.CassavaYieldDao
 import com.akilimo.mobile.dao.CurrentPracticeDao
 import com.akilimo.mobile.dao.FertilizerDao
@@ -26,6 +27,7 @@ import com.akilimo.mobile.entities.AdviceCompletion
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.CassavaMarketPrice
 import com.akilimo.mobile.entities.CassavaUnit
+import com.akilimo.mobile.entities.MaizeUnit
 import com.akilimo.mobile.entities.CassavaYield
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.Fertilizer
@@ -66,6 +68,7 @@ import com.akilimo.mobile.database.EnumWeedControlConverter
         SelectedCassavaMarket::class,
         ProduceMarket::class,
         CassavaUnit::class,
+        MaizeUnit::class,
         CassavaYield::class,
         AdviceCompletion::class,
         FieldOperationCost::class,
@@ -73,7 +76,7 @@ import com.akilimo.mobile.database.EnumWeedControlConverter
         MaizePerformance::class,
         UserPreferences::class
     ],
-    version = 6,
+    version = 8,
     exportSchema = true
 )
 @TypeConverters(
@@ -108,6 +111,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun selectedCassavaMarketDao(): SelectedCassavaMarketDao
 
     abstract fun cassavaUnitDao(): CassavaUnitDao
+    abstract fun maizeUnitDao(): MaizeUnitDao
 
     abstract fun cassavaYieldDao(): CassavaYieldDao
 
@@ -145,6 +149,7 @@ abstract class AppDatabase : RoomDatabase() {
                     DatabaseMigrations.MIGRATION_3_4,
                     DatabaseMigrations.MIGRATION_4_5,
                     DatabaseMigrations.MIGRATION_5_6,
+                    DatabaseMigrations.MIGRATION_6_8,
                 )
                 .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
                 .build()

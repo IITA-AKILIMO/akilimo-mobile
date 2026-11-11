@@ -18,6 +18,11 @@ class CassavaUnitRepo(
     }
 
 
+    /** Drops cached units missing from [current], the full list just fetched. */
+    suspend fun pruneStale(current: List<CassavaUnit>) {
+        if (current.isNotEmpty()) dao.pruneStale(current.map { it.id })
+    }
+
     /** Observe all units sorted by sort_order */
     fun observeAll(): Flow<List<CassavaUnit>> = dao.observeAll()
 

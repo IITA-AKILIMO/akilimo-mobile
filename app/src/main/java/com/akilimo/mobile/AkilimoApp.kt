@@ -15,6 +15,7 @@ import com.akilimo.mobile.network.NetworkMonitor
 import com.akilimo.mobile.utils.StartupManager
 import com.akilimo.mobile.workers.CassavaPriceWorker
 import com.akilimo.mobile.workers.CassavaUnitWorker
+import com.akilimo.mobile.workers.MaizeUnitWorker
 import com.akilimo.mobile.workers.FertilizerPriceWorker
 import com.akilimo.mobile.workers.FertilizerWorker
 import com.akilimo.mobile.workers.InvestmentAmountWorker
@@ -83,6 +84,12 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
             context = this,
             workName = WorkConstants.CASSAVA_UNITS_WORK_NAME,
             inputData = workDataOf("perPage" to 100)
+        )
+
+        WorkerScheduler.scheduleOneTimeWorker<MaizeUnitWorker>(
+            context = this,
+            workName = WorkConstants.MAIZE_UNITS_WORK_NAME,
+            inputData = workDataOf()
         )
 
         WorkerScheduler.scheduleOneTimeWorker<StarchFactoryWorker>(

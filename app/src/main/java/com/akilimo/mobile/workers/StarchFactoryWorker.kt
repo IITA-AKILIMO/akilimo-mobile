@@ -43,7 +43,11 @@ class StarchFactoryWorker(
             Timber.w("No valid factory items to save")
             return
         }
-        Timber.d("Saving ${items.size} factories")
-        repo.saveAll(items)
+        // Saved once the last page is in: factory ids can change, so pages cannot be upserted one by one
+    }
+
+    override suspend fun afterAllPagesSaved(allItems: List<StarchFactory>) {
+        Timber.d("Saving ${allItems.size} factories")
+        repo.replaceAll(allItems)
     }
 }

@@ -2,10 +2,15 @@ package com.akilimo.mobile.ui.screens.usecases
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.res.painterResource
@@ -180,4 +185,22 @@ internal fun ListEmpty(message: String, modifier: Modifier = Modifier) {
         message = message,
         modifier = modifier.padding(vertical = AkilimoSpacing.xs),
     )
+}
+
+/** Pull-to-refresh around a list. [content] must scroll; wrap a loading or empty state in [PullableState]. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun RefreshableList(
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    content: @Composable () -> Unit,
+) {
+    PullToRefreshBox(isRefreshing = isRefreshing, onRefresh = onRefresh, modifier = modifier) { content() }
+}
+
+/** Makes a loading or empty state scrollable, so it can still be pulled down to refresh. */
+@Composable
+internal fun PullableState(content: @Composable () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) { content() }
 }

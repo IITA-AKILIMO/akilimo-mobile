@@ -145,11 +145,11 @@ fun CassavaMarketScreen(
                 .weight(1f)
                 .padding(horizontal = AkilimoSpacing.md)
             when (marketChoice) {
-                MarketChoice.FACTORY -> when {
-                    state.factoriesLoading -> ListLoading(listModifier)
+                MarketChoice.FACTORY -> RefreshableList(state.isRefreshing, viewModel::refresh, listModifier) { when {
+                    state.factoriesLoading -> PullableState { ListLoading() }
                     state.factories.isEmpty() ->
-                        ListEmpty(stringResource(R.string.msg_no_starch_factories), listModifier)
-                    else -> LazyColumn(modifier = listModifier.selectableGroup()) {
+                        PullableState { ListEmpty(stringResource(R.string.msg_no_starch_factories)) }
+                    else -> LazyColumn(modifier = Modifier.fillMaxSize().selectableGroup()) {
                         items(state.factories, key = { it.id ?: 0 }) { factory ->
                             RadioButtonRow(
                                 label = factory.name.orEmpty(),
@@ -159,13 +159,13 @@ fun CassavaMarketScreen(
                             )
                         }
                     }
-                }
+                } }
 
-                MarketChoice.MARKET -> when {
-                    state.unitsLoading -> ListLoading(listModifier)
+                MarketChoice.MARKET -> RefreshableList(state.isRefreshing, viewModel::refresh, listModifier) { when {
+                    state.unitsLoading -> PullableState { ListLoading() }
                     state.cassavaUnits.isEmpty() ->
-                        ListEmpty(stringResource(R.string.msg_no_units_of_sale), listModifier)
-                    else -> LazyColumn(modifier = listModifier.selectableGroup()) {
+                        PullableState { ListEmpty(stringResource(R.string.msg_no_units_of_sale)) }
+                    else -> LazyColumn(modifier = Modifier.fillMaxSize().selectableGroup()) {
                         items(state.cassavaUnits, key = { it.id }) { unit ->
                             RadioButtonRow(
                                 label = unit.displayLabel(),
@@ -174,7 +174,7 @@ fun CassavaMarketScreen(
                             )
                         }
                     }
-                }
+                } }
 
                 MarketChoice.NONE -> Spacer(modifier = Modifier.weight(1f))
             }

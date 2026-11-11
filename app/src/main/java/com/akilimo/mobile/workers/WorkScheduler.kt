@@ -8,6 +8,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.ListenableWorker
 import androidx.work.NetworkType
+import androidx.work.Operation
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
@@ -51,7 +52,7 @@ object WorkerScheduler {
         // running or pending (including the one WorkManager just woke the process for).
         policy: ExistingWorkPolicy = ExistingWorkPolicy.KEEP,
         inputData: Data = Data.EMPTY
-    ) {
+    ): Operation {
         val oneTimeRequest = OneTimeWorkRequestBuilder<T>()
             .setInputData(inputData)
             .setConstraints(constraints)
@@ -62,7 +63,7 @@ object WorkerScheduler {
             )
             .build()
 
-        WorkManager.getInstance(context).enqueueUniqueWork(
+        return WorkManager.getInstance(context).enqueueUniqueWork(
             workName,
             policy,
             oneTimeRequest
@@ -82,7 +83,7 @@ object WorkerScheduler {
         secondName: String,
         constraints: Constraints = defaultConstraints(),
         policy: ExistingWorkPolicy = ExistingWorkPolicy.KEEP
-    ) {
+    ): Operation {
         val firstRequest = OneTimeWorkRequestBuilder<T>()
             .setConstraints(constraints)
             .setBackoffCriteria(
@@ -103,7 +104,7 @@ object WorkerScheduler {
             .addTag("$chainName/$secondName")
             .build()
 
-        WorkManager.getInstance(context)
+        return WorkManager.getInstance(context)
             .beginUniqueWork(chainName, policy, firstRequest)
             .then(secondRequest)
             .enqueue()

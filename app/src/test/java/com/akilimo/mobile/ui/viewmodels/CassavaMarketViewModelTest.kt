@@ -19,12 +19,14 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import com.akilimo.mobile.workers.DataRefresher
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Assert.assertFalse
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -39,6 +41,7 @@ class CassavaMarketViewModelTest {
     private val priceRepo: CassavaMarketPriceRepo = mockk(relaxed = true)
     private val cassavaUnitRepo: CassavaUnitRepo = mockk(relaxed = true)
     private val appSettings: AppSettingsDataStore = mockk(relaxed = true)
+    private val dataRefresher: DataRefresher = mockk(relaxed = true)
 
     private lateinit var viewModel: CassavaMarketViewModel
 
@@ -59,7 +62,8 @@ class CassavaMarketViewModelTest {
             selectedRepo = selectedRepo,
             priceRepo = priceRepo,
             cassavaUnitRepo = cassavaUnitRepo,
-            appSettings = appSettings
+            appSettings = appSettings,
+            dataRefresher = dataRefresher
         )
     }
 
@@ -167,5 +171,14 @@ class CassavaMarketViewModelTest {
         coVerify {
             selectedRepo.select(match { it.cassavaUnitId == 3 && it.yieldId == 5 })
         }
+    }
+
+    @Test
+    fun `refresh fetches the cassava market data again and stops the spinner`() = runTest {
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { dataRefresher.cassavaMarket() }
+        assertFalse(viewModel.uiState.value.isRefreshing)
     }
 }

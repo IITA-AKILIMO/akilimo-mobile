@@ -12,6 +12,7 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.FertilizerPriceRepo
 import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
+import com.akilimo.mobile.workers.DataRefresher
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -33,6 +34,7 @@ class FertilizerViewModel @AssistedInject constructor(
     private val userRepo: AkilimoUserRepo,
     private val priceRepo: FertilizerPriceRepo,
     private val appSettings: AppSettingsDataStore,
+    private val dataRefresher: DataRefresher,
     @Assisted private val fertilizerFlow: EnumFertilizerFlow
 ) : ViewModel() {
 
@@ -48,6 +50,7 @@ class FertilizerViewModel @AssistedInject constructor(
         val userId: Int = 0,
         val isGridLayout: Boolean = false,
         val isLoading: Boolean = true,
+        val isRefreshing: Boolean = false,
         val isSaving: Boolean = false,
         val saveFailed: Boolean = false
     )
@@ -151,6 +154,12 @@ class FertilizerViewModel @AssistedInject constructor(
             savedPriceId = saved?.fertilizerPriceId,
             savedExactPrice = saved?.takeIf { it.isExactPrice }?.fertilizerPrice?.takeIf { it > 0.0 }
         )
+    }
+
+    /** Pull to refresh: fetch the fertilizers and their prices again. */
+    fun refresh() {
+        if (_uiState.value.isRefreshing) return
+        launchRefresh({ r -> _uiState.update { it.copy(isRefreshing = r) } }) { dataRefresher.fertilizers() }
     }
 
     fun onSaveErrorShown() = _uiState.update { it.copy(saveFailed = false) }

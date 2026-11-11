@@ -16,6 +16,7 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CassavaMarketPriceRepo
 import com.akilimo.mobile.repos.CassavaUnitRepo
 import com.akilimo.mobile.repos.SelectedCassavaMarketRepo
+import com.akilimo.mobile.workers.DataRefresher
 import com.akilimo.mobile.repos.StarchFactoryRepo
 import com.akilimo.mobile.utils.MathHelper
 import io.sentry.Sentry
@@ -40,7 +41,8 @@ class CassavaMarketViewModel @Inject constructor(
     private val selectedRepo: SelectedCassavaMarketRepo,
     private val priceRepo: CassavaMarketPriceRepo,
     private val cassavaUnitRepo: CassavaUnitRepo,
-    private val appSettings: AppSettingsDataStore
+    private val appSettings: AppSettingsDataStore,
+    private val dataRefresher: DataRefresher
 ) : ViewModel() {
 
     data class UiState(
@@ -54,7 +56,8 @@ class CassavaMarketViewModel @Inject constructor(
         val userCountry: EnumCountry = EnumCountry.Unsupported,
         val initialMarketChoice: MarketChoice = MarketChoice.NONE,
         val isSaving: Boolean = false,
-        val saveFailed: Boolean = false
+        val saveFailed: Boolean = false,
+        val isRefreshing: Boolean = false
     )
 
     enum class MarketChoice { NONE, FACTORY, MARKET }
@@ -189,6 +192,12 @@ class CassavaMarketViewModel @Inject constructor(
                 produceType = current?.produceType ?: EnumCassavaProduceType.ROOTS
             )
         )
+    }
+
+    /** Pull to refresh: fetch starch factories, units of sale and prices again. */
+    fun refresh() {
+        if (_uiState.value.isRefreshing) return
+        launchRefresh({ r -> _uiState.update { it.copy(isRefreshing = r) } }) { dataRefresher.cassavaMarket() }
     }
 
     fun onSaveErrorShown() = _uiState.update { it.copy(saveFailed = false) }

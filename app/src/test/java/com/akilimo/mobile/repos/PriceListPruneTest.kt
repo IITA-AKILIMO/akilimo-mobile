@@ -20,14 +20,14 @@ class PriceListPruneTest {
 
     private fun fertilizerPrice(id: Int) = FertilizerPrice(
         id = id, fertilizerKey = "UREA_NG", fertilizerCountry = "NG", countryCode = "NG",
-        currencyCode = "NGN", currencySymbol = "N", minAllowedPrice = 0.0, maxAllowedPrice = 0.0,
+        currencyCode = "NGN", currencySymbol = "N",
         priceRange = "", description = null
     )
 
     private fun cassavaPrice(id: Int) = CassavaMarketPrice(
         id = id, countryCode = EnumCountry.NG, currencyCode = "NGN", currencySymbol = "N",
-        minLocalPrice = 1.0, maxLocalPrice = 2.0, averagePrice = 1.5, exactPrice = false,
-        itemTag = "cassUP", minAllowedPrice = 0.0, maxAllowedPrice = 0.0, active = true, sortOrder = 0
+        averagePrice = 1.5, exactPrice = false,
+        itemTag = "cassUP", active = true, sortOrder = 0
     )
 
     private fun investment(id: Int) = InvestmentAmount(
@@ -39,14 +39,14 @@ class PriceListPruneTest {
     fun `fertilizer prices keep only the ids just fetched`() = runTest {
         val dao = mockk<FertilizerPriceDao>(relaxed = true)
         FertilizerPriceRepo(dao).pruneStale(listOf(fertilizerPrice(101), fertilizerPrice(1000050)))
-        coVerify { dao.deleteStale(listOf(101, 1000050)) }
+        coVerify { dao.pruneStale(listOf(101, 1000050)) }
     }
 
     @Test
     fun `cassava prices keep only the ids just fetched`() = runTest {
         val dao = mockk<CassavaMarketPriceDao>(relaxed = true)
         CassavaMarketPriceRepo(dao).pruneStale(listOf(cassavaPrice(11), cassavaPrice(12)))
-        coVerify { dao.deleteStale(listOf(11, 12)) }
+        coVerify { dao.pruneStale(listOf(11, 12)) }
     }
 
     @Test
@@ -64,8 +64,8 @@ class PriceListPruneTest {
         FertilizerPriceRepo(fertilizerDao).pruneStale(emptyList())
         CassavaMarketPriceRepo(cassavaDao).pruneStale(emptyList())
         InvestmentRepo(investmentDao).pruneStale(emptyList())
-        coVerify(exactly = 0) { fertilizerDao.deleteStale(any()) }
-        coVerify(exactly = 0) { cassavaDao.deleteStale(any()) }
+        coVerify(exactly = 0) { fertilizerDao.pruneStale(any()) }
+        coVerify(exactly = 0) { cassavaDao.pruneStale(any()) }
         coVerify(exactly = 0) { investmentDao.deleteStale(any()) }
     }
 }
