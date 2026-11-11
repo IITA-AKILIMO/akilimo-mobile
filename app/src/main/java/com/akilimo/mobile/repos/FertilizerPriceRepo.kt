@@ -21,7 +21,7 @@ class FertilizerPriceRepo(private val dao: FertilizerPriceDao) {
 
     /** Drops cached options missing from [current], the full list just fetched. */
     suspend fun pruneStale(current: List<FertilizerPrice>) {
-        if (current.isNotEmpty()) dao.deleteStale(current.map { it.id })
+        if (current.isNotEmpty()) dao.pruneStale(current.map { it.id })
     }
 
     suspend fun updatePrice(price: FertilizerPrice) {
