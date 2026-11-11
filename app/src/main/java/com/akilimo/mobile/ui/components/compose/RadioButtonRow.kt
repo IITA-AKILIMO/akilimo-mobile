@@ -1,6 +1,7 @@
 package com.akilimo.mobile.ui.components.compose
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +32,8 @@ fun RadioButtonRow(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    supportingText: String? = null,
 ) {
     Surface(
         modifier = modifier
@@ -61,19 +63,29 @@ fun RadioButtonRow(
                 .padding(AkilimoSpacing.md),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.weight(1f),
-                color = if (enabled) {
-                    if (selected)
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    else
-                        MaterialTheme.colorScheme.onSurface
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
+            val contentColor = when {
+                !enabled -> MaterialTheme.colorScheme.onSurfaceVariant
+                selected -> MaterialTheme.colorScheme.onPrimaryContainer
+                else -> MaterialTheme.colorScheme.onSurface
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = label,
+                    style = if (supportingText == null) {
+                        MaterialTheme.typography.bodyLarge
+                    } else {
+                        MaterialTheme.typography.titleMedium
+                    },
+                    color = contentColor,
+                )
+                if (supportingText != null) {
+                    Text(
+                        text = supportingText,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = contentColor,
+                    )
                 }
-            )
+            }
             Spacer(Modifier.width(AkilimoSpacing.sm))
             RadioButton(
                 selected = selected,
