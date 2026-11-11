@@ -15,9 +15,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.filled.ScreenRotation
-import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.FormatSize
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -29,10 +34,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilterChip
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.akilimo.mobile.data.ReadingTextScale
 import androidx.compose.foundation.rememberScrollState
@@ -81,6 +82,7 @@ private val READING_MAX_WIDTH = 600.dp
 private val TWO_PANE_MIN_WIDTH = 840.dp
 
 private const val ORIENTATION_RELEASE_DELAY_MS = 500L
+private const val INACTIVE_ACTION_ALPHA = 0.7f
 private const val BODY_FONT_SP = 18f
 private const val BODY_LINE_HEIGHT_SP = 28f
 private const val TITLE_FONT_SP = 24f
@@ -103,9 +105,6 @@ private fun RecommendationBody(
     title: String,
     paragraphs: List<String>,
     textScale: Float,
-    onTextScaleChange: (Float) -> Unit,
-    landscapeLocked: Boolean,
-    onLandscapeToggle: () -> Unit,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val twoPane = maxWidth >= TWO_PANE_MIN_WIDTH
@@ -116,21 +115,6 @@ private fun RecommendationBody(
                     fontSize = (TITLE_FONT_SP * textScale).sp,
                     lineHeight = (TITLE_LINE_HEIGHT_SP * textScale).sp,
                 ),
-            )
-            Spacer(Modifier.height(AkilimoSpacing.md))
-            TextSizeSelector(selected = textScale, onSelect = onTextScaleChange)
-            Spacer(Modifier.height(AkilimoSpacing.sm))
-            FilterChip(
-                selected = landscapeLocked,
-                onClick = onLandscapeToggle,
-                label = { Text(stringResource(R.string.lbl_landscape_view)) },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.ScreenRotation,
-                        contentDescription = null,
-                        modifier = Modifier.size(FilterChipDefaults.IconSize),
-                    )
-                },
             )
         }
         val content: @Composable () -> Unit = {
@@ -204,30 +188,45 @@ private fun RecommendationCard(paragraphs: List<String>, textScale: Float) {
     }
 }
 
+/** Top-bar actions: text size menu and the landscape toggle, kept out of the reading area. */
 @Composable
-private fun TextSizeSelector(selected: Float, onSelect: (Float) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs)) {
-        Text(
-            text = stringResource(R.string.lbl_text_size),
-            style = MaterialTheme.typography.labelLarge,
+private fun RowScope.ReadingActions(
+    textScale: Float,
+    onTextScaleChange: (Float) -> Unit,
+    landscapeLocked: Boolean,
+    onLandscapeToggle: () -> Unit,
+) {
+    var menuOpen by remember { mutableStateOf(false) }
+    val tint = MaterialTheme.colorScheme.onPrimary
+
+    IconButton(onClick = { menuOpen = true }) {
+        Icon(
+            imageVector = Icons.Default.FormatSize,
+            contentDescription = stringResource(R.string.lbl_text_size),
+            tint = tint,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm)) {
-            ReadingTextScale.options.forEachIndexed { index, option ->
-                val description = stringResource(textScaleLabelRes(option))
-                FilterChip(
-                    selected = option == selected,
-                    onClick = { onSelect(option) },
-                    label = {
-                        Text(
-                            text = "A",
-                            fontSize = (14 + index * 4).sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    },
-                    modifier = Modifier.semantics { contentDescription = description },
-                )
-            }
+    }
+    DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+        ReadingTextScale.options.forEach { option ->
+            DropdownMenuItem(
+                text = { Text(stringResource(textScaleLabelRes(option))) },
+                leadingIcon = {
+                    if (option == textScale) Icon(Icons.Default.Check, contentDescription = null)
+                },
+                onClick = {
+                    onTextScaleChange(option)
+                    menuOpen = false
+                },
+            )
         }
+    }
+
+    IconToggleButton(checked = landscapeLocked, onCheckedChange = { onLandscapeToggle() }) {
+        Icon(
+            imageVector = Icons.Default.ScreenRotation,
+            contentDescription = stringResource(R.string.lbl_landscape_view),
+            tint = tint.copy(alpha = if (landscapeLocked) 1f else INACTIVE_ACTION_ALPHA),
+        )
     }
 }
 
@@ -310,6 +309,16 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                 title = stringResource(R.string.lbl_recommendations),
                 onBack = { navController.popBackStackSafely() },
                 scrollBehavior = scrollBehavior,
+                actions = {
+                    if (state is GetRecommendationViewModel.UiState.Success) {
+                        ReadingActions(
+                            textScale = textScale,
+                            onTextScaleChange = viewModel::setTextScale,
+                            landscapeLocked = landscapeLocked,
+                            onLandscapeToggle = { viewModel.setLandscapeLocked(!landscapeLocked) },
+                        )
+                    }
+                },
             )
         },
         floatingActionButton = {
@@ -339,9 +348,6 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                         title = title,
                         paragraphs = remember(s.description) { splitRecommendationParagraphs(s.description) },
                         textScale = textScale,
-                        onTextScaleChange = viewModel::setTextScale,
-                        landscapeLocked = landscapeLocked,
-                        onLandscapeToggle = { viewModel.setLandscapeLocked(!landscapeLocked) },
                     )
                 }
 
