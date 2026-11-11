@@ -2,9 +2,7 @@ package com.akilimo.mobile.ui.screens.recommendations
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +13,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
-import androidx.compose.material.icons.filled.ScreenRotation
+import androidx.compose.material.icons.filled.StayCurrentLandscape
+import androidx.compose.material.icons.filled.StayCurrentPortrait
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FormatSize
@@ -78,9 +77,6 @@ private val FAB_CLEARANCE = 88.dp
 /** Longest comfortable line (about 60-70 characters at the body size) for landscape and tablets. */
 private val READING_MAX_WIDTH = 600.dp
 
-/** From this width (tablets, large landscape) the title and controls sit beside the text. */
-private val TWO_PANE_MIN_WIDTH = 840.dp
-
 private const val ORIENTATION_RELEASE_DELAY_MS = 500L
 private const val INACTIVE_ACTION_ALPHA = 0.7f
 private const val BODY_FONT_SP = 18f
@@ -106,9 +102,21 @@ private fun RecommendationBody(
     paragraphs: List<String>,
     textScale: Float,
 ) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val twoPane = maxWidth >= TWO_PANE_MIN_WIDTH
-        val header: @Composable () -> Unit = {
+    // Title always sits above the text, in every orientation; the width cap keeps lines readable
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .widthIn(max = READING_MAX_WIDTH)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(
+                    start = AkilimoSpacing.md,
+                    end = AkilimoSpacing.md,
+                    top = AkilimoSpacing.md,
+                    bottom = FAB_CLEARANCE,
+                ),
+        ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineSmall.copy(
@@ -116,48 +124,8 @@ private fun RecommendationBody(
                     lineHeight = (TITLE_LINE_HEIGHT_SP * textScale).sp,
                 ),
             )
-        }
-        val content: @Composable () -> Unit = {
+            Spacer(Modifier.height(AkilimoSpacing.md))
             RecommendationCard(paragraphs = paragraphs, textScale = textScale)
-        }
-
-        if (twoPane) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(AkilimoSpacing.md),
-                horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.xl),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState()),
-                ) { header() }
-                Column(
-                    modifier = Modifier
-                        .weight(1.5f)
-                        .verticalScroll(rememberScrollState())
-                        .padding(bottom = FAB_CLEARANCE),
-                ) { content() }
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .widthIn(max = READING_MAX_WIDTH)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(
-                        start = AkilimoSpacing.md,
-                        end = AkilimoSpacing.md,
-                        top = AkilimoSpacing.md,
-                        bottom = FAB_CLEARANCE,
-                    ),
-            ) {
-                header()
-                Spacer(Modifier.height(AkilimoSpacing.md))
-                content()
-            }
         }
     }
 }
@@ -222,9 +190,16 @@ private fun RowScope.ReadingActions(
     }
 
     IconToggleButton(checked = landscapeLocked, onCheckedChange = { onLandscapeToggle() }) {
+        // The icon shows the orientation a tap switches to
         Icon(
-            imageVector = Icons.Default.ScreenRotation,
-            contentDescription = stringResource(R.string.lbl_landscape_view),
+            imageVector = if (landscapeLocked) {
+                Icons.Default.StayCurrentPortrait
+            } else {
+                Icons.Default.StayCurrentLandscape
+            },
+            contentDescription = stringResource(
+                if (landscapeLocked) R.string.lbl_portrait_view else R.string.lbl_landscape_view
+            ),
             tint = tint.copy(alpha = if (landscapeLocked) 1f else INACTIVE_ACTION_ALPHA),
         )
     }
