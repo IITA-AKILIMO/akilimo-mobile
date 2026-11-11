@@ -12,6 +12,7 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.InvestmentRepo
 import com.akilimo.mobile.repos.SelectedInvestmentRepo
 import com.akilimo.mobile.utils.MathHelper
+import com.akilimo.mobile.workers.DataRefresher
 import io.sentry.Sentry
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,11 +27,13 @@ class InvestmentAmountViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val investmentRepo: InvestmentRepo,
     private val selectedInvestmentRepo: SelectedInvestmentRepo,
-    private val appSettings: AppSettingsDataStore
+    private val appSettings: AppSettingsDataStore,
+    private val dataRefresher: DataRefresher
 ) : ViewModel() {
 
     data class UiState(
         val isLoading: Boolean = true,
+        val isRefreshing: Boolean = false,
         val investments: List<InvestmentAmount> = emptyList(),
         val selectedInvestment: SelectedInvestment? = null,
         /** The option highlighted on screen; starts at the saved choice, changed by taps. */
@@ -129,6 +132,12 @@ class InvestmentAmountViewModel @Inject constructor(
     }
 
     fun onSaveHandled() = _uiState.update { it.copy(saved = false, isSaving = false) }
+
+    /** Pull to refresh: fetch the investment amounts again. */
+    fun refresh() {
+        if (_uiState.value.isRefreshing) return
+        launchRefresh({ r -> _uiState.update { it.copy(isRefreshing = r) } }) { dataRefresher.investmentAmounts() }
+    }
 
     fun onSaveErrorShown() = _uiState.update { it.copy(saveFailed = false) }
 }

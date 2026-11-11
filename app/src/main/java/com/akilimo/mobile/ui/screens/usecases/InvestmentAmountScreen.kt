@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.screens.usecases
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -90,54 +91,60 @@ fun InvestmentAmountScreen(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
-        LazyColumn(contentPadding = padding, modifier = Modifier.selectableGroup()) {
-            when {
-                state.isLoading -> item(key = "loading") { ListLoading() }
-                state.investments.isEmpty() -> item(key = "empty") {
-                    ListEmpty(
-                        message = stringResource(R.string.msg_no_investment_options),
-                        modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
-                    )
+        RefreshableList(
+            isRefreshing = state.isRefreshing,
+            onRefresh = viewModel::refresh,
+            modifier = Modifier.fillMaxSize().padding(padding),
+        ) {
+            LazyColumn(modifier = Modifier.fillMaxSize().selectableGroup()) {
+                when {
+                    state.isLoading -> item(key = "loading") { ListLoading() }
+                    state.investments.isEmpty() -> item(key = "empty") {
+                        ListEmpty(
+                            message = stringResource(R.string.msg_no_investment_options),
+                            modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
+                        )
+                    }
                 }
-            }
-            items(state.investments, key = { it.id }) { item ->
-                val isSelected = state.selectedId == item.id
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xxs)
-                ) {
-                    // One tap target for the whole row; the RadioButton is display-only
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                items(state.investments, key = { it.id }) { item ->
+                    val isSelected = state.selectedId == item.id
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .selectable(
-                                selected = isSelected,
-                                role = Role.RadioButton,
-                                onClick = { viewModel.select(item) }
-                            )
-                            .padding(AkilimoSpacing.xs)
+                            .padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xxs)
                     ) {
-                        RadioButton(selected = isSelected, onClick = null)
-                        Column(modifier = Modifier.padding(start = AkilimoSpacing.xs)) {
-                            Text(
-                                text = stringResource(
-                                    R.string.lbl_currency_amount,
-                                    item.currencySymbol,
-                                    amountFormat.format(item.investmentAmount)
-                                ),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Text(
-                                text = fieldLabel,
-                                style = MaterialTheme.typography.bodySmall
-                            )
+                        // One tap target for the whole row; the RadioButton is display-only
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = isSelected,
+                                    role = Role.RadioButton,
+                                    onClick = { viewModel.select(item) }
+                                )
+                                .padding(AkilimoSpacing.xs)
+                        ) {
+                            RadioButton(selected = isSelected, onClick = null)
+                            Column(modifier = Modifier.padding(start = AkilimoSpacing.xs)) {
+                                Text(
+                                    text = stringResource(
+                                        R.string.lbl_currency_amount,
+                                        item.currencySymbol,
+                                        amountFormat.format(item.investmentAmount)
+                                    ),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Text(
+                                    text = fieldLabel,
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
                         }
                     }
                 }
+                item { Spacer(modifier = Modifier.height(AkilimoSpacing.xs)) }
             }
-            item { Spacer(modifier = Modifier.height(AkilimoSpacing.xs)) }
         }
     }
 }

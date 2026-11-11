@@ -136,36 +136,40 @@ fun FertilizerScreen(
                 modifier = Modifier.padding(horizontal = AkilimoSpacing.md)
             )
 
-            when {
-                state.isLoading -> ListLoading()
-                state.fertilizers.isEmpty() -> ListEmpty(
-                    message = stringResource(R.string.msg_no_fertilizers),
-                    modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
-                )
-
-                state.isGridLayout -> LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
-                    verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = AkilimoSpacing.xs)
-                ) {
-                    items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
-                        FertilizerCard(fertilizer, grid = true)
-                    }
-                }
-
-                else -> LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xxs)
-                ) {
-                    items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
-                        FertilizerCard(
-                            fertilizer,
-                            grid = false,
-                            modifier = Modifier.padding(horizontal = AkilimoSpacing.xs)
+            RefreshableList(isRefreshing = state.isRefreshing, onRefresh = viewModel::refresh) {
+                when {
+                    state.isLoading -> PullableState { ListLoading() }
+                    state.fertilizers.isEmpty() -> PullableState {
+                        ListEmpty(
+                            message = stringResource(R.string.msg_no_fertilizers),
+                            modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
                         )
+                    }
+
+                    state.isGridLayout -> LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
+                        verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = AkilimoSpacing.xs)
+                    ) {
+                        items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
+                            FertilizerCard(fertilizer, grid = true)
+                        }
+                    }
+
+                    else -> LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xxs)
+                    ) {
+                        items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
+                            FertilizerCard(
+                                fertilizer,
+                                grid = false,
+                                modifier = Modifier.padding(horizontal = AkilimoSpacing.xs)
+                            )
+                        }
                     }
                 }
             }
