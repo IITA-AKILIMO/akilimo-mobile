@@ -73,6 +73,7 @@ private val READING_MAX_WIDTH = 600.dp
 /** From this width (tablets, large landscape) the title and controls sit beside the text. */
 private val TWO_PANE_MIN_WIDTH = 840.dp
 
+private const val ORIENTATION_RELEASE_DELAY_MS = 500L
 private const val BODY_FONT_SP = 18f
 private const val BODY_LINE_HEIGHT_SP = 28f
 private const val TITLE_FONT_SP = 24f
@@ -236,18 +237,30 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
 
     // The reader can force landscape for this screen only; always hand control back on leaving.
     val activity = LocalContext.current.findActivity()
+    // Switching off must actively return to portrait: with auto-rotate off, "unspecified" would
+    // keep the phone stuck in landscape.
+    var wasLocked by remember { mutableStateOf(false) }
     DisposableEffect(landscapeLocked) {
-        activity?.requestedOrientation = if (landscapeLocked) {
-            ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
-        } else {
-            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        if (landscapeLocked) wasLocked = true
+        activity?.requestedOrientation = when {
+            landscapeLocked -> ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+            wasLocked -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
         onDispose {}
     }
+    // Leaving the screen: go back to portrait, then hand rotation back to the system.
     DisposableEffect(Unit) {
         onDispose {
-            if (activity?.isChangingConfigurations == false) {
-                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            // Only undo what this screen forced; a reader who never locked keeps natural rotation
+            if (activity != null && !activity.isChangingConfigurations &&
+                activity.requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            ) {
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                activity.window.decorView.postDelayed(
+                    { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED },
+                    ORIENTATION_RELEASE_DELAY_MS,
+                )
             }
         }
     }
