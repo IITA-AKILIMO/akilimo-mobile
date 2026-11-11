@@ -20,6 +20,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
 import kotlinx.coroutines.CancellationException
+import com.akilimo.mobile.data.ReadingTextScale
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,6 +51,14 @@ class GetRecommendationViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    /** Reader-chosen text size (1.0 = default), remembered across screens and launches. */
+    val textScale: StateFlow<Float> = appSettings.readingTextScaleFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), ReadingTextScale.DEFAULT)
+
+    fun setTextScale(scale: Float) {
+        viewModelScope.launch { appSettings.setReadingTextScale(scale) }
+    }
 
     private val _feedbackResult = MutableSharedFlow<Boolean>()
     val feedbackResult = _feedbackResult.asSharedFlow()
@@ -138,6 +149,7 @@ class GetRecommendationViewModel @Inject constructor(
         }
 
     companion object {
+        private const val STOP_TIMEOUT_MS = 5_000L
         private const val HTTP_BAD_REQUEST = 400
         private const val HTTP_UNPROCESSABLE = 422
         private const val HTTP_TIMEOUT = 408
