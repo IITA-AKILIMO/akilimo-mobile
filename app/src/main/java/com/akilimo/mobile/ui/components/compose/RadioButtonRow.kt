@@ -17,14 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 
 /**
- * A row containing a RadioButton and a Label with a large touch target.
- * Enhanced with Material 3 selection states and improved spacing.
+ * A raised, selectable option card: label on the left, radio mark on the right, with a large
+ * touch target. The selected card gets a 2dp primary border and a tinted fill.
  */
 @Composable
 fun RadioButtonRow(
@@ -40,22 +39,21 @@ fun RadioButtonRow(
             .padding(vertical = AkilimoSpacing.xxs)
             .heightIn(min = 56.dp)
             // Clip first so the ripple follows the rounded shape.
-            .clip(MaterialTheme.shapes.small)
+            .clip(MaterialTheme.shapes.medium)
             .selectable(
                 selected = selected,
                 enabled = enabled,
                 role = Role.RadioButton,
                 onClick = onClick,
             ),
-        shape = MaterialTheme.shapes.small,
-        color = if (selected)
-            MaterialTheme.colorScheme.primaryContainer
-        else
-            Color.Transparent,
-        border = if (selected)
-            BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-        else
-            BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+        shape = MaterialTheme.shapes.medium,
+        color = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+        shadowElevation = if (selected) 0.dp else 2.dp,
+        border = if (selected) {
+            BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+        } else {
+            BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        }
     ) {
         Row(
             modifier = Modifier
@@ -63,6 +61,20 @@ fun RadioButtonRow(
                 .padding(AkilimoSpacing.md),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.weight(1f),
+                color = if (enabled) {
+                    if (selected)
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    else
+                        MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                }
+            )
+            Spacer(Modifier.width(AkilimoSpacing.sm))
             RadioButton(
                 selected = selected,
                 // Row handles selection + semantics; RadioButton is purely visual.
@@ -72,19 +84,6 @@ fun RadioButtonRow(
                     selectedColor = MaterialTheme.colorScheme.primary,
                     unselectedColor = MaterialTheme.colorScheme.outline
                 )
-            )
-            Spacer(Modifier.width(AkilimoSpacing.sm))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (enabled) {
-                    if (selected)
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    else
-                        MaterialTheme.colorScheme.onSurface
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                }
             )
         }
     }
