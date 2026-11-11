@@ -131,7 +131,7 @@ fun UseCaseScreen(
                         title = stringResource(R.string.lbl_your_progress),
                         figure = stringResource(R.string.msg_steps_done_of, done, taskItems.size),
                         caption = stringResource(R.string.lbl_steps_done),
-                        progress = done.toFloat() / taskItems.size,
+                        progress = AdviceCompletionViewModel.progress(taskItems),
                         footer = if (done == taskItems.size) {
                             stringResource(R.string.msg_all_steps_done)
                         } else {

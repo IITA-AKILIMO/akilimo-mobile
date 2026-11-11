@@ -104,6 +104,19 @@ class AdviceCompletionViewModelTest {
     }
 
     @Test
+    fun `progress is the completed share of tasks and zero when there are none`() {
+        val items = listOf(
+            EnumAdviceTask.PLANTING_AND_HARVEST to EnumStepStatus.COMPLETED,
+            EnumAdviceTask.AVAILABLE_FERTILIZERS to EnumStepStatus.IN_PROGRESS,
+            EnumAdviceTask.INVESTMENT_AMOUNT to EnumStepStatus.NOT_STARTED,
+            EnumAdviceTask.CURRENT_CASSAVA_YIELD to EnumStepStatus.COMPLETED,
+        )
+
+        assertEquals(0.5f, AdviceCompletionViewModel.progress(items), 0.0001f)
+        assertEquals(0f, AdviceCompletionViewModel.progress(emptyList()), 0f)
+    }
+
+    @Test
     fun `multiple updateStatus calls are each forwarded to the repo`() = runTest {
         val tasks = listOf(
             EnumAdviceTask.AVAILABLE_FERTILIZERS to EnumStepStatus.COMPLETED,
