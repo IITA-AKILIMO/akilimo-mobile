@@ -232,7 +232,7 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
     val feedbackSuccessMessage = stringResource(R.string.msg_feedback_submit_success)
     val feedbackFailureMessage = stringResource(R.string.msg_feedback_submit_failure)
     var showFeedback by rememberSaveable { mutableStateOf(false) }
-    var landscapeLocked by rememberSaveable { mutableStateOf(false) }
+    val landscapeLocked by viewModel.landscapeLocked.collectAsStateWithLifecycle()
 
     // The reader can force landscape for this screen only; always hand control back on leaving.
     val activity = LocalContext.current.findActivity()
@@ -301,7 +301,7 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                         textScale = textScale,
                         onTextScaleChange = viewModel::setTextScale,
                         landscapeLocked = landscapeLocked,
-                        onLandscapeToggle = { landscapeLocked = !landscapeLocked },
+                        onLandscapeToggle = { viewModel.setLandscapeLocked(!landscapeLocked) },
                     )
                 }
 

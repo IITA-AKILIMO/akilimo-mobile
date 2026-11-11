@@ -60,6 +60,14 @@ class GetRecommendationViewModel @Inject constructor(
         viewModelScope.launch { appSettings.setReadingTextScale(scale) }
     }
 
+    /** Whether the reader keeps this screen in landscape; remembered across visits. */
+    val landscapeLocked: StateFlow<Boolean> = appSettings.readingLandscapeFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), false)
+
+    fun setLandscapeLocked(locked: Boolean) {
+        viewModelScope.launch { appSettings.setReadingLandscape(locked) }
+    }
+
     private val _feedbackResult = MutableSharedFlow<Boolean>()
     val feedbackResult = _feedbackResult.asSharedFlow()
 

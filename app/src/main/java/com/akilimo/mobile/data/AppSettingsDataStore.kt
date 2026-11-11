@@ -66,6 +66,7 @@ private object Keys {
     val REMEMBER_AREA_UNIT = booleanPreferencesKey("rememberAreaUnit")
     val LOCK_APP_LANGUAGE = booleanPreferencesKey("lockAppLanguage")
     val READING_TEXT_SCALE = floatPreferencesKey("readingTextScale")
+    val READING_LANDSCAPE = booleanPreferencesKey("readingLandscape")
 }
 
 /** Reader-chosen text size for long-form advice, on top of the phone's own font scale. */
@@ -175,6 +176,9 @@ class AppSettingsDataStore @Inject constructor(
 
     val lockAppLanguageFlow: Flow<Boolean> =
         dataStore.data.map { prefs -> isLanguageLocked(prefs) }
+
+    val readingLandscapeFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.READING_LANDSCAPE] ?: false }
 
     val readingTextScaleFlow: Flow<Float> =
         dataStore.data.map { prefs -> ReadingTextScale.normalize(prefs[Keys.READING_TEXT_SCALE]) }
@@ -318,6 +322,10 @@ class AppSettingsDataStore @Inject constructor(
 
     suspend fun setRememberAreaUnit(value: Boolean) {
         dataStore.edit { it[Keys.REMEMBER_AREA_UNIT] = value }
+    }
+
+    suspend fun setReadingLandscape(value: Boolean) {
+        dataStore.edit { it[Keys.READING_LANDSCAPE] = value }
     }
 
     suspend fun setReadingTextScale(value: Float) {
