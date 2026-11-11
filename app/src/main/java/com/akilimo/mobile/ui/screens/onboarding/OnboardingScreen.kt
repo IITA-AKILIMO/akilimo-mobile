@@ -71,6 +71,7 @@ import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.ExitConfirmDialog
 import com.akilimo.mobile.ui.components.compose.TopBarNavigation
 import com.akilimo.mobile.ui.components.compose.WizardBottomBar
+import com.akilimo.mobile.ui.components.compose.cardSurface
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.screens.onboarding.steps.AreaUnitStep
@@ -217,8 +218,12 @@ fun OnboardingScreen(
         return
     }
 
+    // Each section sits on its own raised card; the steps add their own inner padding
+    val sectionCard = Modifier
+        .padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xs)
+        .cardSurface()
     val sectionModifier: (OnboardingSection) -> Modifier = { section ->
-        Modifier.bringIntoViewRequester(sectionRequesters.getValue(section))
+        Modifier.bringIntoViewRequester(sectionRequesters.getValue(section)).then(sectionCard)
     }
     val step = OnboardingStep.entries[state.stepIndex.coerceIn(0, OnboardingStep.entries.lastIndex)]
     // Collapsing bar: the page title sits large in the expanded area, and only moves into the

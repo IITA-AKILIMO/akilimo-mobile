@@ -36,6 +36,7 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.DateInputField
+import com.akilimo.mobile.ui.components.compose.FormCard
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.SwitchRow
 import com.akilimo.mobile.ui.components.compose.completeTask
@@ -232,65 +233,67 @@ fun DatesScreen(
         ScrollableFormColumn(padding = padding) {
             Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
-            SwitchRow(
-                label = stringResource(R.string.lbl_open_to_alternative_dates),
-                checked = alternativeDate,
-                onCheckedChange = { alternativeDate = it }
-            )
-
-            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
-
-            DateInputField(
-                value = plantingDate?.format(dateFormatter) ?: "",
-                label = stringResource(R.string.lbl_planting_date),
-                placeholder = stringResource(R.string.lbl_pick_planting_date),
-                onClick = { showPlantingDatePicker = true },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
-
-            val noPlantingMsg = stringResource(R.string.lbl_planting_date_prompt)
-            DateInputField(
-                value = harvestDate?.format(dateFormatter) ?: "",
-                label = stringResource(R.string.lbl_harvesting_date),
-                placeholder = stringResource(R.string.lbl_pick_harvest_date),
-                onClick = {
-                    if (plantingDate == null) {
-                        scope.launch { snackbarHostState.showSnackbar(noPlantingMsg) }
-                    } else {
-                        showHarvestDatePicker = true
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
-
-            SwitchRow(
-                label = stringResource(R.string.lbl_flexible_dates),
-                checked = useFlexDates,
-                onCheckedChange = { useFlexDates = it }
-            )
-
-            if (useFlexDates) {
-                Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
-                AkilimoDropdown(
-                    label = stringResource(R.string.lbl_planting_flex),
-                    options = flexOptions,
-                    selectedOption = plantingFlex,
-                    onOptionSelected = { plantingFlex = it; harvestDate = null },
-                    displayText = { months -> flexLabel(months) },
-                    enabled = !alreadyPlanted,
+            FormCard {
+                SwitchRow(
+                    label = stringResource(R.string.lbl_open_to_alternative_dates),
+                    checked = alternativeDate,
+                    onCheckedChange = { alternativeDate = it }
                 )
-                Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
-                AkilimoDropdown(
-                    label = stringResource(R.string.lbl_harvest_flex),
-                    options = flexOptions,
-                    selectedOption = harvestFlex,
-                    onOptionSelected = { harvestFlex = it; harvestDate = null },
-                    displayText = { months -> flexLabel(months) },
+            }
+
+            Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
+
+            FormCard {
+                DateInputField(
+                    value = plantingDate?.format(dateFormatter) ?: "",
+                    label = stringResource(R.string.lbl_planting_date),
+                    placeholder = stringResource(R.string.lbl_pick_planting_date),
+                    onClick = { showPlantingDatePicker = true },
+                    modifier = Modifier.fillMaxWidth(),
                 )
+
+                val noPlantingMsg = stringResource(R.string.lbl_planting_date_prompt)
+                DateInputField(
+                    value = harvestDate?.format(dateFormatter) ?: "",
+                    label = stringResource(R.string.lbl_harvesting_date),
+                    placeholder = stringResource(R.string.lbl_pick_harvest_date),
+                    onClick = {
+                        if (plantingDate == null) {
+                            scope.launch { snackbarHostState.showSnackbar(noPlantingMsg) }
+                        } else {
+                            showHarvestDatePicker = true
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
+
+            FormCard {
+                SwitchRow(
+                    label = stringResource(R.string.lbl_flexible_dates),
+                    checked = useFlexDates,
+                    onCheckedChange = { useFlexDates = it }
+                )
+
+                if (useFlexDates) {
+                    AkilimoDropdown(
+                        label = stringResource(R.string.lbl_planting_flex),
+                        options = flexOptions,
+                        selectedOption = plantingFlex,
+                        onOptionSelected = { plantingFlex = it; harvestDate = null },
+                        displayText = { months -> flexLabel(months) },
+                        enabled = !alreadyPlanted,
+                    )
+                    AkilimoDropdown(
+                        label = stringResource(R.string.lbl_harvest_flex),
+                        options = flexOptions,
+                        selectedOption = harvestFlex,
+                        onOptionSelected = { harvestFlex = it; harvestDate = null },
+                        displayText = { months -> flexLabel(months) },
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(AkilimoSpacing.md))
