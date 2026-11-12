@@ -7,6 +7,10 @@ import androidx.navigation.toRoute
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumUseCase
+import com.akilimo.mobile.ui.screens.account.AccountScreen
+import com.akilimo.mobile.ui.screens.account.ForgotPasswordScreen
+import com.akilimo.mobile.ui.screens.account.SavedAdviceDetailScreen
+import com.akilimo.mobile.ui.screens.account.SavedAdviceScreen
 import com.akilimo.mobile.ui.screens.onboarding.LegalWizardScreen
 import com.akilimo.mobile.ui.screens.farm.FarmScreen
 import com.akilimo.mobile.ui.screens.hub.HubScreen
@@ -174,6 +178,21 @@ fun NavGraphBuilder.useCaseGraph(navController: NavHostController) {
     }
     composable<SweetPotatoMarketRoute> {
         SweetPotatoMarketScreen(navController = navController)
+    }
+}
+
+fun NavGraphBuilder.accountGraph(navController: NavHostController) {
+    composable<AccountRoute> {
+        AccountScreen(navController = navController)
+    }
+    composable<ForgotPasswordRoute> {
+        ForgotPasswordScreen(navController = navController)
+    }
+    composable<SavedAdviceRoute> {
+        SavedAdviceScreen(navController = navController)
+    }
+    composable<SavedAdviceDetailRoute> {
+        SavedAdviceDetailScreen(navController = navController)
     }
 }
 

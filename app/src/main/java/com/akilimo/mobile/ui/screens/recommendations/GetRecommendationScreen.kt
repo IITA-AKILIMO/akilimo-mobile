@@ -65,6 +65,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumUseCase
+import com.akilimo.mobile.navigation.AccountRoute
+import com.akilimo.mobile.ui.screens.account.ResultAccountNote
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.StateMessage
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
@@ -100,6 +102,8 @@ private fun textScaleLabelRes(scale: Float): Int = when {
 private fun RecommendationBody(
     title: String,
     paragraphs: List<String>,
+    /** Below the advice: that it was saved in the farmer's account, or an offer to sign in (optional accounts). */
+    accountNote: @Composable () -> Unit = {},
 ) {
     // Title always sits above the text, in every orientation; the width cap keeps lines readable
     Box(modifier = Modifier.fillMaxSize()) {
@@ -125,6 +129,8 @@ private fun RecommendationBody(
             )
             Spacer(Modifier.height(AkilimoSpacing.md))
             RecommendationCard(paragraphs = paragraphs)
+            Spacer(Modifier.height(AkilimoSpacing.md))
+            accountNote()
         }
     }
 }
@@ -210,6 +216,7 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
     val viewModel = hiltViewModel<GetRecommendationViewModel>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val textScale by viewModel.textScale.collectAsStateWithLifecycle()
+    val signedIn by viewModel.signedIn.collectAsStateWithLifecycle()
     val feedbackSuccessMessage = stringResource(R.string.msg_feedback_submit_success)
     val feedbackFailureMessage = stringResource(R.string.msg_feedback_submit_failure)
     var showFeedback by rememberSaveable { mutableStateOf(false) }
@@ -321,6 +328,13 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                     RecommendationBody(
                         title = title,
                         paragraphs = remember(s.description) { splitRecommendationParagraphs(s.description) },
+                        accountNote = {
+                            ResultAccountNote(
+                                saved = s.savedToAccount,
+                                signedIn = signedIn,
+                                onSignIn = { navController.navigateIfResumed(AccountRoute) },
+                            )
+                        },
                     )
                 }
 

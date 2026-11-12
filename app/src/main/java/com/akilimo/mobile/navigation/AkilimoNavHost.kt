@@ -26,6 +26,7 @@ fun AkilimoNavHost(
         onboardingGraph(navController = navController)
         recommendationsGraph(navController = navController)
         useCaseGraph(navController = navController)
+        accountGraph(navController = navController)
         settingsGraph(navController = navController)
     }
 }

@@ -52,7 +52,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
+import androidx.compose.material.icons.outlined.Bookmarks
+import com.akilimo.mobile.navigation.AccountRoute
 import com.akilimo.mobile.navigation.FarmRoute
+import com.akilimo.mobile.navigation.SavedAdviceRoute
+import com.akilimo.mobile.ui.viewmodels.AccountEntryViewModel
 import com.akilimo.mobile.navigation.ProfileRoute
 import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.navigation.SettingsRoute
@@ -75,8 +79,10 @@ private val CARD_OVERLAP = 40.dp
 fun HubScreen(
     navController: NavHostController,
     viewModel: HubViewModel = hiltViewModel(),
+    accountEntry: AccountEntryViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val signedInAs by accountEntry.signedInAs.collectAsStateWithLifecycle()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var showExitDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -124,6 +130,19 @@ fun HubScreen(
                 verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
             ) {
                 RecommendationsCard(onClick = { navController.navigateIfResumed(RecommendationsRoute) })
+                // Optional: saved advice for a signed-in farmer, an invitation to sign in for everyone else
+                HubLinkCard(
+                    icon = Icons.Outlined.Bookmarks,
+                    title = stringResource(
+                        if (signedInAs != null) R.string.account_hub_title_in else R.string.account_hub_title_out
+                    ),
+                    subtitle = stringResource(
+                        if (signedInAs != null) R.string.account_hub_sub_in else R.string.account_hub_sub_out
+                    ),
+                    onClick = {
+                        navController.navigateIfResumed(if (signedInAs != null) SavedAdviceRoute else AccountRoute)
+                    },
+                )
                 HubLinkCard(
                     icon = Icons.Outlined.AccountCircle,
                     title = stringResource(R.string.lbl_profile),

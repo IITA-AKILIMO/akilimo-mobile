@@ -114,6 +114,14 @@ android {
             providers.gradleProperty("akilimo.api.key").orElse("").get()
         )
 
+        // "Continue with Google" needs the app's Google Cloud OAuth client (package name + signing certificate SHA-1),
+        // which the owner creates; turn the button on with GOOGLE_SIGN_IN=true (env) or -Pakilimo.google.signin=true.
+        val googleSignIn = (
+            env.fetchOrNull("GOOGLE_SIGN_IN")
+                ?: providers.gradleProperty("akilimo.google.signin").orElse("false").get()
+            ).trim().equals("true", ignoreCase = true)
+
+        buildConfigField("boolean", "GOOGLE_SIGN_IN_ENABLED", googleSignIn.toString())
         buildConfigField("String", "AKILIMO_BASE_URL", q(akilimoBaseUrl))
         buildConfigField("String", "FUELROD_BASE_URL", q(fuelrodBaseUrl))
         buildConfigField("String", "MAPBOX_RUNTIME_TOKEN", q(mapboxRuntimeToken))
@@ -270,6 +278,7 @@ dependencies {
 
     //Region: Google services
     implementation(libs.play.services.location)
+    implementation(libs.play.services.auth)
     //Region: Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.installations)

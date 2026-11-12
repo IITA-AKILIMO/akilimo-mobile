@@ -54,7 +54,10 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.ui.components.compose.SegmentedTabRow
 import com.akilimo.mobile.data.ReadingTextScale
+import androidx.compose.material.icons.outlined.AccountCircle
+import com.akilimo.mobile.navigation.AccountRoute
 import com.akilimo.mobile.navigation.WebViewRoute
+import com.akilimo.mobile.ui.viewmodels.AccountEntryViewModel
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.IconTile
@@ -71,8 +74,10 @@ import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 fun SettingsScreen(
     navController: NavHostController,
     viewModel: SettingsViewModel = hiltViewModel(),
+    accountEntry: AccountEntryViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val signedInAs by accountEntry.signedInAs.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -151,6 +156,26 @@ fun SettingsScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         ScrollableFormColumn(padding = paddingValues) {
+
+            // ── Account (optional) ────────────────────────────────────────
+            SettingsSection(stringResource(R.string.account_settings_section)) {
+                ListItem(
+                    headlineContent = {
+                        Text(signedInAs ?: stringResource(R.string.account_settings_out_title))
+                    },
+                    supportingContent = {
+                        if (signedInAs == null) Text(stringResource(R.string.account_settings_out_sub))
+                    },
+                    leadingContent = { IconTile(Icons.Outlined.AccountCircle) },
+                    trailingContent = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable(role = Role.Button) { navController.navigate(AccountRoute) },
+                )
+            }
 
             // ── Appearance ────────────────────────────────────────────────
             SettingsSection(stringResource(R.string.lbl_appearance)) {

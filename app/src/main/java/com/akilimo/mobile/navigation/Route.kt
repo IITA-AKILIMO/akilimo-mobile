@@ -89,6 +89,22 @@ data class GetRecommendationRoute(val useCaseCode: String)
 @Serializable
 object SettingsRoute
 
+// ── Optional farmer account ──────────────────────────────────────────────────
+
+/** Sign in or create an account; once signed in, the account details. The app works without one. */
+@Serializable
+object AccountRoute
+
+@Serializable
+object ForgotPasswordRoute
+
+/** The advice the signed-in farmer saved. */
+@Serializable
+object SavedAdviceRoute
+
+@Serializable
+data class SavedAdviceDetailRoute(val requestId: String)
+
 @Serializable
 data class LocationPickerRoute(
     val lat: Double = 0.0,

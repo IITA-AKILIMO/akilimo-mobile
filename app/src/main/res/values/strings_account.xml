@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Optional farmer accounts. English only until the translation pass (sw, rw, ha), like the other new strings. -->
+<resources>
+    <!-- Hub and settings entry points -->
+    <string name="account_title">Account</string>
+    <string name="account_hub_title_out">Sign in to save your advice</string>
+    <string name="account_hub_sub_out">Keep your advice and open it again later</string>
+    <string name="account_hub_title_in">Saved advice</string>
+    <string name="account_hub_sub_in">Open the advice you saved</string>
+    <string name="account_settings_section">Account</string>
+    <string name="account_settings_out_title">Sign in or create an account</string>
+    <string name="account_settings_out_sub">Optional: keep your advice in your account</string>
+
+    <!-- Sign in and sign up -->
+    <string name="account_tab_sign_in">Sign in</string>
+    <string name="account_tab_create">Create account</string>
+    <string name="account_email">Email address</string>
+    <string name="account_password">Password</string>
+    <string name="account_name">Your name (optional)</string>
+    <string name="account_password_hint">At least 8 characters</string>
+    <string name="account_btn_sign_in">Sign in</string>
+    <string name="account_btn_create">Create account</string>
+    <string name="account_btn_google">Continue with Google</string>
+    <string name="account_forgot">Forgot your password?</string>
+    <string name="account_or">or</string>
+    <string name="account_intro">An account is optional. Without one the app works as before.</string>
+    <string name="account_show_password">Show password</string>
+    <string name="account_hide_password">Hide password</string>
+
+    <!-- DRAFT consent wording: the owner supplies the final text. Keep FARMER_CONSENT_VERSION (the API) in step with it. -->
+    <string name="account_consent_title">Keep your advice in your account</string>
+    <string name="account_consent_body">When you are signed in, AKILIMO keeps the advice you ask for, together with the farm location and the answers you gave, so that you can open it again later. You can delete one advice, or your whole account, at any time. When you delete your account, the advice you asked for may be kept without your name, for statistics.</string>
+    <string name="account_consent_checkbox">I agree</string>
+    <string name="account_consent_agree">I agree and continue</string>
+    <string name="account_consent_decline">Not now</string>
+
+    <!-- Signed in -->
+    <string name="account_signed_in_as">Signed in as %1$s</string>
+    <string name="account_email_verified">Email confirmed</string>
+    <string name="account_email_unverified">Email not confirmed</string>
+    <string name="account_confirm_email">Confirm your email</string>
+    <string name="account_verify_body">Enter the code we sent to %1$s.</string>
+    <string name="account_verify_code">Code</string>
+    <string name="account_verify_resend">Send the code again</string>
+    <string name="account_verify_sent">We sent you a code.</string>
+    <string name="account_verify_submit">Confirm</string>
+    <string name="account_verified_done">Your email is confirmed.</string>
+    <string name="account_open_saved">Saved advice</string>
+    <string name="account_sign_out">Sign out</string>
+    <string name="account_delete">Delete my account</string>
+    <string name="account_delete_title">Delete your account?</string>
+    <string name="account_delete_body">Your account and your saved advice will be deleted. This cannot be undone. Advice you asked for before may be kept without your name, for statistics.</string>
+    <string name="account_delete_confirm">Delete</string>
+
+    <!-- Forgot password -->
+    <string name="forgot_title">Reset your password</string>
+    <string name="forgot_body">Enter your email address and we will send you a code.</string>
+    <string name="forgot_send">Send code</string>
+    <string name="forgot_sent">If the address has an account, we sent a code to it. Enter it below with a new password.</string>
+    <string name="forgot_code">Code</string>
+    <string name="forgot_new_password">New password</string>
+    <string name="forgot_reset">Change password</string>
+    <string name="forgot_done">Password changed. Sign in with your new password.</string>
+
+    <!-- Saved advice -->
+    <string name="saved_advice_title">Saved advice</string>
+    <string name="saved_advice_empty_title">No saved advice yet</string>
+    <string name="saved_advice_empty_msg">Advice you ask for while signed in is kept here.</string>
+    <string name="saved_advice_refresh_failed">Could not update the list. Showing what is on your phone.</string>
+    <string name="saved_advice_item_title">%1$s advice</string>
+    <string name="saved_advice_share">Share</string>
+    <string name="saved_advice_share_subject">My AKILIMO advice</string>
+    <string name="saved_advice_delete">Delete</string>
+    <string name="saved_advice_delete_title">Delete this advice?</string>
+    <string name="saved_advice_delete_body">It is removed from your account and from this phone.</string>
+    <string name="saved_advice_text_unavailable">The text is not on your phone yet. Connect to the internet to load it.</string>
+    <string name="saved_advice_not_found">This advice is no longer available.</string>
+
+    <!-- On the recommendation result -->
+    <string name="result_saved_to_account">Saved in your account</string>
+    <string name="result_sign_in_prompt_title">Keep this advice</string>
+    <string name="result_sign_in_prompt_msg">Sign in or create an account to save your advice and open it again later.</string>
+    <string name="result_sign_in_action">Sign in</string>
+
+    <!-- Messages -->
+    <string name="account_err_network">No connection. Check your internet and try again.</string>
+    <string name="account_err_wrong_credentials">Wrong email or password.</string>
+    <string name="account_err_email">Enter a valid email address.</string>
+    <string name="account_err_email_used">This email address cannot be used. Try signing in.</string>
+    <string name="account_err_password">Use at least 8 characters.</string>
+    <string name="account_err_password_required">Enter your password.</string>
+    <string name="account_err_consent">Please agree to continue.</string>
+    <string name="account_err_session">You were signed out. Sign in again.</string>
+    <string name="account_err_too_many">Too many attempts. Wait a minute and try again.</string>
+    <string name="account_err_unavailable">This is not available yet. Try again later.</string>
+    <string name="account_err_bad_code">The code is wrong or has expired.</string>
+    <string name="account_err_server">Something went wrong. Try again later.</string>
+    <string name="account_err_email_belongs">An account with this email exists. Sign in with your password.</string>
+    <string name="account_err_no_email">Your Google account did not share an email address.</string>
+    <string name="account_err_google">Google sign-in did not finish. Try again.</string>
+</resources>

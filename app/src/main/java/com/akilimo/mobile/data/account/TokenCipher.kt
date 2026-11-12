@@ -1,6 +1,7 @@
 package com.akilimo.mobile.data.account
 
 import android.os.Build
+import androidx.annotation.RequiresApi
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
@@ -23,6 +24,7 @@ interface TokenCipher {
 }
 
 /** AES-GCM with a key that never leaves the Android Keystore (API 23+). */
+@RequiresApi(Build.VERSION_CODES.M)
 class KeystoreTokenCipher : TokenCipher {
 
     override val persistent: Boolean = true
@@ -64,10 +66,6 @@ class KeystoreTokenCipher : TokenCipher {
         private const val IV_BYTES = 12
         private const val TAG_BITS = 128
         private const val KEY_BITS = 256
-
-        /** The Keystore cipher on API 23+; older phones get [UnavailableTokenCipher]. */
-        fun create(): TokenCipher =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) KeystoreTokenCipher() else UnavailableTokenCipher
     }
 }
 
@@ -77,3 +75,7 @@ object UnavailableTokenCipher : TokenCipher {
     override fun encrypt(plain: String): String = error("Not available on this phone")
     override fun decrypt(encrypted: String): String? = null
 }
+
+/** The Keystore cipher on API 23+; older phones get [UnavailableTokenCipher]. */
+fun createTokenCipher(): TokenCipher =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) KeystoreTokenCipher() else UnavailableTokenCipher
