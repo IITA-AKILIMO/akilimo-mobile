@@ -373,4 +373,26 @@
     <string name="lbl_english" translatable="false">English</string>
     <string name="lbl_swahili" translatable="false">Swahili</string>
 
+    <!-- ═══════════════════════════════════════════════
+         SYNC STATUS
+         ═══════════════════════════════════════════════ -->
+    <!-- English until the sw/rw/ha translation pass (the checklist tracks it). -->
+    <string name="msg_sync_offline">Offline — showing saved data</string>
+    <string name="msg_sync_running">Updating data…</string>
+    <string name="msg_sync_failed">Couldn\'t update — showing saved data</string>
+    <string name="msg_sync_never">Not updated yet</string>
+    <string name="msg_sync_updated_just_now">Updated just now</string>
+    <plurals name="msg_sync_updated_minutes_ago">
+        <item quantity="one">Updated %d minute ago</item>
+        <item quantity="other">Updated %d minutes ago</item>
+    </plurals>
+    <plurals name="msg_sync_updated_hours_ago">
+        <item quantity="one">Updated %d hour ago</item>
+        <item quantity="other">Updated %d hours ago</item>
+    </plurals>
+    <plurals name="msg_sync_updated_days_ago">
+        <item quantity="one">Updated %d day ago</item>
+        <item quantity="other">Updated %d days ago</item>
+    </plurals>
+
 </resources>

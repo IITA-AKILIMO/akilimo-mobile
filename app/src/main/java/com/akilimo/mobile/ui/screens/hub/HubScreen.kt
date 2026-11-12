@@ -47,6 +47,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import com.akilimo.mobile.navigation.ProfileRoute
@@ -54,8 +56,11 @@ import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.navigation.SettingsRoute
 import com.akilimo.mobile.ui.components.compose.ExitConfirmDialog
 import com.akilimo.mobile.ui.components.compose.IconTile
+import com.akilimo.mobile.ui.components.compose.SyncStatusStrip
 import com.akilimo.mobile.ui.screens.recommendations.navigateIfResumed
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
+import com.akilimo.mobile.ui.viewmodels.HubViewModel
+import com.akilimo.mobile.workers.SyncPhase
 
 /** How far the Recommendations card overlaps the bottom edge of the green header. */
 private val CARD_OVERLAP = 40.dp
@@ -65,8 +70,12 @@ private val CARD_OVERLAP = 40.dp
  * farmer's Profile and the app Settings.
  */
 @Composable
-fun HubScreen(navController: NavHostController) {
+fun HubScreen(
+    navController: NavHostController,
+    viewModel: HubViewModel = hiltViewModel(),
+) {
     val context = LocalContext.current
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     var showExitDialog by rememberSaveable { mutableStateOf(false) }
 
     // This is the home screen (onboarding is cleared from the back stack), so Back would close
@@ -83,7 +92,16 @@ fun HubScreen(navController: NavHostController) {
         )
     }
 
-    Scaffold { padding ->
+    Scaffold(
+        bottomBar = {
+            state.displayStatus?.let { status ->
+                SyncStatusStrip(
+                    status = status,
+                    onRetry = if (status.phase == SyncPhase.FAILED) viewModel::retrySyncs else null,
+                )
+            }
+        },
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

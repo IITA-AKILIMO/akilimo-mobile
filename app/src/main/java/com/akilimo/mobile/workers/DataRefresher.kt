@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.work.WorkManager
 import androidx.work.await
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -56,6 +58,23 @@ class DataRefresher @Inject constructor(
                 context = context,
                 workName = WorkConstants.STARCH_FACTORY_WORK_NAME
             )
+        }
+    }
+
+    suspend fun maizeUnits() = await(WorkConstants.MAIZE_UNITS_WORK_NAME) {
+        WorkerScheduler.scheduleOneTimeWorker<MaizeUnitWorker>(
+            context = context,
+            workName = WorkConstants.MAIZE_UNITS_WORK_NAME
+        )
+    }
+
+    /** Everything app start-up syncs; used by the status strip's retry. */
+    suspend fun all() {
+        coroutineScope {
+            launch { fertilizers() }
+            launch { investmentAmounts() }
+            launch { cassavaMarket() }
+            launch { maizeUnits() }
         }
     }
 

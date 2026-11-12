@@ -34,7 +34,8 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
 
     @Inject lateinit var appSettings: AppSettingsDataStore
 
-    val networkMonitor: NetworkMonitor by lazy { NetworkMonitor(this) }
+    /** Injected so the hub's sync status sees the same connectivity callbacks. */
+    @Inject lateinit var networkMonitor: NetworkMonitor
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
