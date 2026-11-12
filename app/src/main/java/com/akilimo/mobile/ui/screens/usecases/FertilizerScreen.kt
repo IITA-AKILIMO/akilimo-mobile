@@ -67,6 +67,9 @@ import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
 import com.akilimo.mobile.utils.AmountInput
 import kotlinx.coroutines.launch
 
+/** The list needs more than this many fertilizers before the search box and category bar appear. */
+private const val FILTER_MIN_ITEMS = 10
+
 /**
  * Fertilizer picker. Tapping any card opens the price sheet (pre-filled when the fertilizer
  * is already chosen), where the price can be changed or the fertilizer removed. Choices are
@@ -91,6 +94,10 @@ fun FertilizerScreen(
     SaveErrorEffect(state.saveFailed, snackbarHostState, viewModel::onSaveErrorShown)
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
+    // Search and the category bar only earn their space on a long list; a short one stays plain
+    val showFilters = state.fertilizers.size > FILTER_MIN_ITEMS
+    val shownFertilizers = if (showFilters) state.visibleFertilizers else state.fertilizers
 
     @Composable
     fun FertilizerCard(fertilizer: Fertilizer, grid: Boolean, modifier: Modifier = Modifier) {
@@ -157,7 +164,7 @@ fun FertilizerScreen(
                 modifier = Modifier.padding(horizontal = AkilimoSpacing.md)
             )
 
-            if (state.fertilizers.isNotEmpty()) {
+            if (showFilters) {
                 FertilizerFilters(
                     query = state.query,
                     onQueryChange = viewModel::onQueryChange,
@@ -178,7 +185,7 @@ fun FertilizerScreen(
                         )
                     }
 
-                    state.visibleFertilizers.isEmpty() -> PullableState {
+                    shownFertilizers.isEmpty() -> PullableState {
                         ListEmpty(
                             message = stringResource(R.string.msg_no_matching_fertilizers),
                             modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
@@ -193,7 +200,7 @@ fun FertilizerScreen(
                             .fillMaxSize()
                             .padding(horizontal = AkilimoSpacing.xs)
                     ) {
-                        items(state.visibleFertilizers, key = { it.id ?: 0 }) { fertilizer ->
+                        items(shownFertilizers, key = { it.id ?: 0 }) { fertilizer ->
                             FertilizerCard(fertilizer, grid = true)
                         }
                     }
@@ -202,7 +209,7 @@ fun FertilizerScreen(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xxs)
                     ) {
-                        items(state.visibleFertilizers, key = { it.id ?: 0 }) { fertilizer ->
+                        items(shownFertilizers, key = { it.id ?: 0 }) { fertilizer ->
                             FertilizerCard(
                                 fertilizer,
                                 grid = false,
