@@ -41,6 +41,7 @@ import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.SwitchRow
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.DatesViewModel
+import com.akilimo.mobile.utils.PlantingSchedule
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
@@ -50,8 +51,6 @@ import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 private const val PLANTING_MONTHS_BEFORE = 4L
 private const val PLANTING_MONTHS_AHEAD = 12L
-private const val HARVEST_MONTHS_MIN = 8L
-private const val HARVEST_MONTHS_MAX = 16L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,10 +94,9 @@ fun DatesScreen(
     val plantingFlexMonths = if (useFlexDates) plantingFlex else 0L
     val plantingMin = today.minusMonths(PLANTING_MONTHS_BEFORE + plantingFlexMonths)
     val plantingMax = today.plusMonths(PLANTING_MONTHS_AHEAD + plantingFlexMonths)
-    // Harvest date: [planting + (8−flex), planting + (16+flex)], known once planting is picked
-    val harvestFlexMonths = if (useFlexDates) harvestFlex else 0L
-    val harvestMin = plantingDate?.plusMonths(HARVEST_MONTHS_MIN - harvestFlexMonths)
-    val harvestMax = plantingDate?.plusMonths(HARVEST_MONTHS_MAX + harvestFlexMonths)
+    // Harvest date: 235 to 452 days after planting, what the engine accepts (flexibility does not widen it)
+    val harvestMin = plantingDate?.let(PlantingSchedule::earliestHarvest)
+    val harvestMax = plantingDate?.let(PlantingSchedule::latestHarvest)
 
     // Initialize local state from loaded state
     // Prefill once from the DB; after rotation keep the user's unsaved edits
@@ -108,7 +106,8 @@ fun DatesScreen(
         if (state.user != null && !prefilled) {
             prefilled = true
             plantingDate = state.plantingDate
-            harvestDate = state.harvestDate
+            // A date saved under the older, wider range may be refused by the engine: pick it again
+            harvestDate = state.harvestDate?.takeIf { h -> state.plantingDate?.let { PlantingSchedule.isValid(it, h) } == true }
             plantingFlex = state.plantingFlex
             harvestFlex = state.harvestFlex
             alternativeDate = state.alternativeDate
