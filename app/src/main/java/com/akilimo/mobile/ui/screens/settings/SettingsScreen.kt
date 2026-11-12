@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
+import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.AspectRatio
 import androidx.compose.material.icons.outlined.CleaningServices
 import androidx.compose.material.icons.outlined.Gavel
@@ -83,6 +84,7 @@ fun SettingsScreen(
     val scope = rememberCoroutineScope()
     var showClearRecsDialog by remember { mutableStateOf(false) }
     var showResetBadgeDialog by remember { mutableStateOf(false) }
+    var showSignOutDialog by remember { mutableStateOf(false) }
 
     val clearedMessage = stringResource(R.string.msg_recommendations_cleared)
     val badgeResetMessage = stringResource(R.string.msg_badge_reset)
@@ -123,6 +125,23 @@ fun SettingsScreen(
                 TextButton(onClick = { showClearRecsDialog = false }) {
                     Text(stringResource(R.string.lbl_cancel))
                 }
+            },
+        )
+    }
+
+    if (showSignOutDialog) {
+        AlertDialog(
+            onDismissRequest = { showSignOutDialog = false },
+            title = { Text(stringResource(R.string.account_signout_title)) },
+            text = { Text(stringResource(R.string.account_signout_body)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showSignOutDialog = false
+                    accountEntry.signOut()
+                }) { Text(stringResource(R.string.account_sign_out)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showSignOutDialog = false }) { Text(stringResource(R.string.lbl_cancel)) }
             },
         )
     }
@@ -173,8 +192,16 @@ fun SettingsScreen(
                             contentDescription = null,
                         )
                     },
-                    modifier = Modifier.clickable(role = Role.Button) { navController.navigate(AccountRoute) },
+                    modifier = Modifier.clickable(role = Role.Button) { navController.navigate(AccountRoute()) },
                 )
+                // Signed in: sign out lives here, next to the account
+                if (signedInAs != null) {
+                    ListItem(
+                        headlineContent = { Text(stringResource(R.string.account_sign_out)) },
+                        leadingContent = { IconTile(Icons.AutoMirrored.Outlined.Logout) },
+                        modifier = Modifier.clickable(role = Role.Button) { showSignOutDialog = true },
+                    )
+                }
             }
 
             // ── Appearance ────────────────────────────────────────────────

@@ -24,8 +24,11 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -100,6 +103,22 @@ fun HubScreen(
         )
     }
 
+    // Offered once after the app starts, only while nobody is signed in; the farmer can dismiss it
+    val showPrompt by accountEntry.showPrompt.collectAsStateWithLifecycle()
+    if (showPrompt) {
+        AccountPromptDialog(
+            onSignIn = {
+                accountEntry.dismissPrompt()
+                navController.navigateIfResumed(AccountRoute())
+            },
+            onCreate = {
+                accountEntry.dismissPrompt()
+                navController.navigateIfResumed(AccountRoute(signUp = true))
+            },
+            onDismiss = accountEntry::dismissPrompt,
+        )
+    }
+
     Scaffold(
         bottomBar = {
             state.displayStatus?.let { status ->
@@ -140,7 +159,7 @@ fun HubScreen(
                         if (signedInAs != null) R.string.account_hub_sub_in else R.string.account_hub_sub_out
                     ),
                     onClick = {
-                        navController.navigateIfResumed(if (signedInAs != null) SavedAdviceRoute else AccountRoute)
+                        navController.navigateIfResumed(if (signedInAs != null) SavedAdviceRoute else AccountRoute())
                     },
                 )
                 HubLinkCard(
@@ -164,6 +183,23 @@ fun HubScreen(
             }
         }
     }
+}
+
+/** The start-up offer: sign in, create an account, or carry on without one. */
+@Composable
+private fun AccountPromptDialog(onSignIn: () -> Unit, onCreate: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.account_prompt_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs)) {
+                Text(stringResource(R.string.account_prompt_msg))
+                TextButton(onClick = onCreate) { Text(stringResource(R.string.account_btn_create)) }
+            }
+        },
+        confirmButton = { Button(onClick = onSignIn) { Text(stringResource(R.string.account_btn_sign_in)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.account_prompt_dismiss)) } },
+    )
 }
 
 @Composable

@@ -71,11 +71,17 @@ import androidx.compose.runtime.LaunchedEffect
 @Composable
 fun AccountScreen(
     navController: NavHostController,
+    startOnSignUp: Boolean = false,
     viewModel: AccountViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val session by viewModel.session.collectAsStateWithLifecycle()
     val consentStep = viewModel.consentStep(session, state)
+
+    // The start-up prompt's Create account button opens this screen on the sign-up tab
+    LaunchedEffect(startOnSignUp) {
+        if (startOnSignUp) viewModel.setMode(AccountViewModel.Mode.SIGN_UP)
+    }
 
     // A complete sign-in (consent given) goes back to where the farmer came from
     LaunchedEffect(state.done) {

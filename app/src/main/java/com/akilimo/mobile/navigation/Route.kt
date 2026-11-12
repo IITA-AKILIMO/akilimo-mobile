@@ -93,7 +93,10 @@ object SettingsRoute
 
 /** Sign in or create an account; once signed in, the account details. The app works without one. */
 @Serializable
-object AccountRoute
+data class AccountRoute(
+    /** Open on the Create account tab (the start-up prompt's Create account button). */
+    val signUp: Boolean = false,
+)
 
 @Serializable
 object ForgotPasswordRoute

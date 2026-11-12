@@ -98,4 +98,12 @@
     <string name="account_err_email_belongs">An account with this email exists. Sign in with your password.</string>
     <string name="account_err_no_email">Your Google account did not share an email address.</string>
     <string name="account_err_google">Google sign-in did not finish. Try again.</string>
+    <!-- Offered once after the app starts, while nobody is signed in -->
+    <string name="account_prompt_title">Sign in to keep your advice</string>
+    <string name="account_prompt_msg">An account is optional. With one, the advice you ask for is saved and you can open it again later.</string>
+    <string name="account_prompt_dismiss">Not now</string>
+
+    <!-- Sign out (Settings) -->
+    <string name="account_signout_title">Sign out?</string>
+    <string name="account_signout_body">Your saved advice stays in your account. It is removed from this phone until you sign in again.</string>
 </resources>

@@ -332,7 +332,7 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                             ResultAccountNote(
                                 saved = s.savedToAccount,
                                 signedIn = signedIn,
-                                onSignIn = { navController.navigateIfResumed(AccountRoute) },
+                                onSignIn = { navController.navigateIfResumed(AccountRoute()) },
                             )
                         },
                     )

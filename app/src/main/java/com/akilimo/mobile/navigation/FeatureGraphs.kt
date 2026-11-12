@@ -182,8 +182,8 @@ fun NavGraphBuilder.useCaseGraph(navController: NavHostController) {
 }
 
 fun NavGraphBuilder.accountGraph(navController: NavHostController) {
-    composable<AccountRoute> {
-        AccountScreen(navController = navController)
+    composable<AccountRoute> { backStackEntry ->
+        AccountScreen(navController = navController, startOnSignUp = backStackEntry.toRoute<AccountRoute>().signUp)
     }
     composable<ForgotPasswordRoute> {
         ForgotPasswordScreen(navController = navController)
