@@ -23,4 +23,6 @@ class FieldOperationCostsRepo(private val dao: FieldOperationCostDao) {
     suspend fun getCostForUser(userId: Int): FieldOperationCost? {
         return dao.getCostForUser(userId)
     }
+
+    suspend fun clearForUser(userId: Int) = dao.deleteByUser(userId)
 }

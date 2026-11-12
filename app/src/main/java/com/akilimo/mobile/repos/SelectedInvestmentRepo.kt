@@ -58,4 +58,6 @@ class SelectedInvestmentRepo(private val dao: SelectedInvestmentDao) {
         return dao.getSelectedByUser(userId)
     }
 
+
+    suspend fun clearForUser(userId: Int) = dao.deleteAllByUser(userId)
 }

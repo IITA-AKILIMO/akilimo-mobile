@@ -13,7 +13,7 @@ import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CoverageRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
-import com.akilimo.mobile.repos.SelectedFertilizerRepo
+import com.akilimo.mobile.repos.UserSelectionResetter
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.rules.TestDispatcherRule
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
@@ -47,7 +47,7 @@ class OnboardingViewModelTest {
     private val userRepo: AkilimoUserRepo = mockk(relaxed = true)
     private val prefsRepo: UserPreferencesRepo = mockk(relaxed = true)
     private val appSettings: AppSettingsDataStore = mockk(relaxed = true)
-    private val selectedFertilizerRepo: SelectedFertilizerRepo = mockk(relaxed = true)
+    private val selectionResetter: UserSelectionResetter = mockk(relaxed = true)
     private val currentPracticeRepo: CurrentPracticeRepo = mockk(relaxed = true)
     private val adviceCompletionRepo: AdviceCompletionRepo = mockk(relaxed = true)
     private val coverageRepo: CoverageRepo = mockk(relaxed = true)
@@ -62,7 +62,7 @@ class OnboardingViewModelTest {
         every { appSettings.rememberAreaUnit } returns false
         every { appSettings.termsLink } returns "https://example.com"
         every { appSettings.languageTag } returns "en"
-        coEvery { selectedFertilizerRepo.getSelectedByUser(any()) } returns emptyList()
+        coEvery { selectionResetter.hasAny(any()) } returns false
         // DO NOT create the ViewModel here — init coroutine runs on build
     }
 
@@ -70,7 +70,7 @@ class OnboardingViewModelTest {
 
     private fun buildViewModel() = OnboardingViewModel(
         userRepo, prefsRepo, appSettings,
-        selectedFertilizerRepo, currentPracticeRepo, adviceCompletionRepo, coverageRepo,
+        selectionResetter, currentPracticeRepo, adviceCompletionRepo, coverageRepo,
         phoneNumbers, context,
     )
 
@@ -346,12 +346,12 @@ class OnboardingViewModelTest {
         advanceUntilIdle()
 
         assertEquals(EnumCountry.NG, viewModel.state.value.country)
-        coVerify(exactly = 0) { selectedFertilizerRepo.deleteByUserId(any()) }
+        coVerify(exactly = 0) { selectionResetter.clear(any()) }
         coVerify(exactly = 0) { userRepo.saveOrUpdateUser(any(), any()) }
     }
 
     @Test
-    fun `a changed country deletes the selected fertilizers on submit`() = runTest {
+    fun `a changed country clears all choices and completed steps on submit`() = runTest {
         coEvery { userRepo.getUser("user1") } returns AkilimoUser(
             id = 42,
             userName = "user1",
@@ -365,11 +365,11 @@ class OnboardingViewModelTest {
         viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
         advanceUntilIdle()
 
-        coVerify { selectedFertilizerRepo.deleteByUserId(42) }
+        coVerify { selectionResetter.clear(42) }
     }
 
     @Test
-    fun `an unchanged country keeps the selected fertilizers on submit`() = runTest {
+    fun `an unchanged country keeps the choices and completed steps on submit`() = runTest {
         coEvery { userRepo.getUser("user1") } returns AkilimoUser(
             id = 42,
             userName = "user1",
@@ -383,18 +383,18 @@ class OnboardingViewModelTest {
         viewModel.onEvent(OnboardingViewModel.Event.SubmitClicked)
         advanceUntilIdle()
 
-        coVerify(exactly = 0) { selectedFertilizerRepo.deleteByUserId(any()) }
+        coVerify(exactly = 0) { selectionResetter.clear(any()) }
     }
 
     @Test
-    fun `changing country with selected fertilizers asks for confirmation first`() = runTest {
+    fun `changing country with saved choices asks for confirmation first`() = runTest {
         coEvery { userRepo.getUser("user1") } returns AkilimoUser(
             id = 42,
             userName = "user1",
             enumCountry = EnumCountry.TZ,
         )
         coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
-        coEvery { selectedFertilizerRepo.getSelectedByUser(42) } returns listOf(mockk(relaxed = true))
+        coEvery { selectionResetter.hasAny(42) } returns true
 
         val viewModel = buildViewModel()
         advanceUntilIdle()

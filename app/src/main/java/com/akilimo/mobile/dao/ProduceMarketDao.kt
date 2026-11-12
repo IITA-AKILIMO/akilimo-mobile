@@ -14,6 +14,9 @@ interface ProduceMarketDao {
     @Query("SELECT * FROM produce_markets WHERE user_id=:userId  and market_type=:marketType LIMIT 1")
     suspend fun findOne(userId: Int, marketType: EnumMarketType): ProduceMarket?
 
+    @Query("DELETE FROM produce_markets WHERE user_id = :userId")
+    suspend fun deleteByUser(userId: Int)
+
     @Insert
     suspend fun insert(produceMarket: ProduceMarket): Long
 

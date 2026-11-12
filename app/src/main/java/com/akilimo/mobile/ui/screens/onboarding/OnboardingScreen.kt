@@ -475,7 +475,7 @@ internal fun CountryChangeDialog(state: OnboardingViewModel.UiState, viewModel: 
     AlertDialog(
         onDismissRequest = { viewModel.onEvent(OnboardingViewModel.Event.CountryChangeCancelled) },
         title = { Text(stringResource(R.string.lbl_change_country_title)) },
-        text = { Text(stringResource(R.string.msg_change_country_clears_fertilizers)) },
+        text = { Text(stringResource(R.string.msg_change_country_clears_choices)) },
         confirmButton = {
             TextButton(onClick = { viewModel.onEvent(OnboardingViewModel.Event.CountryChangeConfirmed) }) {
                 Text(stringResource(R.string.lbl_change_country))

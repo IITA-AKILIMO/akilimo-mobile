@@ -38,7 +38,7 @@
     </plurals>
     <string name="msg_harvest_date_cleared">The harvest date was cleared because the planting date or window changed. Please pick it again.</string>
     <string name="lbl_change_country_title">Change country?</string>
-    <string name="msg_change_country_clears_fertilizers">Changing the country will remove the fertilizers you selected when you save. You will need to choose them again.</string>
+    <string name="msg_change_country_clears_choices">Changing the country will remove your choices and completed steps when you save. You will need to do them again.</string>
     <string name="lbl_change_country">Change country</string>
 
     <!-- Onboarding steps (first run) -->

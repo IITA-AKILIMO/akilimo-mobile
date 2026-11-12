@@ -23,7 +23,7 @@ import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CoverageRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
-import com.akilimo.mobile.repos.SelectedFertilizerRepo
+import com.akilimo.mobile.repos.UserSelectionResetter
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingStep
@@ -49,7 +49,7 @@ class OnboardingViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val prefsRepo: UserPreferencesRepo,
     private val appSettings: AppSettingsDataStore,
-    private val selectedFertilizerRepo: SelectedFertilizerRepo,
+    private val selectionResetter: UserSelectionResetter,
     private val currentPracticeRepo: CurrentPracticeRepo,
     private val adviceCompletionRepo: AdviceCompletionRepo,
     private val coverageRepo: CoverageRepo,
@@ -216,8 +216,8 @@ class OnboardingViewModel @Inject constructor(
             EnumCountry.entries.filter { it != EnumCountry.Unsupported }.map { it.name }).distinct()
     }
 
-    /** Was a fertilizer selected for the saved country? Changing country clears them on save. */
-    private var hasSelectedFertilizers = false
+    /** Has the farmer any choice or completed step for the saved country? Changing country clears them on save. */
+    private var hasSelections = false
 
     /** Country stored for the user when the screen opened */
     private var savedCountry: EnumCountry = EnumCountry.Unsupported
@@ -262,9 +262,7 @@ class OnboardingViewModel @Inject constructor(
                 ?: (phoneNumbers.defaultRegion() to storedPhone)
 
             savedCountry = user?.enumCountry ?: EnumCountry.Unsupported
-            hasSelectedFertilizers = user?.id
-                ?.let { selectedFertilizerRepo.getSelectedByUser(it).isNotEmpty() }
-                ?: false
+            hasSelections = user?.id?.let { selectionResetter.hasAny(it) } ?: false
 
             _state.update { s ->
                 s.copy(
@@ -408,12 +406,12 @@ class OnboardingViewModel @Inject constructor(
                 )
             }
 
-            // Nothing is saved (or deleted) until Submit; persistAll clears the fertilizers then
+            // Nothing is saved (or deleted) until Submit; persistAll clears the choices and progress then
             is Event.CountrySelected -> {
                 val current = _state.value.country
-                val clearsFertilizers = hasSelectedFertilizers &&
+                val clearsSelections = hasSelections &&
                     event.country != savedCountry && event.country != current
-                if (clearsFertilizers) {
+                if (clearsSelections) {
                     _state.update { it.copy(pendingCountry = event.country) }
                 } else {
                     applyCountry(event.country)
@@ -688,9 +686,9 @@ class OnboardingViewModel @Inject constructor(
 
         val uid = updatedUser.id ?: userRepo.getUser(userName)?.id
 
-        // Fertilizers are country-specific: a saved country change drops the old selection
+        // Choices, prices and progress depend on the country: a saved country change starts them over
         if (user.enumCountry != s.country) {
-            uid?.let { selectedFertilizerRepo.deleteByUserId(it) }
+            uid?.let { selectionResetter.clear(it) }
         }
 
         // Update current practice
