@@ -62,6 +62,7 @@ import com.akilimo.mobile.ui.viewmodels.AccountEntryViewModel
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.IconTile
+import com.akilimo.mobile.ui.components.compose.PartnerLockup
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.SettingsViewModel
@@ -315,6 +316,8 @@ fun SettingsScreen(
                 supportingContent = { Text(BuildConfig.VERSION_NAME) },
                 leadingContent = { IconTile(Icons.Outlined.Info) },
             )
+            // Who is behind AKILIMO: credits belong in About
+            PartnerLockup(modifier = Modifier.padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xs))
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_privacy_policy)) },
                 leadingContent = { IconTile(Icons.Outlined.PrivacyTip) },

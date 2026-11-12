@@ -53,6 +53,7 @@ import com.akilimo.mobile.navigation.SavedAdviceRoute
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.FormCard
+import com.akilimo.mobile.ui.components.compose.PartnerLockup
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.SegmentedTabRow
 import com.akilimo.mobile.ui.components.compose.StatusChip
@@ -97,7 +98,12 @@ fun AccountScreen(
             when {
                 consentStep != AccountViewModel.ConsentStep.NONE -> ConsentContent(state.busy, viewModel)
                 session != null -> SignedInContent(session!!, state.busy, navController, viewModel)
-                else -> SignedOutContent(state, navController, viewModel)
+                else -> {
+                    SignedOutContent(state, navController, viewModel)
+                    // Who is behind AKILIMO, where the farmer is asked for an email and consent
+                    Spacer(Modifier.height(AkilimoSpacing.xl))
+                    PartnerLockup()
+                }
             }
             Spacer(Modifier.height(AkilimoSpacing.xl))
         }

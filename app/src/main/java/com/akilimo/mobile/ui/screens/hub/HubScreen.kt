@@ -71,6 +71,7 @@ import com.akilimo.mobile.navigation.ProfileRoute
 import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.navigation.SettingsRoute
 import com.akilimo.mobile.ui.components.compose.ExitConfirmDialog
+import com.akilimo.mobile.ui.components.compose.PartnerLockup
 import com.akilimo.mobile.ui.components.compose.IconTile
 import com.akilimo.mobile.ui.components.compose.SyncStatusStrip
 import com.akilimo.mobile.ui.screens.recommendations.navigateIfResumed
@@ -188,33 +189,10 @@ fun HubScreen(
                     subtitle = stringResource(R.string.msg_hub_settings_desc),
                     onClick = { navController.navigateIfResumed(SettingsRoute) },
                 )
-                // Signed in: the IITA and CGIAR logo, so the look matches the colours of the signed-in theme
-                if (signedInAs != null) PartnerLogo()
+                // Who is behind AKILIMO (an IITA product, part of the CGIAR network): low on the screen, for everyone
+                PartnerLockup(modifier = Modifier.padding(top = AkilimoSpacing.sm))
             }
         }
-    }
-}
-
-/** The IITA and CGIAR logo on white (the image has a white background, so it sits on a white card in either theme). */
-@Composable
-private fun PartnerLogo() {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = AkilimoSpacing.xs),
-        shape = MaterialTheme.shapes.medium,
-        color = Color.White,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-    ) {
-        Image(
-            painter = painterResource(R.drawable.logo_iita_cgiar),
-            contentDescription = stringResource(R.string.account_logo_description),
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(72.dp)
-                .padding(AkilimoSpacing.xs),
-        )
     }
 }
 
