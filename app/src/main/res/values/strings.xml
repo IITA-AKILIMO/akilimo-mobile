@@ -98,7 +98,7 @@
     <string name="lbl_current_location">Use current location</string>
     <string name="lbl_manual_location">Select location manually</string>
     <string name="lbl_location_error">Unable to fetch your current location, please try again</string>
-    <string name="lbl_farm_location">Where is your cassava field located?</string>
+    <string name="lbl_farm_location">Where is your farm?</string>
     <string name="lbl_field">Field</string>
     <string name="lbl_farm_size">Field size</string>
     <string name="exact_field_area">Specify the exact area of your field.</string>

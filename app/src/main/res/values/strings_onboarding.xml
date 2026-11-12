@@ -2,6 +2,9 @@
 <!-- Onboarding, location picker and settings strings. English only for now: sw-TZ and rw-RW need translations. -->
 <resources>
     <!-- Coordinates -->
+    <string name="msg_location_reason">We use your farm\'s location to give advice for your area.</string>
+    <string name="lbl_location_inside">Inside the supported area</string>
+    <string name="lbl_location_outside">Outside the supported area</string>
     <string name="lbl_lat_lng_format">Lat: %1$.5f, Lng: %2$.5f</string>
 
     <!-- Location picker / location step -->
