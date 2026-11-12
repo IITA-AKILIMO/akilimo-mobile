@@ -109,9 +109,11 @@ Done on the UI design work:
 - [x] Steps screen: progress summary and raised step cards with status chips.
 - [x] Option cards, segmented market choice, label-above fields, grouped form cards.
 - [x] Settings as grouped cards; dates and onboarding sections on cards.
-- [x] Settings: Light / System / Dark selector and an app-wide Text size selector with a sample line.
+- [x] Settings: Light / System / Dark selector. (The app-wide Text size selector is deferred; see
+      "Open decisions".)
 - [x] Fertilizer list: search box and category bar (All, Single nutrient, Compound, Other), only for lists over 10 items.
 - [x] Dates: planting picker opens on today; each date field shows its allowed window.
+- [x] Hub sync/offline status strip: offline, updating, last update time, and Retry after a failed update.
 
 Open decisions and known gaps:
 
@@ -119,19 +121,25 @@ Open decisions and known gaps:
       harvest dates are edited in the planting and harvest step; tillage and weed control in their
       cost steps (the wizard still asks for all of them on first run). Investment preference has no
       other editing place, so it stays on Profile.
+- [ ] App-wide text size (Normal / Large / Largest in Settings): **DEFERRED** (decided 2026-11-12)
+      until users ask for it. Before release decide whether to keep or remove the first version that
+      is already on `feat/ui-design-system` (a `textScale` in `AkilimoTheme`, the Settings selector,
+      and the recommendation result screen no longer scaling its own text). If it stays deferred,
+      keep the result screen's own size control as in #559 and do not add a second scale.
 - [ ] Translations (sw, rw, ha) for the new hub, profile, text-size and progress strings (to be done later).
 - [x] "Total weeding cost" summary row on the weed control form.
 
 ## 11. Backlog ideas
 
 Quick wins:
-- [x] App-wide text size setting in Settings (Normal, Large, Largest; applies through the theme).
+- [ ] App-wide text size setting in Settings (Normal, Large, Largest; applies through the theme).
+      DEFERRED until users ask for it (2026-11-12); see "Open decisions".
 - [ ] Hub greeting with the farmer's name (skipped: the welcome text was removed from the hub header).
 - [x] Fertilizer category filter and search (shown only when the list has more than 10 items).
 - [x] Planting date picker starting at today, with a plain note on the allowed window.
 
 Medium:
-- [ ] Sync and offline status strip (needs a sync-state source).
+- [x] Sync and offline status strip (sync-state source: `SyncStatusSource`).
 - [ ] Save, share and print a recommendation; list of past recommendations, readable offline.
 - [ ] Location picker: "use my current location" and a plainer explanation.
 - [ ] Skeleton loaders and one shared look for empty and error states.
@@ -139,5 +147,5 @@ Medium:
 Larger or needs a decision:
 - [ ] Read-aloud (text to speech) for advice; icons plus short words on key actions. - SKIP
 - [ ] Shorter first run: ask only what a first recommendation needs, collect the rest later.
-- [ ] Landscape and tablet layouts on every screen.
+- [ ] Landscape and tablet layouts on every screen. - SKIP
 - [ ] Full TalkBack, 200% font and dark-mode accessibility pass.  - SKIP
