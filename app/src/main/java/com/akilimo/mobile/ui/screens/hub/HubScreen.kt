@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +56,9 @@ import com.akilimo.mobile.ui.components.compose.ExitConfirmDialog
 import com.akilimo.mobile.ui.components.compose.IconTile
 import com.akilimo.mobile.ui.screens.recommendations.navigateIfResumed
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
+
+/** How far the Recommendations card overlaps the bottom edge of the green header. */
+private val CARD_OVERLAP = 40.dp
 
 /**
  * The app home after onboarding: one prominent card for Recommendations, and cards for the
@@ -89,8 +93,14 @@ fun HubScreen(navController: NavHostController) {
             HubHeader()
             Column(
                 modifier = Modifier
+                    // Lift the cards over the header's bottom edge without leaving a gap below them
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(constraints)
+                        val overlap = CARD_OVERLAP.roundToPx()
+                        layout(placeable.width, placeable.height - overlap) { placeable.place(0, -overlap) }
+                    }
                     .padding(horizontal = AkilimoSpacing.md)
-                    .padding(top = AkilimoSpacing.md, bottom = AkilimoSpacing.md),
+                    .padding(bottom = AkilimoSpacing.md),
                 verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
             ) {
                 RecommendationsCard(onClick = { navController.navigateIfResumed(RecommendationsRoute) })
@@ -121,7 +131,8 @@ private fun HubHeader() {
             .background(MaterialTheme.colorScheme.primary)
             .statusBarsPadding()
             .padding(horizontal = AkilimoSpacing.md)
-            .padding(top = AkilimoSpacing.lg, bottom = AkilimoSpacing.xl),
+            // Room under the logo for the Recommendations card to overlap without touching it
+            .padding(top = AkilimoSpacing.lg, bottom = AkilimoSpacing.xl + CARD_OVERLAP),
     ) {
         Image(
             painter = painterResource(R.drawable.ic_akilimo_logo_white),
