@@ -10,6 +10,13 @@ object LegalWizardRoute
 @Serializable
 object OnboardingRoute
 
+/** The app home after onboarding: cards for Recommendations, Profile and Settings */
+@Serializable
+object HubRoute
+
+@Serializable
+object ProfileRoute
+
 @Serializable
 object RecommendationsRoute
 

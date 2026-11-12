@@ -1,8 +1,6 @@
 @file:Suppress("MagicNumber") // parallax math constants extracted below; float literals remain for formula legibility
 package com.akilimo.mobile.ui.screens.recommendations
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,7 +20,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Eco
 import androidx.compose.material.icons.outlined.Grass
@@ -31,7 +30,6 @@ import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,9 +40,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,9 +66,8 @@ import com.akilimo.mobile.navigation.BppRoute
 import com.akilimo.mobile.navigation.FrRoute
 import com.akilimo.mobile.navigation.IcMaizeRoute
 import com.akilimo.mobile.navigation.IcSweetPotatoRoute
-import com.akilimo.mobile.navigation.SettingsRoute
 import com.akilimo.mobile.navigation.SphRoute
-import com.akilimo.mobile.ui.components.compose.ExitConfirmDialog
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.theme.AkilimoTheme
 import com.akilimo.mobile.ui.viewmodels.RecommendationsViewModel
@@ -92,27 +87,6 @@ private fun EnumAdvice.icon(): ImageVector = when (this) {
 fun RecommendationsScreen(navController: NavHostController) {
     val viewModel = hiltViewModel<RecommendationsViewModel>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    var showExitDialog by rememberSaveable { mutableStateOf(false) }
-
-    // This is the home screen once onboarding is done (onboarding is cleared from the back
-    // stack), so Back would close the app: ask first, as onboarding's first page does.
-    // Only when nothing is below it, so it never blocks a normal Back.
-    BackHandler(enabled = navController.previousBackStackEntry == null) {
-        showExitDialog = true
-    }
-
-    if (showExitDialog) {
-        ExitConfirmDialog(
-            onConfirm = {
-                showExitDialog = false
-                // Finish normally rather than killing the process, so background syncs complete
-                (context as? Activity)?.finish()
-            },
-            onDismiss = { showExitDialog = false },
-        )
-    }
-
     RecommendationsContent(
         uiState = state,
         onAdviceClick = { option ->
@@ -126,7 +100,7 @@ fun RecommendationsScreen(navController: NavHostController) {
             }
             navController.navigateIfResumed(route)
         },
-        onSettingsClick = { navController.navigateIfResumed(SettingsRoute) }
+        onBack = { navController.popBackStackSafely() },
     )
 }
 
@@ -135,7 +109,7 @@ fun RecommendationsScreen(navController: NavHostController) {
 private fun RecommendationsContent(
     uiState: RecommendationsViewModel.UiState,
     onAdviceClick: (AdviceOption) -> Unit,
-    onSettingsClick: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val listState = rememberLazyListState()
     val heroPx = with(LocalDensity.current) { HERO_HEIGHT.toPx() }
@@ -158,18 +132,6 @@ private fun RecommendationsContent(
     }
 
     Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onSettingsClick,
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = stringResource(R.string.lbl_settings),
-                )
-            }
-        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -238,14 +200,14 @@ private fun RecommendationsContent(
                     )
                 },
                 navigationIcon = {
-                    Image(
-                        painter = painterResource(R.drawable.ic_akilimo_logo_white),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                        modifier = Modifier
-                            .padding(start = AkilimoSpacing.md)
-                            .size(AkilimoSpacing.xxl),
-                    )
+                    IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                            contentDescription = stringResource(R.string.lbl_back),
+                            tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f),
+                            modifier = Modifier.size(22.dp),
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary.copy(alpha = appBarAlpha),
@@ -326,7 +288,7 @@ private fun RecommendationsScreenPreview() {
         RecommendationsContent(
             uiState = uiState,
             onAdviceClick = {},
-            onSettingsClick = {}
+            onBack = {},
         )
     }
 }

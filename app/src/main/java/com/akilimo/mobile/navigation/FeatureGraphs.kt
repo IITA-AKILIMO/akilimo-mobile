@@ -4,12 +4,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.ui.screens.onboarding.LegalWizardScreen
+import com.akilimo.mobile.ui.screens.hub.HubScreen
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingScreen
+import com.akilimo.mobile.ui.screens.profile.ProfileScreen
 import com.akilimo.mobile.ui.screens.recommendations.GetRecommendationScreen
 import com.akilimo.mobile.ui.screens.recommendations.RecommendationsScreen
 import com.akilimo.mobile.ui.screens.recommendations.UseCaseScreen
@@ -28,18 +29,18 @@ import com.akilimo.mobile.ui.screens.usecases.SweetPotatoMarketScreen
 import com.akilimo.mobile.ui.screens.usecases.TractorAccessScreen
 import com.akilimo.mobile.ui.screens.usecases.WeedControlCostsScreen
 
-fun NavGraphBuilder.onboardingGraph(
-    navController: NavHostController,
-    appSettings: AppSettingsDataStore,
-) {
+fun NavGraphBuilder.onboardingGraph(navController: NavHostController) {
     composable<LegalWizardRoute> {
         LegalWizardScreen(navController = navController)
     }
     composable<OnboardingRoute> {
-        OnboardingScreen(
-            navController = navController,
-            appSettings = appSettings,
-        )
+        OnboardingScreen(navController = navController)
+    }
+    composable<HubRoute> {
+        HubScreen(navController = navController)
+    }
+    composable<ProfileRoute> {
+        ProfileScreen(navController = navController)
     }
 }
 

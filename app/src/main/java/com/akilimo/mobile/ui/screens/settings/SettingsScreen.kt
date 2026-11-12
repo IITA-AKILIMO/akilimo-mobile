@@ -1,29 +1,20 @@
 package com.akilimo.mobile.ui.screens.settings
 
 import android.app.Activity
-import android.os.Build
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
-import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AspectRatio
 import androidx.compose.material.icons.outlined.CleaningServices
 import androidx.compose.material.icons.outlined.Gavel
@@ -54,7 +45,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -62,10 +52,10 @@ import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
 import com.akilimo.mobile.data.ThemeMode
-import com.akilimo.mobile.navigation.OnboardingRoute
 import com.akilimo.mobile.navigation.WebViewRoute
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.IconTile
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.SettingsViewModel
@@ -183,7 +173,7 @@ fun SettingsScreen(
             SettingsSection(stringResource(R.string.lbl_display_section)) {
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_fertilizer_grid)) },
-                leadingContent = { SettingsIcon(Icons.Outlined.GridView) },
+                leadingContent = { IconTile(Icons.Outlined.GridView) },
                 trailingContent = {
                     Switch(checked = state.fertilizerGrid, onCheckedChange = null)
                 },
@@ -195,7 +185,7 @@ fun SettingsScreen(
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_remember_area_unit)) },
-                leadingContent = { SettingsIcon(Icons.Outlined.AspectRatio) },
+                leadingContent = { IconTile(Icons.Outlined.AspectRatio) },
                 trailingContent = {
                     Switch(checked = state.rememberAreaUnit, onCheckedChange = null)
                 },
@@ -223,7 +213,7 @@ fun SettingsScreen(
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_lock_app_language)) },
-                leadingContent = { SettingsIcon(Icons.Outlined.Language) },
+                leadingContent = { IconTile(Icons.Outlined.Language) },
                 trailingContent = {
                     Switch(checked = state.lockAppLanguage, onCheckedChange = null)
                 },
@@ -236,32 +226,16 @@ fun SettingsScreen(
 
             }
 
-            // ── Profile ───────────────────────────────────────────────────
-            SettingsSection(stringResource(R.string.lbl_profile_settings)) {
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.lbl_edit_profile)) },
-                leadingContent = { SettingsIcon(Icons.Outlined.AccountCircle) },
-                trailingContent = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
-                        contentDescription = null,
-                    )
-                },
-                modifier = Modifier.clickable(role = Role.Button) { navController.navigate(OnboardingRoute) },
-            )
-
-            }
-
             // ── About ─────────────────────────────────────────────────────
             SettingsSection(stringResource(R.string.lbl_about_section)) {
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_app_version)) },
                 supportingContent = { Text(BuildConfig.VERSION_NAME) },
-                leadingContent = { SettingsIcon(Icons.Outlined.Info) },
+                leadingContent = { IconTile(Icons.Outlined.Info) },
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_privacy_policy)) },
-                leadingContent = { SettingsIcon(Icons.Outlined.PrivacyTip) },
+                leadingContent = { IconTile(Icons.Outlined.PrivacyTip) },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
@@ -279,7 +253,7 @@ fun SettingsScreen(
             )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_terms)) },
-                leadingContent = { SettingsIcon(Icons.Outlined.Gavel) },
+                leadingContent = { IconTile(Icons.Outlined.Gavel) },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
@@ -303,7 +277,7 @@ fun SettingsScreen(
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_clear_recommendations)) },
                 supportingContent = { Text(stringResource(R.string.lbl_clear_recommendations_desc)) },
-                leadingContent = { SettingsIcon(Icons.Outlined.CleaningServices) },
+                leadingContent = { IconTile(Icons.Outlined.CleaningServices) },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
@@ -315,7 +289,7 @@ fun SettingsScreen(
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_reset_notification_badge)) },
                 supportingContent = { Text(stringResource(R.string.lbl_reset_notification_badge_desc)) },
-                leadingContent = { SettingsIcon(Icons.Outlined.NotificationsNone) },
+                leadingContent = { IconTile(Icons.Outlined.NotificationsNone) },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
@@ -350,23 +324,4 @@ private fun SettingsSection(title: String, content: @Composable ColumnScope.() -
         Column(modifier = Modifier.padding(vertical = AkilimoSpacing.xs), content = content)
     }
     Spacer(Modifier.height(AkilimoSpacing.xs))
-}
-
-/** Row icon on a soft tile, the way the rest of the app marks list rows. */
-@Composable
-private fun SettingsIcon(imageVector: ImageVector) {
-    Surface(
-        shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.primaryContainer,
-        modifier = Modifier.size(40.dp),
-    ) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            Icon(
-                imageVector = imageVector,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.size(22.dp),
-            )
-        }
-    }
 }

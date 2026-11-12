@@ -16,8 +16,8 @@ import com.akilimo.mobile.data.AppLanguage
 import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.navigation.AkilimoNavHost
 import com.akilimo.mobile.navigation.LegalWizardRoute
+import com.akilimo.mobile.navigation.HubRoute
 import com.akilimo.mobile.navigation.OnboardingRoute
-import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.ui.theme.AkilimoTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                 OnboardingRoute
             }
         } else {
-            RecommendationsRoute
+            HubRoute
         }
 
         setContent {
