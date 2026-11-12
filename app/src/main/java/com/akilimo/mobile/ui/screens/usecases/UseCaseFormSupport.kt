@@ -8,7 +8,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Inbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.Icon
@@ -32,8 +33,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.core.os.ConfigurationCompat
 import com.akilimo.mobile.R
-import com.akilimo.mobile.ui.components.compose.InfoCard
 import com.akilimo.mobile.ui.components.compose.SaveBottomBar
+import com.akilimo.mobile.ui.components.compose.SkeletonList
+import com.akilimo.mobile.ui.components.compose.StateMessage
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import java.text.NumberFormat
 import java.util.Locale
@@ -164,29 +166,26 @@ internal fun LayoutToggleButton(isGridLayout: Boolean, onToggle: () -> Unit) {
     }
 }
 
-/** Centered spinner for a list that is still loading. */
+/** Placeholder rows for a list that is still loading. */
 @Composable
 internal fun ListLoading(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(AkilimoSpacing.xl),
-        contentAlignment = Alignment.Center,
-    ) {
-        CircularProgressIndicator()
-    }
+    SkeletonList(modifier = modifier)
 }
 
-/** Shown in place of a list that loaded but has nothing to choose from. */
+/**
+ * Shown in place of a list that loaded but has nothing to choose from. [showRefreshHint] says to
+ * pull down to refresh: turn it off where the empty state is not inside a pull-to-refresh list.
+ */
 @Composable
-internal fun ListEmpty(message: String, modifier: Modifier = Modifier) {
-    InfoCard(
+internal fun ListEmpty(message: String, modifier: Modifier = Modifier, showRefreshHint: Boolean = true) {
+    StateMessage(
+        icon = Icons.Outlined.Inbox,
         title = stringResource(R.string.lbl_nothing_to_show),
         message = message,
-        modifier = modifier.padding(vertical = AkilimoSpacing.xs),
+        hint = stringResource(R.string.msg_pull_to_refresh).takeIf { showRefreshHint },
+        modifier = modifier.padding(top = AkilimoSpacing.xl),
     )
 }
-
 /** Pull-to-refresh around a list. [content] must scroll; wrap a loading or empty state in [PullableState]. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

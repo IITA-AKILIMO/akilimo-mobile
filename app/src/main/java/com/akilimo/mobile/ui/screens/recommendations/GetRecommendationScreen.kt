@@ -38,8 +38,8 @@ import com.akilimo.mobile.data.ReadingTextScale
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.filled.StarRate
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -59,7 +59,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -67,6 +66,7 @@ import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.StateMessage
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.GetRecommendationViewModel
@@ -325,24 +325,16 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                 }
 
                 is GetRecommendationViewModel.UiState.Error -> {
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(horizontal = AkilimoSpacing.xl),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text(
-                            text = stringResource(s.messageRes),
-                            style = MaterialTheme.typography.bodyMedium,
-                            textAlign = TextAlign.Center,
-                        )
-                        Spacer(Modifier.height(AkilimoSpacing.md))
-                        Button(onClick = { viewModel.fetchRecommendation(useCase) }) {
-                            Text(stringResource(R.string.lbl_retry))
-                        }
-                    }
+                    StateMessage(
+                        icon = Icons.Outlined.ErrorOutline,
+                        title = stringResource(R.string.lbl_could_not_get_advice),
+                        message = stringResource(s.messageRes),
+                        isError = true,
+                        actionLabel = stringResource(R.string.lbl_retry),
+                        onAction = { viewModel.fetchRecommendation(useCase) },
+                        modifier = Modifier.align(Alignment.Center),
+                    )
                 }
-
                 else -> Unit // Idle
             }
         }

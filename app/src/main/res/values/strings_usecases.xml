@@ -9,6 +9,8 @@
     <string name="error_rec_server_busy">The AKILIMO service is busy right now. Please try again later.</string>
 
     <!-- Use case step list -->
+    <string name="msg_pull_to_refresh">Pull down to refresh</string>
+    <string name="lbl_could_not_get_advice">Could not get your advice</string>
     <string name="lbl_all">All</string>
     <string name="lbl_search_fertilizers">Search fertilizers</string>
     <string name="msg_no_matching_fertilizers">No fertilizers match your search.</string>

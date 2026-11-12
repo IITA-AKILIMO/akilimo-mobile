@@ -342,7 +342,7 @@ private fun FertilizerPriceSheet(
 
             when {
                 loaded == null -> ListLoading()
-                loaded.isEmpty() -> ListEmpty(stringResource(R.string.msg_no_prices_available))
+                loaded.isEmpty() -> ListEmpty(stringResource(R.string.msg_no_prices_available), showRefreshHint = false)
                 else -> Column(modifier = Modifier.selectableGroup()) {
                     loaded.forEach { price ->
                         val label = when {

@@ -113,6 +113,7 @@ Done on the UI design work:
       "Open decisions".)
 - [x] Fertilizer list: search box and category bar (All, Single nutrient, Compound, Other), only for lists over 10 items.
 - [x] Dates: planting picker opens on today; each date field shows its allowed window.
+- [x] Shared loading, empty and error look: skeleton placeholder rows, and one centred message with a soft icon, hint and Retry.
 - [x] Hub sync/offline status strip: offline, updating, last update time, and Retry after a failed update.
 
 Open decisions and known gaps:
@@ -142,7 +143,8 @@ Medium:
 - [x] Sync and offline status strip (sync-state source: `SyncStatusSource`).
 - [ ] Save, share and print a recommendation; list of past recommendations, readable offline.
 - [ ] Location picker: "use my current location" and a plainer explanation.
-- [ ] Skeleton loaders and one shared look for empty and error states.
+- [x] Skeleton loaders and one shared look for empty and error states (StateMessage, SkeletonList;
+      list screens still have no error state: their view models do not report load failures).
 
 Larger or needs a decision:
 - [ ] Read-aloud (text to speech) for advice; icons plus short words on key actions. - SKIP
