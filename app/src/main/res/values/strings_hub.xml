@@ -2,7 +2,6 @@
 <!-- Strings for the home hub and the Profile screen. English only for now:
      sw/rw fall back to these until translated. -->
 <resources>
-    <string name="lbl_hub_welcome">Welcome back</string>
     <string name="lbl_profile">Profile</string>
     <string name="msg_hub_recommendations_desc">Get advice for your farm</string>
     <string name="msg_hub_profile_desc">Your details and farm</string>

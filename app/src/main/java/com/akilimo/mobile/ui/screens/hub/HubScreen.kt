@@ -114,7 +114,7 @@ fun HubScreen(navController: NavHostController) {
 @Composable
 private fun HubHeader() {
     Column(
-        // The logo and welcome line are centred in the header
+        // The logo is centred in the header
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
@@ -128,11 +128,6 @@ private fun HubHeader() {
             contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
             modifier = Modifier.size(width = 180.dp, height = 121.dp),
-        )
-        Text(
-            text = stringResource(R.string.lbl_hub_welcome),
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
         )
     }
 }
