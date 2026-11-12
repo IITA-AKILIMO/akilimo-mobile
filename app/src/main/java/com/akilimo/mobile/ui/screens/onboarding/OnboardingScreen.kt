@@ -264,7 +264,7 @@ fun OnboardingScreen(
  * cassava?" / "And looking to become a pro?" / "AKILIMO can help you!").
  */
 @Composable
-private fun OnboardingPageHeader(
+internal fun OnboardingPageHeader(
     title: String,
     subtitle: String?,
     progress: Float,
