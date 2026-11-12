@@ -115,10 +115,12 @@ Done on the UI design work:
 
 Open decisions and known gaps:
 
-- [ ] Profile shows every old edit section (including planting dates, tillage and investment
-      preference) so nothing becomes uneditable; trim only after deciding where they are edited.
-- [ ] Translations (sw, rw, ha) for the new hub, profile, text-size and progress strings.
-- [ ] The "Total weeding cost" summary row from the forms preview was not built.
+- [x] Profile holds About you, Farm location, Field size and Investment preference. Planting and
+      harvest dates are edited in the planting and harvest step; tillage and weed control in their
+      cost steps (the wizard still asks for all of them on first run). Investment preference has no
+      other editing place, so it stays on Profile.
+- [ ] Translations (sw, rw, ha) for the new hub, profile, text-size and progress strings (to be done later).
+- [x] "Total weeding cost" summary row on the weed control form.
 
 ## 11. Backlog ideas
 
