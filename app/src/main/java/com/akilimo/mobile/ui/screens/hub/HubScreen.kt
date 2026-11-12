@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -57,9 +56,6 @@ import com.akilimo.mobile.ui.components.compose.IconTile
 import com.akilimo.mobile.ui.screens.recommendations.navigateIfResumed
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 
-/** How far the Recommendations card overlaps the green header. */
-private val CARD_OVERLAP = 32.dp
-
 /**
  * The app home after onboarding: one prominent card for Recommendations, and cards for the
  * farmer's Profile and the app Settings.
@@ -93,8 +89,8 @@ fun HubScreen(navController: NavHostController) {
             HubHeader()
             Column(
                 modifier = Modifier
-                    .offset(y = -CARD_OVERLAP)
-                    .padding(horizontal = AkilimoSpacing.md),
+                    .padding(horizontal = AkilimoSpacing.md)
+                    .padding(top = AkilimoSpacing.md, bottom = AkilimoSpacing.md),
                 verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
             ) {
                 RecommendationsCard(onClick = { navController.navigateIfResumed(RecommendationsRoute) })
@@ -118,18 +114,20 @@ fun HubScreen(navController: NavHostController) {
 @Composable
 private fun HubHeader() {
     Column(
+        // The logo and welcome line are centred in the header
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
             .statusBarsPadding()
             .padding(horizontal = AkilimoSpacing.md)
-            .padding(top = AkilimoSpacing.lg, bottom = AkilimoSpacing.xxl + CARD_OVERLAP),
+            .padding(top = AkilimoSpacing.lg, bottom = AkilimoSpacing.xl),
     ) {
         Image(
             painter = painterResource(R.drawable.ic_akilimo_logo_white),
             contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-            modifier = Modifier.size(width = 120.dp, height = 80.dp),
+            modifier = Modifier.size(width = 180.dp, height = 121.dp),
         )
         Text(
             text = stringResource(R.string.lbl_hub_welcome),
