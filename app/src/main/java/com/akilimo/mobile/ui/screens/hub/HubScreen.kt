@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Lightbulb
+import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -51,6 +52,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
+import com.akilimo.mobile.navigation.FarmRoute
 import com.akilimo.mobile.navigation.ProfileRoute
 import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.navigation.SettingsRoute
@@ -67,7 +69,7 @@ private val CARD_OVERLAP = 40.dp
 
 /**
  * The app home after onboarding: one prominent card for Recommendations, and cards for the
- * farmer's Profile and the app Settings.
+ * farmer's Profile, their farm and the app Settings.
  */
 @Composable
 fun HubScreen(
@@ -127,6 +129,12 @@ fun HubScreen(
                     title = stringResource(R.string.lbl_profile),
                     subtitle = stringResource(R.string.msg_hub_profile_desc),
                     onClick = { navController.navigateIfResumed(ProfileRoute) },
+                )
+                HubLinkCard(
+                    icon = Icons.Outlined.Place,
+                    title = stringResource(R.string.lbl_your_farm),
+                    subtitle = stringResource(R.string.msg_hub_farm_desc),
+                    onClick = { navController.navigateIfResumed(FarmRoute) },
                 )
                 HubLinkCard(
                     icon = Icons.Outlined.Settings,

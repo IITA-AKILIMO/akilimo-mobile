@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.screens.profile
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,11 +36,8 @@ import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.screens.onboarding.BioDataSection
 import com.akilimo.mobile.ui.screens.onboarding.CountryChangeDialog
-import com.akilimo.mobile.ui.screens.onboarding.FarmLocationSection
-import com.akilimo.mobile.ui.screens.onboarding.FieldSection
 import com.akilimo.mobile.ui.screens.onboarding.LocationResultEffect
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
-import com.akilimo.mobile.ui.screens.onboarding.PracticesSection
 import com.akilimo.mobile.ui.screens.onboarding.reportValidationErrors
 import com.akilimo.mobile.ui.screens.onboarding.sectionModifierFor
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
@@ -47,18 +45,41 @@ import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+/** The farmer's personal details: the About you section, with its own Save. */
+@Composable
+fun ProfileScreen(navController: NavHostController) {
+    DetailsEditorScreen(
+        navController = navController,
+        title = stringResource(R.string.lbl_profile),
+        subtitle = stringResource(R.string.lbl_edit_profile),
+    ) { state, viewModel, section ->
+        BioDataSection(
+            state = state,
+            phoneCountries = viewModel.phoneCountries,
+            suggestedPhoneRegions = viewModel.suggestedPhoneRegions,
+            onEvent = viewModel::onEvent,
+            section = section,
+        )
+    }
+}
+
 /**
- * The farmer's profile on one scrolling page, one card per section, with a single Save: about you,
- * farm location, field size and investment preference. It reuses the onboarding sections and view
- * model, so the same fields and validation apply. Planting and harvest dates, tillage and weed
- * control are edited in their own recommendation steps, so they are not repeated here; first-run
- * setup stays in the onboarding wizard.
+ * A page of onboarding sections, one card per section, with a single Save. Profile and Your farm
+ * are both this page with different sections, so the same fields and validation apply as in the
+ * first-run wizard, which stays the only place that asks everything in order.
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(
+internal fun DetailsEditorScreen(
     navController: NavHostController,
+    title: String,
+    subtitle: String,
     viewModel: OnboardingViewModel = hiltViewModel(),
+    sections: @Composable ColumnScope.(
+        state: OnboardingViewModel.UiState,
+        viewModel: OnboardingViewModel,
+        section: (OnboardingSection) -> Modifier,
+    ) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -100,8 +121,8 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             BackTopAppBar(
-                title = stringResource(R.string.lbl_profile),
-                subtitle = stringResource(R.string.lbl_edit_profile),
+                title = title,
+                subtitle = subtitle,
                 onBack = { navController.popBackStackSafely() },
             )
         },
@@ -122,16 +143,7 @@ fun ProfileScreen(
                 .verticalScroll(rememberScrollState()),
         ) {
             Spacer(Modifier.height(AkilimoSpacing.xs))
-            BioDataSection(
-                state = state,
-                phoneCountries = viewModel.phoneCountries,
-                suggestedPhoneRegions = viewModel.suggestedPhoneRegions,
-                onEvent = viewModel::onEvent,
-                section = sectionModifier,
-            )
-            FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
-            FieldSection(state, viewModel::onEvent, sectionModifier, includeDates = false)
-            PracticesSection(state, viewModel::onEvent, sectionModifier, includeTillage = false)
+            sections(state, viewModel, sectionModifier)
             Spacer(Modifier.height(AkilimoSpacing.md))
         }
     }

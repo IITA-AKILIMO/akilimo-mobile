@@ -104,8 +104,8 @@ Done on the UI design work:
 
 - [x] Logo palette and 12dp shapes applied app-wide; light theme by default.
 - [x] Recommendation result: readable text, text-size and landscape controls, hidden bars for space.
-- [x] Home hub with Recommendations, Profile and Settings cards.
-- [x] Standalone Profile screen; onboarding is first-run only; Settings has no profile entry.
+- [x] Home hub with Recommendations, Profile, Your farm and Settings cards.
+- [x] Standalone Profile and Your farm screens (one shared editor); onboarding is first-run only; Settings has no profile entry.
 - [x] Steps screen: progress summary and raised step cards with status chips.
 - [x] Option cards, segmented market choice, label-above fields, grouped form cards.
 - [x] Settings as grouped cards; dates and onboarding sections on cards.
@@ -118,10 +118,10 @@ Done on the UI design work:
 
 Open decisions and known gaps:
 
-- [x] Profile holds About you, Farm location, Field size and Investment preference. Planting and
-      harvest dates are edited in the planting and harvest step; tillage and weed control in their
-      cost steps (the wizard still asks for all of them on first run). Investment preference has no
-      other editing place, so it stays on Profile.
+- [x] Profile holds About you only. Your farm holds Country, Location, Field size and Investment preference
+      (the engine's risk attitude, named the same in the MCP agent). Planting and harvest dates are edited
+      in the planting and harvest step; tillage and weed control in their cost steps (the wizard still
+      asks for all of them on first run).
 - [ ] App-wide text size (Normal / Large / Largest in Settings): **DEFERRED** (decided 2026-11-12)
       until users ask for it. Before release decide whether to keep or remove the first version that
       is already on `feat/ui-design-system` (a `textScale` in `AkilimoTheme`, the Settings selector,

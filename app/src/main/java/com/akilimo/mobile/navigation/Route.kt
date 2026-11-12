@@ -18,6 +18,9 @@ object HubRoute
 object ProfileRoute
 
 @Serializable
+object FarmRoute
+
+@Serializable
 object RecommendationsRoute
 
 // ── Recommendation sub-routes ────────────────────────────────────────────────

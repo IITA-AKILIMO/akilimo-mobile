@@ -8,6 +8,7 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.ui.screens.onboarding.LegalWizardScreen
+import com.akilimo.mobile.ui.screens.farm.FarmScreen
 import com.akilimo.mobile.ui.screens.hub.HubScreen
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingScreen
 import com.akilimo.mobile.ui.screens.profile.ProfileScreen
@@ -41,6 +42,9 @@ fun NavGraphBuilder.onboardingGraph(navController: NavHostController) {
     }
     composable<ProfileRoute> {
         ProfileScreen(navController = navController)
+    }
+    composable<FarmRoute> {
+        FarmScreen(navController = navController)
     }
 }
 
