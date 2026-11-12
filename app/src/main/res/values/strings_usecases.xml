@@ -9,6 +9,7 @@
     <string name="error_rec_server_busy">The AKILIMO service is busy right now. Please try again later.</string>
 
     <!-- Use case step list -->
+    <string name="msg_date_window">You can choose a date from %1$s to %2$s</string>
     <string name="lbl_your_progress">Your progress</string>
     <string name="msg_steps_done_of">%1$d of %2$d</string>
     <string name="lbl_steps_done">steps done</string>

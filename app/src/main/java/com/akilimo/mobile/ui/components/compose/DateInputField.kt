@@ -41,6 +41,7 @@ fun DateInputField(
     placeholder: String = "",
     enabled: Boolean = true,
     error: String? = null,
+    helperText: String? = null,
 ) {
     val clickLabel = stringResource(R.string.cmp_choose_date)
     Column(modifier = modifier) {
@@ -60,7 +61,7 @@ fun DateInputField(
                 placeholder = { Text(placeholder) },
                 trailingIcon = { Icon(Icons.Outlined.DateRange, contentDescription = null) },
                 isError = error != null,
-                supportingText = error?.let { { Text(it) } },
+                supportingText = (error ?: helperText)?.let { { Text(it) } },
                 enabled = enabled,
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier
