@@ -16,6 +16,7 @@ import com.akilimo.mobile.data.AppLanguage
 import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.navigation.AkilimoNavHost
 import com.akilimo.mobile.navigation.LegalWizardRoute
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.akilimo.mobile.navigation.HubRoute
 import com.akilimo.mobile.navigation.OnboardingRoute
 import com.akilimo.mobile.ui.theme.AkilimoTheme
@@ -46,6 +47,8 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Brand launch screen; must run before super.onCreate and switches to Theme.NewAkilimo after
+        installSplashScreen()
         // Re-applied from Compose below once the theme is known
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)

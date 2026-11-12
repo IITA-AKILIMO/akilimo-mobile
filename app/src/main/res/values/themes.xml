@@ -7,4 +7,14 @@
     <style name="Theme.NewAkilimo" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/color_background</item>
     </style>
+
+    <!--
+        Launch screen: brand green with the white logo, the same in light and dark so there is no
+        colour jump. The system swaps in Theme.NewAkilimo once the first Compose frame is ready.
+    -->
+    <style name="Theme.NewAkilimo.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/color_splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.NewAkilimo</item>
+    </style>
 </resources>
