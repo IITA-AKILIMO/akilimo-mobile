@@ -40,6 +40,7 @@ import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.SwitchRow
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.DatesViewModel
+import com.akilimo.mobile.utils.PlantingSchedule
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
@@ -49,8 +50,6 @@ import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 private const val PLANTING_MONTHS_BEFORE = 4L
 private const val PLANTING_MONTHS_AHEAD = 12L
-private const val HARVEST_MONTHS_MIN = 8L
-private const val HARVEST_MONTHS_MAX = 16L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,7 +96,8 @@ fun DatesScreen(
         if (state.user != null && !prefilled) {
             prefilled = true
             plantingDate = state.plantingDate
-            harvestDate = state.harvestDate
+            // A date saved under the older, wider range may be refused by the engine: pick it again
+            harvestDate = state.harvestDate?.takeIf { h -> state.plantingDate?.let { PlantingSchedule.isValid(it, h) } == true }
             plantingFlex = state.plantingFlex
             harvestFlex = state.harvestFlex
             alternativeDate = state.alternativeDate
@@ -155,12 +155,11 @@ fun DatesScreen(
         ) { DatePicker(state = datePickerState, modifier = Modifier.weight(1f, fill = false)) }
     }
 
-    // Harvest date: [planting + (8−flex), planting + (16+flex)]
+    // Harvest date: 235 to 452 days after planting, what the engine accepts (flexibility does not widen it)
     if (showHarvestDatePicker) {
         val pDate = plantingDate!! // only shown when plantingDate != null
-        val flex = if (useFlexDates) harvestFlex else 0L
-        val hMin = pDate.plusMonths(HARVEST_MONTHS_MIN - flex)
-        val hMax = pDate.plusMonths(HARVEST_MONTHS_MAX + flex)
+        val hMin = PlantingSchedule.earliestHarvest(pDate)
+        val hMax = PlantingSchedule.latestHarvest(pDate)
         val harvestSelectableDates = remember(hMin, hMax) {
             object : SelectableDates {
                 override fun isSelectableDate(utcTimeMillis: Long): Boolean {

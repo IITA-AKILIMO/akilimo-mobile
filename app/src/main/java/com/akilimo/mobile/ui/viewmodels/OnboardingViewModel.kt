@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.R
+import com.akilimo.mobile.utils.PlantingSchedule
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.dto.OperationEntry
 import com.akilimo.mobile.dto.OperationMethodOption
@@ -295,7 +296,8 @@ class OnboardingViewModel @Inject constructor(
                     farmSize = user?.farmSize ?: 1.0,
                     customFarmSize = user?.customFarmSize ?: false,
                     plantingDate = user?.plantingDate,
-                    harvestDate = user?.harvestDate,
+                    // A date saved under the older, wider range may be refused by the engine: pick it again
+                harvestDate = user?.harvestDate?.takeIf { h -> user.plantingDate?.let { PlantingSchedule.isValid(it, h) } == true },
                     plantingFlex = user?.plantingFlex ?: 0L,
                     harvestFlex = user?.harvestFlex ?: 0L,
                     showFlexOptions = (user?.plantingFlex ?: 0L) > 0 || (user?.harvestFlex
