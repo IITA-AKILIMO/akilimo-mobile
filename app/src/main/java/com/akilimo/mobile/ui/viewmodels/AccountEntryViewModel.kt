@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.data.account.AccountPromptState
 import com.akilimo.mobile.data.account.AccountSessionStore
+import com.akilimo.mobile.data.account.PromptSnooze
 import com.akilimo.mobile.repos.account.AccountRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AccountEntryViewModel @Inject constructor(
     sessionStore: AccountSessionStore,
-    promptState: AccountPromptState,
+    private val promptState: AccountPromptState,
     private val accounts: AccountRepo,
 ) : ViewModel() {
 
@@ -36,7 +37,9 @@ class AccountEntryViewModel @Inject constructor(
     /** True while the start-up offer to sign in or create an account is showing. */
     val showPrompt: StateFlow<Boolean> = _showPrompt.asStateFlow()
 
-    fun dismissPrompt() {
+    /** Closes the prompt; with [snooze] it also stays away for that long (across restarts). Without it, only this launch. */
+    fun dismissPrompt(snooze: PromptSnooze? = null) {
+        snooze?.let(promptState::snooze)
         _showPrompt.value = false
     }
 

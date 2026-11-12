@@ -56,6 +56,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import androidx.compose.material.icons.outlined.Bookmarks
+import com.akilimo.mobile.data.account.PromptSnooze
 import com.akilimo.mobile.navigation.AccountRoute
 import com.akilimo.mobile.navigation.FarmRoute
 import com.akilimo.mobile.navigation.SavedAdviceRoute
@@ -115,7 +116,8 @@ fun HubScreen(
                 accountEntry.dismissPrompt()
                 navController.navigateIfResumed(AccountRoute(signUp = true))
             },
-            onDismiss = accountEntry::dismissPrompt,
+            onDismiss = { accountEntry.dismissPrompt() },
+            onSnooze = accountEntry::dismissPrompt,
         )
     }
 
@@ -187,14 +189,26 @@ fun HubScreen(
 
 /** The start-up offer: sign in, create an account, or carry on without one. */
 @Composable
-private fun AccountPromptDialog(onSignIn: () -> Unit, onCreate: () -> Unit, onDismiss: () -> Unit) {
+private fun AccountPromptDialog(
+    onSignIn: () -> Unit,
+    onCreate: () -> Unit,
+    onDismiss: () -> Unit,
+    onSnooze: (PromptSnooze) -> Unit,
+) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.account_prompt_title)) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs)) {
+            Column(verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xxs)) {
                 Text(stringResource(R.string.account_prompt_msg))
                 TextButton(onClick = onCreate) { Text(stringResource(R.string.account_btn_create)) }
+                // Not now: only this start. The others also keep the offer away across restarts.
+                TextButton(onClick = { onSnooze(PromptSnooze.DAY) }) {
+                    Text(stringResource(R.string.account_prompt_later_day))
+                }
+                TextButton(onClick = { onSnooze(PromptSnooze.WEEK) }) {
+                    Text(stringResource(R.string.account_prompt_later_week))
+                }
             }
         },
         confirmButton = { Button(onClick = onSignIn) { Text(stringResource(R.string.account_btn_sign_in)) } },

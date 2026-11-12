@@ -102,6 +102,8 @@
     <string name="account_prompt_title">Sign in to keep your advice</string>
     <string name="account_prompt_msg">An account is optional. With one, the advice you ask for is saved and you can open it again later.</string>
     <string name="account_prompt_dismiss">Not now</string>
+    <string name="account_prompt_later_day">Remind me tomorrow</string>
+    <string name="account_prompt_later_week">Remind me in a week</string>
 
     <!-- Sign out (Settings) -->
     <string name="account_signout_title">Sign out?</string>

@@ -3,7 +3,9 @@ package com.akilimo.mobile.ui.viewmodels
 import com.akilimo.mobile.data.account.AccountPromptState
 import com.akilimo.mobile.data.account.AccountSession
 import com.akilimo.mobile.data.account.AccountSessionStore
+import com.akilimo.mobile.data.account.FakePromptStorage
 import com.akilimo.mobile.data.account.FakeSessionStorage
+import com.akilimo.mobile.data.account.PromptSnooze
 import com.akilimo.mobile.data.account.FakeTokenCipher
 import com.akilimo.mobile.repos.account.AccountRepo
 import com.akilimo.mobile.rules.TestDispatcherRule
@@ -27,7 +29,9 @@ class AccountEntryViewModelTest {
 
     private val accounts = mockk<AccountRepo>(relaxed = true)
     private val store = AccountSessionStore(FakeSessionStorage(), FakeTokenCipher())
-    private val prompt = AccountPromptState()
+    private val promptStorage = FakePromptStorage()
+    private var now = 1_000_000L
+    private val prompt = AccountPromptState(promptStorage) { now }
 
     private fun signIn() = store.save(AccountSession("tok", Long.MAX_VALUE, 5, "Amina", "a@b.co", true, false))
 
@@ -42,6 +46,28 @@ class AccountEntryViewModelTest {
         vm.dismissPrompt()
 
         assertFalse(vm.showPrompt.value)
+    }
+
+    private fun nextLaunch() = AccountEntryViewModel(store, AccountPromptState(promptStorage) { now }, accounts)
+
+    @Test
+    fun `remind me tomorrow closes it and keeps it away at the next start`() = runTest {
+        val vm = buildViewModel()
+
+        vm.dismissPrompt(PromptSnooze.DAY)
+
+        assertFalse(vm.showPrompt.value)
+        assertFalse(nextLaunch().showPrompt.value)
+    }
+
+    @Test
+    fun `not now only closes it for this launch`() = runTest {
+        val vm = buildViewModel()
+
+        vm.dismissPrompt()
+
+        assertFalse(vm.showPrompt.value)
+        assertTrue(nextLaunch().showPrompt.value)
     }
 
     @Test

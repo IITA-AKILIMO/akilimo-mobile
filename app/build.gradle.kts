@@ -115,10 +115,10 @@ android {
         )
 
         // "Continue with Google" needs the app's Google Cloud OAuth client (package name + signing certificate SHA-1),
-        // which the owner creates; turn the button on with GOOGLE_SIGN_IN=true (env) or -Pakilimo.google.signin=true.
+        // which the owner creates. The button is ON by default; turn it off with GOOGLE_SIGN_IN=false (env) or -Pakilimo.google.signin=false.
         val googleSignIn = (
             env.fetchOrNull("GOOGLE_SIGN_IN")
-                ?: providers.gradleProperty("akilimo.google.signin").orElse("false").get()
+                ?: providers.gradleProperty("akilimo.google.signin").orElse("true").get()
             ).trim().equals("true", ignoreCase = true)
 
         buildConfigField("boolean", "GOOGLE_SIGN_IN_ENABLED", googleSignIn.toString())
