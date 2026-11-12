@@ -9,8 +9,6 @@
     <string name="account_hub_sub_in">Open the advice you saved</string>
     <string name="account_hub_sub_in_as">Signed in as %1$s. Open your saved advice.</string>
     <string name="account_signed_in_done">You are signed in.</string>
-    <!-- DRAFT credit line: the owner approves the wording -->
-    <string name="partner_credit">AKILIMO powered by IITA</string>
     <string name="account_logo_description">IITA, Transforming African Agriculture, and CGIAR, Science for a food-secure future</string>
     <string name="account_settings_section">Account</string>
     <string name="account_settings_out_title">Sign in or create an account</string>
@@ -113,4 +111,9 @@
     <!-- Sign out (Settings) -->
     <string name="account_signout_title">Sign out?</string>
     <string name="account_signout_body">Your saved advice stays in your account. It is removed from this phone until you sign in again.</string>
+    <!-- Settings > About. DRAFT wording: the owner approves it. Drawn from the description on akilimonigeria.org, narrowed to what holds for every country the app serves. -->
+    <string name="settings_about_title">About AKILIMO</string>
+    <string name="settings_about_body">AKILIMO gives smallholder farmers advice that fits their own farm, for example on fertilizer, planting and intercropping. The advice is worked out from your farm\'s location and the answers you give.</string>
+    <string name="settings_nigeria_site">AKILIMO Nigeria website</string>
+    <string name="settings_nigeria_site_sub">For farmers in Nigeria</string>
 </resources>

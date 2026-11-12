@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.PrivacyTip
 import androidx.compose.material3.AlertDialog
@@ -316,8 +317,30 @@ fun SettingsScreen(
                 supportingContent = { Text(BuildConfig.VERSION_NAME) },
                 leadingContent = { IconTile(Icons.Outlined.Info) },
             )
-            // Who is behind AKILIMO: credits belong in About
-            PartnerLockup(modifier = Modifier.padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xs))
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.settings_about_title)) },
+                supportingContent = { Text(stringResource(R.string.settings_about_body)) },
+                leadingContent = { IconTile(Icons.Outlined.Lightbulb) },
+            )
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.settings_nigeria_site)) },
+                supportingContent = { Text(stringResource(R.string.settings_nigeria_site_sub)) },
+                leadingContent = { IconTile(Icons.Outlined.Language) },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.clickable(role = Role.Button) {
+                    navController.navigate(
+                        WebViewRoute(
+                            url = "https://akilimonigeria.org",
+                            title = context.getString(R.string.settings_nigeria_site),
+                        )
+                    )
+                },
+            )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.lbl_privacy_policy)) },
                 leadingContent = { IconTile(Icons.Outlined.PrivacyTip) },
@@ -384,6 +407,9 @@ fun SettingsScreen(
                 modifier = Modifier.clickable(role = Role.Button) { showResetBadgeDialog = true },
             )
             }
+
+            // The IITA and CGIAR logo: last on the page, on a card of its own
+            PartnerLockup(modifier = Modifier.padding(vertical = AkilimoSpacing.md))
         }
     }
 }
