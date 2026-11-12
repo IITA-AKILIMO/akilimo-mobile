@@ -7,6 +7,8 @@
     <string name="account_hub_sub_out">Keep your advice and open it again later</string>
     <string name="account_hub_title_in">Saved advice</string>
     <string name="account_hub_sub_in">Open the advice you saved</string>
+    <string name="account_hub_sub_in_as">Signed in as %1$s. Open your saved advice.</string>
+    <string name="account_signed_in_done">You are signed in.</string>
     <string name="account_settings_section">Account</string>
     <string name="account_settings_out_title">Sign in or create an account</string>
     <string name="account_settings_out_sub">Optional: keep your advice in your account</string>

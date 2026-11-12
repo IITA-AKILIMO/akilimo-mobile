@@ -83,14 +83,6 @@ fun AccountScreen(
         if (startOnSignUp) viewModel.setMode(AccountViewModel.Mode.SIGN_UP)
     }
 
-    // A complete sign-in (consent given) goes back to where the farmer came from
-    LaunchedEffect(state.done) {
-        if (state.done) {
-            viewModel.onDoneHandled()
-            navController.popBackStackSafely()
-        }
-    }
-
     Scaffold(
         topBar = {
             BackTopAppBar(

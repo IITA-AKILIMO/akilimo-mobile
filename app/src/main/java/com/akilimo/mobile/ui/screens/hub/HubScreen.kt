@@ -24,6 +24,11 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Surface
+import androidx.compose.ui.text.style.TextOverflow
+import com.akilimo.mobile.ui.theme.iitaAccentContainer
+import com.akilimo.mobile.ui.theme.onIitaAccentContainer
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -137,7 +142,7 @@ fun HubScreen(
                 .padding(bottom = padding.calculateBottomPadding())
                 .verticalScroll(rememberScrollState()),
         ) {
-            HubHeader()
+            HubHeader(signedInAs)
             Column(
                 modifier = Modifier
                     // Lift the cards over the header's bottom edge without leaving a gap below them
@@ -157,9 +162,9 @@ fun HubScreen(
                     title = stringResource(
                         if (signedInAs != null) R.string.account_hub_title_in else R.string.account_hub_title_out
                     ),
-                    subtitle = stringResource(
-                        if (signedInAs != null) R.string.account_hub_sub_in else R.string.account_hub_sub_out
-                    ),
+                    // Signed in: say who, so the farmer can tell at a glance
+                    subtitle = signedInAs?.let { stringResource(R.string.account_hub_sub_in_as, it) }
+                        ?: stringResource(R.string.account_hub_sub_out),
                     onClick = {
                         navController.navigateIfResumed(if (signedInAs != null) SavedAdviceRoute else AccountRoute())
                     },
@@ -217,7 +222,7 @@ private fun AccountPromptDialog(
 }
 
 @Composable
-private fun HubHeader() {
+private fun HubHeader(signedInAs: String?) {
     Column(
         // The logo is centred in the header
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -235,6 +240,29 @@ private fun HubHeader() {
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
             modifier = Modifier.size(width = 180.dp, height = 121.dp),
         )
+        // Signed in: say who, in the IITA orange, so it is plain at a glance
+        signedInAs?.let { name ->
+            Spacer(Modifier.height(AkilimoSpacing.xs))
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.iitaAccentContainer,
+                contentColor = MaterialTheme.colorScheme.onIitaAccentContainer,
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = AkilimoSpacing.sm, vertical = AkilimoSpacing.xxs),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.xxs),
+                ) {
+                    Icon(Icons.Outlined.AccountCircle, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Text(
+                        text = stringResource(R.string.account_signed_in_as, name),
+                        style = MaterialTheme.typography.labelLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+        }
     }
 }
 

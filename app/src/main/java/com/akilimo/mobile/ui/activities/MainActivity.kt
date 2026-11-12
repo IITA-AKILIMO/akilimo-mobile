@@ -14,6 +14,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.data.AppLanguage
 import com.akilimo.mobile.data.ReadingTextScale
+import com.akilimo.mobile.data.account.AccountSessionStore
 import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.navigation.AkilimoNavHost
 import com.akilimo.mobile.navigation.LegalWizardRoute
@@ -40,6 +41,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appSettings: AppSettingsDataStore
+
+    @Inject
+    lateinit var accountSession: AccountSessionStore
 
     override fun attachBaseContext(newBase: Context) {
         // Runs before Hilt injection, so read settings directly
@@ -95,7 +99,11 @@ class MainActivity : ComponentActivity() {
             val textScale by appSettings.readingTextScaleFlow
                 .collectAsStateWithLifecycle(initialValue = ReadingTextScale.DEFAULT)
 
-            AkilimoTheme(darkTheme = darkTheme, textScale = textScale) {
+            // A farmer who is signed in (and has consented) gets the IITA-coloured theme, so it is plain at a glance
+            val session by accountSession.session.collectAsStateWithLifecycle()
+            val signedIn = session?.consentRequired == false
+
+            AkilimoTheme(darkTheme = darkTheme, textScale = textScale, signedIn = signedIn) {
                 AkilimoNavHost(startDestination = startRoute)
             }
         }

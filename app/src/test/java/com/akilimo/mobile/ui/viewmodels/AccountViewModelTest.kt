@@ -19,6 +19,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -94,13 +95,11 @@ class AccountViewModelTest {
         vm.submit()
         advanceUntilIdle()
 
-        assertTrue(vm.uiState.value.done)
+        assertEquals(R.string.account_signed_in_done, vm.uiState.value.messageRes)
         assertFalse(vm.uiState.value.busy)
         assertEquals("the password is not kept", "", vm.uiState.value.password)
         coVerify { savedAdvice.refresh() }
-
-        vm.onDoneHandled()
-        assertFalse(vm.uiState.value.done)
+        assertFalse("a success is not shown as an error", vm.uiState.value.messageIsError)
     }
 
     @Test
@@ -117,7 +116,7 @@ class AccountViewModelTest {
         advanceUntilIdle()
 
         coVerify { accounts.register("amina@example.com", "long-enough-1", "Amina", true) }
-        assertTrue(vm.uiState.value.done)
+        assertEquals(R.string.account_signed_in_done, vm.uiState.value.messageRes)
     }
 
     @Test
@@ -131,7 +130,7 @@ class AccountViewModelTest {
         advanceUntilIdle()
 
         assertEquals(R.string.account_err_wrong_credentials, vm.uiState.value.messageRes)
-        assertFalse(vm.uiState.value.done)
+        assertNotEquals(R.string.account_signed_in_done, vm.uiState.value.messageRes)
         assertFalse(vm.uiState.value.busy)
     }
 
@@ -163,7 +162,7 @@ class AccountViewModelTest {
         vm.submit()
         advanceUntilIdle()
 
-        assertFalse(vm.uiState.value.done)
+        assertNotEquals(R.string.account_signed_in_done, vm.uiState.value.messageRes)
         assertEquals(AccountViewModel.ConsentStep.EXISTING_ACCOUNT, vm.consentStep(store.session.value, vm.uiState.value))
         coVerify(exactly = 0) { savedAdvice.refresh() }
     }
@@ -177,7 +176,7 @@ class AccountViewModelTest {
         vm.agree()
         advanceUntilIdle()
 
-        assertTrue(vm.uiState.value.done)
+        assertEquals(R.string.account_signed_in_done, vm.uiState.value.messageRes)
         coVerify { savedAdvice.refresh() }
     }
 
@@ -202,12 +201,12 @@ class AccountViewModelTest {
         advanceUntilIdle()
 
         assertEquals(AccountViewModel.ConsentStep.GOOGLE_FIRST_USE, vm.consentStep(null, vm.uiState.value))
-        assertFalse(vm.uiState.value.done)
+        assertNotEquals(R.string.account_signed_in_done, vm.uiState.value.messageRes)
 
         vm.agree()
         advanceUntilIdle()
 
-        assertTrue(vm.uiState.value.done)
+        assertEquals(R.string.account_signed_in_done, vm.uiState.value.messageRes)
         assertFalse(vm.uiState.value.googleConsent)
         coVerify { accounts.signInWithProvider("google", "g-token", true) }
     }
@@ -222,7 +221,7 @@ class AccountViewModelTest {
         vm.onGoogleToken("g-token")
         advanceUntilIdle()
 
-        assertTrue(vm.uiState.value.done)
+        assertEquals(R.string.account_signed_in_done, vm.uiState.value.messageRes)
     }
 
     @Test

@@ -25,6 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
+import com.akilimo.mobile.ui.theme.LocalSignedIn
+import com.akilimo.mobile.ui.theme.bottomAccentLine
+import com.akilimo.mobile.ui.theme.iitaAccent
 
 /** What the leading icon of [BackTopAppBar] shows. */
 enum class TopBarNavigation {
@@ -59,6 +62,12 @@ fun BackTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigation: TopBarNavigation = TopBarNavigation.BACK,
 ) {
+    // Signed in: an IITA-orange line under the bar, on every screen that uses it
+    val accentModifier = if (LocalSignedIn.current) {
+        Modifier.bottomAccentLine(MaterialTheme.colorScheme.iitaAccent)
+    } else {
+        Modifier
+    }
     val navIcon: @Composable () -> Unit = {
         if (navigation != TopBarNavigation.NONE) {
             val isClose = navigation == TopBarNavigation.CLOSE
@@ -132,7 +141,7 @@ fun BackTopAppBar(
             },
             navigationIcon = navIcon,
             actions = actions,
-            modifier = modifier,
+            modifier = modifier.then(accentModifier),
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -167,7 +176,7 @@ fun BackTopAppBar(
             },
             navigationIcon = navIcon,
             actions = actions,
-            modifier = modifier,
+            modifier = modifier.then(accentModifier),
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,

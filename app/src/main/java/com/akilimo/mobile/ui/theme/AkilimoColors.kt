@@ -179,3 +179,33 @@ val AkilimoDarkColorScheme = darkColorScheme(
     outlineVariant = DarkOutlineVariant,
     scrim = Scrim,
 )
+
+// ── Signed-in look: the IITA logo colours ────────────────────────────────────
+// A farmer who is signed in gets a theme that blends with the IITA logo at iita.org: its deep green and its orange.
+// Both values were sampled from the logo image, not guessed.
+val IitaOrange = Color(0xFFF26522)
+val IitaGreen = Color(0xFF033529)
+
+/** Light theme for a signed-in farmer: the IITA green as the primary colour. Every pair keeps 4.5:1 contrast. */
+val AkilimoIitaLightColorScheme = AkilimoLightColorScheme.copy(
+    primary = IitaGreen,
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFD3E8DE),
+    onPrimaryContainer = Color(0xFF002117),
+)
+
+/** Dark theme for a signed-in farmer: the IITA orange as the primary colour, with dark text on it. */
+val AkilimoIitaDarkColorScheme = AkilimoDarkColorScheme.copy(
+    primary = IitaOrange,
+    onPrimary = Color(0xFF2B0D00),
+    primaryContainer = IitaGreen,
+    onPrimaryContainer = Color(0xFFBFE3D2),
+)
+
+/** The IITA orange accent: the line under the top bars and the "signed in" pill. Use it for decoration, not for small text. */
+val ColorScheme.iitaAccent: Color
+    get() = IitaOrange
+val ColorScheme.iitaAccentContainer: Color
+    get() = if (isDarkScheme) Color(0xFF5A2208) else Color(0xFFFFDBC9)
+val ColorScheme.onIitaAccentContainer: Color
+    get() = if (isDarkScheme) Color(0xFFFFDBC9) else Color(0xFF3B1000)

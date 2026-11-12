@@ -51,8 +51,6 @@ class AccountViewModel @Inject constructor(
         @param:StringRes val messageRes: Int? = null,
         val messageIsError: Boolean = true,
         val googleConsent: Boolean = false,
-        /** Set after a sign-in that is complete (consent given); the screen goes back and calls [onDoneHandled]. */
-        val done: Boolean = false,
     )
 
     private val _uiState = MutableStateFlow(UiState())
@@ -79,7 +77,6 @@ class AccountViewModel @Inject constructor(
     fun onName(value: String) = _uiState.update { it.copy(name = value) }
     fun onConsent(value: Boolean) = _uiState.update { it.copy(consent = value, consentError = null) }
     fun dismissMessage() = _uiState.update { it.copy(messageRes = null) }
-    fun onDoneHandled() = _uiState.update { it.copy(done = false) }
 
     /** Sign in or create the account, whichever tab is showing. */
     fun submit() {
@@ -142,7 +139,7 @@ class AccountViewModel @Inject constructor(
                     is AccountResult.Failure -> fail(result.error)
                     is AccountResult.Success -> {
                         savedAdvice.refresh()
-                        _uiState.update { it.copy(busy = false, done = true) }
+                        _uiState.update { it.copy(busy = false, messageRes = R.string.account_signed_in_done, messageIsError = false) }
                     }
                 }
             }
@@ -210,7 +207,14 @@ class AccountViewModel @Inject constructor(
                 val complete = !result.value.consentRequired
                 if (complete) savedAdvice.refresh()
                 _uiState.update {
-                    it.copy(busy = false, googleConsent = false, password = "", done = complete)
+                    it.copy(
+                        busy = false,
+                        googleConsent = false,
+                        password = "",
+                        // Say so: otherwise the screen just changes and nothing tells the farmer it worked
+                        messageRes = if (complete) R.string.account_signed_in_done else null,
+                        messageIsError = false,
+                    )
                 }
             }
         }
