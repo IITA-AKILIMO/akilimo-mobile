@@ -88,6 +88,17 @@ private const val DEFAULT_ZOOM = 15.0
 private const val DEFAULT_INITIAL_ZOOM = 12.0
 private const val NAIROBI_LON = 36.8219
 private const val NAIROBI_LAT = -1.2921
+
+/** Where the map opens for a country: its centre and a zoom that shows most of it. */
+private data class CountryView(val lat: Double, val lon: Double, val zoom: Double)
+
+private val COUNTRY_VIEWS = mapOf(
+    "NG" to CountryView(lat = 9.08, lon = 8.68, zoom = 5.5),
+    "TZ" to CountryView(lat = -6.37, lon = 34.89, zoom = 5.5),
+    "GH" to CountryView(lat = 7.95, lon = -1.02, zoom = 6.3),
+    "RW" to CountryView(lat = -1.94, lon = 29.87, zoom = 7.8),
+    "BI" to CountryView(lat = -3.37, lon = 29.92, zoom = 8.0),
+)
 private const val MARKER_ICON_ID = "custom-marker"
 private const val MARKER_ICON_SIZE = 1.5
 private const val BOUNCE_DURATION_MS = 600L
@@ -173,7 +184,9 @@ fun LocationPickerScreen(
     LaunchedEffect(Unit) {
         if (hasSavedLocation) {
             viewModel.seedSavedLocation(route.lat, route.lon)
-        } else if (!autoLocateDone) {
+        } else if (!autoLocateDone && route.countryCode.isBlank()) {
+            // With a country chosen the farmer picked the manual option: stay on that country
+            // instead of flying to the phone's position, which may be elsewhere
             autoLocateDone = true
             locateMe()
         }
@@ -291,15 +304,24 @@ fun LocationPickerScreen(
                 factory = { ctx ->
                     MapboxOptions.accessToken = BuildConfig.MAPBOX_RUNTIME_TOKEN
                     MapView(ctx).also { mv ->
-                        val initial = if (hasSavedLocation) {
-                            Point.fromLngLat(route.lon, route.lat)
-                        } else {
-                            Point.fromLngLat(NAIROBI_LON, NAIROBI_LAT) // default: Nairobi
+                        // A saved farm wins; otherwise open on the country the farmer chose, so the
+                        // map is right even before (or without) the coverage overlay loading
+                        val countryView = COUNTRY_VIEWS[route.countryCode.uppercase()]
+                        val initial = when {
+                            hasSavedLocation -> Point.fromLngLat(route.lon, route.lat)
+                            countryView != null -> Point.fromLngLat(countryView.lon, countryView.lat)
+                            else -> Point.fromLngLat(NAIROBI_LON, NAIROBI_LAT) // no country chosen: Nairobi
+                        }
+                        val initialZoom = when {
+                            hasSavedLocation && route.zoom > 0 -> route.zoom
+                            !hasSavedLocation && countryView != null -> countryView.zoom
+                            route.zoom > 0 -> route.zoom
+                            else -> DEFAULT_INITIAL_ZOOM
                         }
                         mv.mapboxMap.setCamera(
                             CameraOptions.Builder()
                                 .center(initial)
-                                .zoom(if (route.zoom > 0) route.zoom else DEFAULT_INITIAL_ZOOM)
+                                .zoom(initialZoom)
                                 .build()
                         )
                         annotationManager = mv.annotations.createPointAnnotationManager()
