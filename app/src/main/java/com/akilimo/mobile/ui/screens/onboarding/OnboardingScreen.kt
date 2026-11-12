@@ -372,10 +372,12 @@ internal fun FarmLocationSection(
 }
 
 @Composable
+/** [includeDates] is false on Profile: dates are edited in the planting and harvest step. */
 internal fun FieldSection(
     state: OnboardingViewModel.UiState,
     onEvent: OnEvent,
     section: (OnboardingSection) -> Modifier,
+    includeDates: Boolean = true,
 ) {
     // A remembered unit only hides the unit picker, never the farm size
     AreaUnitStep(
@@ -389,6 +391,7 @@ internal fun FieldSection(
         onEvent = onEvent,
         modifier = section(OnboardingSection.AREA_UNIT),
     )
+    if (!includeDates) return
     PlantingDateStep(
         plantingDate = state.plantingDate,
         harvestDate = state.harvestDate,
@@ -402,19 +405,23 @@ internal fun FieldSection(
 }
 
 @Composable
+/** [includeTillage] is false on Profile: tillage and weed control are edited in their own steps. */
 internal fun PracticesSection(
     state: OnboardingViewModel.UiState,
     onEvent: OnEvent,
     section: (OnboardingSection) -> Modifier,
+    includeTillage: Boolean = true,
 ) {
-    TillageStep(
-        tillageOperations = state.tillageOperations,
-        weedControlEnabled = state.weedControlEnabled,
-        weedControlMethod = state.weedControlMethod,
-        errors = state.errors,
-        onEvent = onEvent,
-        modifier = section(OnboardingSection.TILLAGE),
-    )
+    if (includeTillage) {
+        TillageStep(
+            tillageOperations = state.tillageOperations,
+            weedControlEnabled = state.weedControlEnabled,
+            weedControlMethod = state.weedControlMethod,
+            errors = state.errors,
+            onEvent = onEvent,
+            modifier = section(OnboardingSection.TILLAGE),
+        )
+    }
     InvestmentPrefStep(
         investmentPref = state.investmentPref,
         error = state.errors["investmentPref"],
@@ -433,7 +440,8 @@ internal suspend fun reportValidationErrors(
     // The first failing field may be far off-screen; a page switch may need a frame to compose first
     launch {
         withFrameNanos { }
-        requesters[sectionForField(effect.firstField)]?.bringIntoView()
+        // A section that is not on this screen has no attached requester: skip it instead of crashing
+        runCatching { requesters[sectionForField(effect.firstField)]?.bringIntoView() }
     }
     launch {
         snackbarHostState.showSnackbar(

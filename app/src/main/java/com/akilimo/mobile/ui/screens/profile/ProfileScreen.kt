@@ -48,8 +48,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
- * The farmer's profile on one scrolling page, one card per section, with a single Save. It reuses
- * the onboarding sections and view model, so the same fields and validation apply; first-run
+ * The farmer's profile on one scrolling page, one card per section, with a single Save: about you,
+ * farm location, field size and investment preference. It reuses the onboarding sections and view
+ * model, so the same fields and validation apply. Planting and harvest dates, tillage and weed
+ * control are edited in their own recommendation steps, so they are not repeated here; first-run
  * setup stays in the onboarding wizard.
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -128,8 +130,8 @@ fun ProfileScreen(
                 section = sectionModifier,
             )
             FarmLocationSection(state, viewModel::onEvent, navController, sectionModifier)
-            FieldSection(state, viewModel::onEvent, sectionModifier)
-            PracticesSection(state, viewModel::onEvent, sectionModifier)
+            FieldSection(state, viewModel::onEvent, sectionModifier, includeDates = false)
+            PracticesSection(state, viewModel::onEvent, sectionModifier, includeTillage = false)
             Spacer(Modifier.height(AkilimoSpacing.md))
         }
     }

@@ -18,6 +18,7 @@
     <string name="lbl_size_normal">Normal</string>
     <string name="lbl_size_large">Large</string>
     <string name="lbl_size_largest">Largest</string>
+    <string name="lbl_total_weeding_cost">Total weeding cost</string>
     <string name="lbl_text_size_sample">This is how text will look.</string>
     <string name="msg_date_window">You can choose a date from %1$s to %2$s</string>
     <string name="lbl_your_progress">Your progress</string>
