@@ -9,6 +9,16 @@
     <string name="error_rec_server_busy">The AKILIMO service is busy right now. Please try again later.</string>
 
     <!-- Use case step list -->
+    <string name="lbl_all">All</string>
+    <string name="lbl_search_fertilizers">Search fertilizers</string>
+    <string name="msg_no_matching_fertilizers">No fertilizers match your search.</string>
+    <string name="lbl_category_straight">Single nutrient</string>
+    <string name="lbl_category_compound">Compound</string>
+    <string name="lbl_category_other">Other</string>
+    <string name="lbl_size_normal">Normal</string>
+    <string name="lbl_size_large">Large</string>
+    <string name="lbl_size_largest">Largest</string>
+    <string name="lbl_text_size_sample">This is how text will look.</string>
     <string name="msg_date_window">You can choose a date from %1$s to %2$s</string>
     <string name="lbl_your_progress">Your progress</string>
     <string name="msg_steps_done_of">%1$d of %2$d</string>

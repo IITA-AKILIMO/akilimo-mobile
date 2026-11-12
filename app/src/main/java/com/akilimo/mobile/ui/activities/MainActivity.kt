@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.data.AppLanguage
+import com.akilimo.mobile.data.ReadingTextScale
 import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.navigation.AkilimoNavHost
 import com.akilimo.mobile.navigation.LegalWizardRoute
@@ -91,7 +92,10 @@ class MainActivity : ComponentActivity() {
                 onDispose { }
             }
 
-            AkilimoTheme(darkTheme = darkTheme) {
+            val textScale by appSettings.readingTextScaleFlow
+                .collectAsStateWithLifecycle(initialValue = ReadingTextScale.DEFAULT)
+
+            AkilimoTheme(darkTheme = darkTheme, textScale = textScale) {
                 AkilimoNavHost(startDestination = startRoute)
             }
         }

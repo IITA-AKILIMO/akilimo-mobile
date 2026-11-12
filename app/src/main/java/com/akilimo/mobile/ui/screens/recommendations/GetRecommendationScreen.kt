@@ -100,7 +100,6 @@ private fun textScaleLabelRes(scale: Float): Int = when {
 private fun RecommendationBody(
     title: String,
     paragraphs: List<String>,
-    textScale: Float,
 ) {
     // Title always sits above the text, in every orientation; the width cap keeps lines readable
     Box(modifier = Modifier.fillMaxSize()) {
@@ -120,18 +119,18 @@ private fun RecommendationBody(
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = (TITLE_FONT_SP * textScale).sp,
-                    lineHeight = (TITLE_LINE_HEIGHT_SP * textScale).sp,
+                    fontSize = TITLE_FONT_SP.sp,
+                    lineHeight = TITLE_LINE_HEIGHT_SP.sp,
                 ),
             )
             Spacer(Modifier.height(AkilimoSpacing.md))
-            RecommendationCard(paragraphs = paragraphs, textScale = textScale)
+            RecommendationCard(paragraphs = paragraphs)
         }
     }
 }
 
 @Composable
-private fun RecommendationCard(paragraphs: List<String>, textScale: Float) {
+private fun RecommendationCard(paragraphs: List<String>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -147,8 +146,8 @@ private fun RecommendationCard(paragraphs: List<String>, textScale: Float) {
                 Text(
                     text = paragraph,
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        fontSize = (BODY_FONT_SP * textScale).sp,
-                        lineHeight = (BODY_LINE_HEIGHT_SP * textScale).sp,
+                        fontSize = BODY_FONT_SP.sp,
+                        lineHeight = BODY_LINE_HEIGHT_SP.sp,
                     ),
                 )
             }
@@ -322,7 +321,6 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                     RecommendationBody(
                         title = title,
                         paragraphs = remember(s.description) { splitRecommendationParagraphs(s.description) },
-                        textScale = textScale,
                     )
                 }
 

@@ -52,6 +52,8 @@ import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
 import com.akilimo.mobile.data.ThemeMode
+import com.akilimo.mobile.ui.components.compose.SegmentedTabRow
+import com.akilimo.mobile.data.ReadingTextScale
 import com.akilimo.mobile.navigation.WebViewRoute
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
@@ -152,19 +154,47 @@ fun SettingsScreen(
 
             // ── Appearance ────────────────────────────────────────────────
             SettingsSection(stringResource(R.string.lbl_appearance)) {
-            AkilimoDropdown(
-                label = stringResource(R.string.lbl_theme),
-                options = ThemeMode.entries,
-                selectedOption = state.themeMode,
-                onOptionSelected = { viewModel.setThemeMode(it) },
-                displayText = { mode ->
-                    when (mode) {
-                        ThemeMode.SYSTEM -> context.getString(R.string.lbl_theme_system)
-                        ThemeMode.LIGHT -> context.getString(R.string.lbl_theme_light)
-                        ThemeMode.DARK -> context.getString(R.string.lbl_theme_dark)
-                    }
-                },
+            // Light first: it is the default; System and Dark are the user's choice
+            val themeOrder = listOf(ThemeMode.LIGHT, ThemeMode.SYSTEM, ThemeMode.DARK)
+            Text(
+                text = stringResource(R.string.lbl_theme),
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xxs),
+            )
+            SegmentedTabRow(
+                options = listOf(
+                    stringResource(R.string.lbl_theme_light),
+                    stringResource(R.string.lbl_theme_system),
+                    stringResource(R.string.lbl_theme_dark),
+                ),
+                selectedIndex = themeOrder.indexOf(state.themeMode),
+                onSelect = { viewModel.setThemeMode(themeOrder[it]) },
                 modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
+            )
+            Text(
+                text = stringResource(R.string.lbl_text_size),
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(
+                    start = AkilimoSpacing.md,
+                    end = AkilimoSpacing.md,
+                    top = AkilimoSpacing.sm,
+                    bottom = AkilimoSpacing.xxs,
+                ),
+            )
+            SegmentedTabRow(
+                options = listOf(
+                    stringResource(R.string.lbl_size_normal),
+                    stringResource(R.string.lbl_size_large),
+                    stringResource(R.string.lbl_size_largest),
+                ),
+                selectedIndex = ReadingTextScale.options.indexOf(state.textScale).coerceAtLeast(0),
+                onSelect = { viewModel.setTextScale(ReadingTextScale.options[it]) },
+                modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
+            )
+            Text(
+                text = stringResource(R.string.lbl_text_size_sample),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(AkilimoSpacing.md),
             )
 
             }

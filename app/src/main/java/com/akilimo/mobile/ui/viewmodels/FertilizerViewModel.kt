@@ -27,6 +27,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/** Fertilizer categories as the API names them, in the order the filter bar shows them. */
+private val CATEGORY_ORDER = listOf("STRAIGHT", "COMPOUND", "OTHER")
+
 @HiltViewModel(assistedFactory = FertilizerViewModel.Factory::class)
 class FertilizerViewModel @AssistedInject constructor(
     private val fertilizerRepo: FertilizerRepo,
@@ -52,8 +55,22 @@ class FertilizerViewModel @AssistedInject constructor(
         val isLoading: Boolean = true,
         val isRefreshing: Boolean = false,
         val isSaving: Boolean = false,
-        val saveFailed: Boolean = false
-    )
+        val saveFailed: Boolean = false,
+        val query: String = "",
+        /** Category to show (STRAIGHT, COMPOUND, OTHER), or null for all. */
+        val category: String? = null,
+    ) {
+        /** Categories present in the list, in a fixed order, for the filter bar. */
+        val categories: List<String>
+            get() = CATEGORY_ORDER.filter { c -> fertilizers.any { it.category == c } }
+
+        /** The list after the search text and category filter; an unknown category shows under All only. */
+        val visibleFertilizers: List<Fertilizer>
+            get() = fertilizers.filter { f ->
+                (category == null || f.category == category) &&
+                    (query.isBlank() || f.name.orEmpty().contains(query.trim(), ignoreCase = true))
+            }
+    }
 
     /** What the price sheet needs: the price options and the saved answer, if any. */
     data class PriceOptions(
@@ -133,6 +150,10 @@ class FertilizerViewModel @AssistedInject constructor(
             )
         )
     }
+
+    fun onQueryChange(query: String) = _uiState.update { it.copy(query = query) }
+
+    fun onCategoryChange(category: String?) = _uiState.update { it.copy(category = category) }
 
     fun toggleLayout() {
         val newValue = !_uiState.value.isGridLayout
