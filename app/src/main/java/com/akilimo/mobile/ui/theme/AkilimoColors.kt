@@ -181,8 +181,9 @@ val AkilimoDarkColorScheme = darkColorScheme(
 )
 
 // ── Signed-in look: the IITA logo colours ────────────────────────────────────
-// A farmer who is signed in gets a theme that blends with the IITA and CGIAR logo at iita.org: the IITA orange and the
-// CGIAR dark green. Both values were sampled from the logo image, not guessed.
+// A farmer who is signed in gets a theme that blends with the IITA and CGIAR logo at iita.org. AKILIMO is an IITA
+// product and IITA is a CGIAR centre, so the theme uses the IITA orange and the CGIAR dark green of the network.
+// Both values were sampled from the logo image, not guessed.
 val IitaOrange = Color(0xFFF26422)
 val CgiarGreen = Color(0xFF07362A)
 
