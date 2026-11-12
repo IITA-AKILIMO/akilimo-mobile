@@ -20,8 +20,8 @@ class SignedInThemeTest {
 
     @Test
     fun `the brand colours are the ones sampled from the IITA logo`() {
-        assertEquals(Color(0xFFF26522), IitaOrange)
-        assertEquals(Color(0xFF033529), IitaGreen)
+        assertEquals(Color(0xFFF26422), IitaOrange)
+        assertEquals(Color(0xFF07362A), CgiarGreen)
     }
 
     @Test

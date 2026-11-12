@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.material3.Surface
 import androidx.compose.ui.text.style.TextOverflow
 import com.akilimo.mobile.ui.theme.iitaAccentContainer
@@ -187,8 +188,33 @@ fun HubScreen(
                     subtitle = stringResource(R.string.msg_hub_settings_desc),
                     onClick = { navController.navigateIfResumed(SettingsRoute) },
                 )
+                // Signed in: the IITA and CGIAR logo, so the look matches the colours of the signed-in theme
+                if (signedInAs != null) PartnerLogo()
             }
         }
+    }
+}
+
+/** The IITA and CGIAR logo on white (the image has a white background, so it sits on a white card in either theme). */
+@Composable
+private fun PartnerLogo() {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = AkilimoSpacing.xs),
+        shape = MaterialTheme.shapes.medium,
+        color = Color.White,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Image(
+            painter = painterResource(R.drawable.logo_iita_cgiar),
+            contentDescription = stringResource(R.string.account_logo_description),
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(72.dp)
+                .padding(AkilimoSpacing.xs),
+        )
     }
 }
 

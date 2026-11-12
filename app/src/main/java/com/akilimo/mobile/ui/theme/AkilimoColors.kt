@@ -181,14 +181,14 @@ val AkilimoDarkColorScheme = darkColorScheme(
 )
 
 // ── Signed-in look: the IITA logo colours ────────────────────────────────────
-// A farmer who is signed in gets a theme that blends with the IITA logo at iita.org: its deep green and its orange.
-// Both values were sampled from the logo image, not guessed.
-val IitaOrange = Color(0xFFF26522)
-val IitaGreen = Color(0xFF033529)
+// A farmer who is signed in gets a theme that blends with the IITA and CGIAR logo at iita.org: the IITA orange and the
+// CGIAR dark green. Both values were sampled from the logo image, not guessed.
+val IitaOrange = Color(0xFFF26422)
+val CgiarGreen = Color(0xFF07362A)
 
-/** Light theme for a signed-in farmer: the IITA green as the primary colour. Every pair keeps 4.5:1 contrast. */
+/** Light theme for a signed-in farmer: the CGIAR dark green as the primary colour. Every pair keeps 4.5:1 contrast. */
 val AkilimoIitaLightColorScheme = AkilimoLightColorScheme.copy(
-    primary = IitaGreen,
+    primary = CgiarGreen,
     onPrimary = Color(0xFFFFFFFF),
     primaryContainer = Color(0xFFD3E8DE),
     onPrimaryContainer = Color(0xFF002117),
@@ -198,7 +198,7 @@ val AkilimoIitaLightColorScheme = AkilimoLightColorScheme.copy(
 val AkilimoIitaDarkColorScheme = AkilimoDarkColorScheme.copy(
     primary = IitaOrange,
     onPrimary = Color(0xFF2B0D00),
-    primaryContainer = IitaGreen,
+    primaryContainer = CgiarGreen,
     onPrimaryContainer = Color(0xFFBFE3D2),
 )
 
