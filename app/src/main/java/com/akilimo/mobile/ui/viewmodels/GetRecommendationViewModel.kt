@@ -11,7 +11,11 @@ import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.network.dto.UserFeedBackRequest
 import com.akilimo.mobile.enums.EnumServiceType
 import com.akilimo.mobile.enums.EnumUseCase
+import com.akilimo.mobile.data.account.AccountSessionStore
 import com.akilimo.mobile.network.AkilimoApi
+import com.akilimo.mobile.network.dto.RecommendationResponse
+import com.akilimo.mobile.network.request.RecommendationRequest
+import com.akilimo.mobile.repos.account.SavedAdviceRepo
 import com.akilimo.mobile.network.ApiClient
 import com.akilimo.mobile.network.parseError
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -28,6 +32,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -37,13 +42,20 @@ class GetRecommendationViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val appSettings: AppSettingsDataStore,
     private val database: AppDatabase,
+    private val accountSession: AccountSessionStore,
+    private val savedAdvice: SavedAdviceRepo,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     sealed interface UiState {
         data object Idle : UiState
         data object Loading : UiState
-        data class Success(val title: String, val description: String) : UiState
+        data class Success(
+            val title: String,
+            val description: String,
+            /** True when the advice was kept in the farmer's account (signed in, consent given). */
+            val savedToAccount: Boolean = false,
+        ) : UiState
 
         /** [messageRes] is resolved by the screen so it follows the in-app locale. */
         data class Error(@StringRes val messageRes: Int) : UiState
@@ -94,7 +106,9 @@ class GetRecommendationViewModel @Inject constructor(
                 }
 
                 val base = AppConfig.resolveBaseUrlFor(context, EnumServiceType.AKILIMO)
-                val client = ApiClient.createService<AkilimoApi>(context, base)
+                // A signed-in farmer's token goes along, so the server saves the advice in their account;
+                // without one the call is anonymous, exactly as before.
+                val client = ApiClient.createService<AkilimoApi>(context, base, bearerToken = { accountSession.token })
                 val result = client.computeRecommendations(payload)
 
                 if (result.isSuccessful) {
@@ -102,7 +116,8 @@ class GetRecommendationViewModel @Inject constructor(
                     _uiState.value = if (resp != null) {
                         UiState.Success(
                             title = resp.data.recType,
-                            description = resp.data.recommendation
+                            description = resp.data.recommendation,
+                            savedToAccount = keepInAccount(useCase, payload, resp),
                         )
                     } else {
                         UiState.Error(R.string.lbl_no_recommendations_prompt)
@@ -125,6 +140,25 @@ class GetRecommendationViewModel @Inject constructor(
                 )
             }
         }
+
+    /** Keeps a copy on the phone for the saved-advice list; the server saved its own when the token was valid. */
+    private suspend fun keepInAccount(useCase: EnumUseCase, payload: RecommendationRequest, resp: RecommendationResponse): Boolean {
+        val session = accountSession.session.value ?: return false
+        if (session.consentRequired) return false
+        savedAdvice.saveComputed(
+            requestId = resp.requestId,
+            useCase = useCase.name,
+            countryCode = payload.computeRequest.farmInformation.countryCode,
+            recType = resp.data.recType,
+            recommendation = resp.data.recommendation,
+        )
+        return true
+    }
+
+    /** True while a farmer is signed in, so the screen can say the advice is saved or offer to save it. */
+    val signedIn: StateFlow<Boolean> = accountSession.session
+        .map { it != null && !it.consentRequired }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), accountSession.isSignedIn)
 
     fun submitFeedback(useCase: EnumUseCase, rating: Int, npsScore: Int) =
         viewModelScope.launch {
