@@ -109,6 +109,9 @@ Done on the UI design work:
 - [x] Steps screen: progress summary and raised step cards with status chips.
 - [x] Option cards, segmented market choice, label-above fields, grouped form cards.
 - [x] Settings as grouped cards; dates and onboarding sections on cards.
+- [x] Settings: Light / System / Dark selector and an app-wide Text size selector with a sample line.
+- [x] Fertilizer list: search box and category bar (All, Single nutrient, Compound, Other), only for lists over 10 items.
+- [x] Dates: planting picker opens on today; each date field shows its allowed window.
 
 Open decisions and known gaps:
 
@@ -120,10 +123,10 @@ Open decisions and known gaps:
 ## 11. Backlog ideas
 
 Quick wins:
-- [ ] App-wide text size setting in Settings (today only on the recommendation result).
-- [ ] Hub greeting with the farmer's name.
-- [ ] Fertilizer category filter and search (the category is already stored).
-- [ ] Planting date picker starting at today, with a plain note on the allowed window.
+- [x] App-wide text size setting in Settings (Normal, Large, Largest; applies through the theme).
+- [ ] Hub greeting with the farmer's name (skipped: the welcome text was removed from the hub header).
+- [x] Fertilizer category filter and search (shown only when the list has more than 10 items).
+- [x] Planting date picker starting at today, with a plain note on the allowed window.
 
 Medium:
 - [ ] Sync and offline status strip (needs a sync-state source).
@@ -132,7 +135,7 @@ Medium:
 - [ ] Skeleton loaders and one shared look for empty and error states.
 
 Larger or needs a decision:
-- [ ] Read-aloud (text to speech) for advice; icons plus short words on key actions.
+- [ ] Read-aloud (text to speech) for advice; icons plus short words on key actions. - SKIP
 - [ ] Shorter first run: ask only what a first recommendation needs, collect the rest later.
 - [ ] Landscape and tablet layouts on every screen.
-- [ ] Full TalkBack, 200% font and dark-mode accessibility pass.
+- [ ] Full TalkBack, 200% font and dark-mode accessibility pass.  - SKIP
