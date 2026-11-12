@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    AKILIMO head-only mark (leaf, face and circuit nodes, no lettering), cropped from
-    ic_akilimo_logo_white. Sized to sit inside the circle the system masks the splash icon to.
+    AKILIMO head-only mark (leaf, face and circuit nodes, no lettering), cut from the paths of
+    ic_akilimo_logo_white. The splash icon is a 200 x 200 square: the system shows only the circle
+    two-thirds of its width (about 133 units), so the head is scaled to fill that circle.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="105dp"
-    android:height="140dp"
-    android:viewportWidth="204"
-    android:viewportHeight="272">
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
     <group
-        android:translateX="-198"
-        android:translateY="4">
+        android:scaleX="0.3824"
+        android:scaleY="0.3824"
+        android:translateX="-14.71"
+        android:translateY="49.53">
+        <!-- Cut the full logo's long stem and its L foot: keep the head and a short stem -->
+        <clip-path android:pathData="M198,-4h204v272h-204z" />
         <path
             android:fillColor="#FFFFFF"
             android:pathData="M300.79,47.55a6.51,6.51 0,1 0,6.51 6.51,6.51 6.51,0 0,0 -6.51,-6.51" />
