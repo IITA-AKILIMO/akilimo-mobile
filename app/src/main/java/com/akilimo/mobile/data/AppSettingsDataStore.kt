@@ -93,11 +93,12 @@ fun ThemeMode.toNightMode(): Int = when (this) {
 /**
  * Reads [Keys.THEME_MODE]; before it existed only the on/off "darkMode" flag was stored. That flag
  * defaulted to off and cannot tell "chose light" from "never touched", so on maps to DARK and off
- * (or missing) maps to SYSTEM.
+ * (or missing) maps to LIGHT: the app starts light and only follows the phone or goes dark when
+ * the user picks that in Settings.
  */
 internal fun Preferences.themeMode(): ThemeMode =
     this[Keys.THEME_MODE]?.let { stored -> ThemeMode.entries.firstOrNull { it.name == stored } }
-        ?: if (this[Keys.DARK_MODE] == true) ThemeMode.DARK else ThemeMode.SYSTEM
+        ?: if (this[Keys.DARK_MODE] == true) ThemeMode.DARK else ThemeMode.LIGHT
 
 @Singleton
 class AppSettingsDataStore @Inject constructor(

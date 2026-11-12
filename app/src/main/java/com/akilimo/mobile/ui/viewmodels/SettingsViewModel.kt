@@ -33,7 +33,7 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     data class UiState(
-        val themeMode: ThemeMode = ThemeMode.SYSTEM,
+        val themeMode: ThemeMode = ThemeMode.LIGHT,
         val languageTag: String = Locales.english.toLanguageTag(),
         val rememberAreaUnit: Boolean = false,
         val fertilizerGrid: Boolean = false,
