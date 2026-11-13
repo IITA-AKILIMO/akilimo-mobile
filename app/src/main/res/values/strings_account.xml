@@ -75,7 +75,7 @@
     <string name="saved_advice_share_subject">My AKILIMO advice</string>
     <string name="saved_advice_delete">Delete</string>
     <string name="saved_advice_delete_title">Delete this advice?</string>
-    <string name="saved_advice_delete_body">It is removed from your account and from this phone.</string>
+    <string name="saved_advice_delete_body">It is removed from your account and from this phone. The request may be kept without your name, for statistics.</string>
     <string name="saved_advice_text_unavailable">The text is not on your phone yet. Connect to the internet to load it.</string>
     <string name="saved_advice_not_found">This advice is no longer available.</string>
 
@@ -127,6 +127,6 @@
     <string name="saved_advice_more_options">More options</string>
     <string name="saved_advice_delete_all">Delete all saved advice</string>
     <string name="saved_advice_delete_all_title">Delete all saved advice?</string>
-    <string name="saved_advice_delete_all_body">All your saved advice is removed from your account and from this phone. Your account stays. This cannot be undone.</string>
+    <string name="saved_advice_delete_all_body">All your saved advice is removed from your account and from this phone. Your account stays. The requests may be kept without your name, for statistics. This cannot be undone.</string>
     <string name="saved_advice_delete_all_confirm">Delete all</string>
 </resources>
