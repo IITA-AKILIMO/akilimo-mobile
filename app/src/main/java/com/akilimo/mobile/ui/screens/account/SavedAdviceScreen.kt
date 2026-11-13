@@ -54,7 +54,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -98,7 +98,7 @@ fun SavedAdviceScreen(
     var confirmDeleteAll by rememberSaveable { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val resources = LocalContext.current.resources
+    val resources = LocalResources.current
     val undoLabel = stringResource(R.string.saved_advice_undo)
     val filtered = state.filter.useCase != null || state.filter.country != null
 
