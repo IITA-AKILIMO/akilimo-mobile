@@ -1,23 +1,36 @@
 name: CI Checks
 
+# Files that change what the checks see. The Room schemas, the detekt and lint settings and the Gradle files are outside
+# app/src, so they are listed too: a schema-only change must still run the schema drift check.
 on:
   push:
     paths:
       - 'app/src/**'
+      - 'app/schemas/**'
+      - 'app/*.xml'
+      - 'app/*.yml'
+      - 'app/*.pro'
+      - 'app/*.json'
       - '.github/**'
       - '**/*.gradle*'
       - 'gradle.properties'
-      - 'gradle/libs.versions.toml'
+      - 'gradle/**'
+  # Every pull request, not only those into develop, so a stacked branch is checked as well
   pull_request:
-    branches: [develop]
     paths:
       - 'app/src/**'
+      - 'app/schemas/**'
+      - 'app/*.xml'
+      - 'app/*.yml'
+      - 'app/*.pro'
+      - 'app/*.json'
       - '.github/**'
       - '**/*.gradle*'
       - 'gradle.properties'
-      - 'gradle/libs.versions.toml'
+      - 'gradle/**'
   workflow_dispatch:
 
+# A push and the pull request of the same branch share one group, so the newer run replaces the older
 concurrency:
   group: ci-checks-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
@@ -25,19 +38,17 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
-  MAPBOX_RUNTIME_TOKEN: ${{ secrets.MAPBOX_RUNTIME_TOKEN }}
-  AKILIMO_API_KEY: ${{ secrets.AKILIMO_API_KEY }}
-  LOCATION_IQ_TOKEN: ${{ secrets.LOCATION_IQ_TOKEN }}
-  WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
-
 jobs:
   checks:
     runs-on: ubuntu-24.04
     name: Unit tests, Lint & Detekt
-    outputs:
-      release_version: ${{ steps.get_version.outputs.release_version }}
+    timeout-minutes: 30
+
+    # Only what the build needs to download the Mapbox SDK. The other keys (the AKILIMO API key, map, weather and geocoding
+    # tokens) are not needed by unit tests, lint or detekt: the build falls back to empty values, and pull-request code
+    # must not be able to read the real ones.
+    env:
+      MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4.4.0
@@ -55,33 +66,53 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
 
-      - name: Install tag fetcher
-        run: pip install latest_tag==1.0.4
-
-      - name: Fetch latest tag
-        id: get_version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO_NAME: ${{ secrets.REPO_NAME }}
-        run: |
-          fetch-tag > latest_tag.txt
-          echo "RELEASE_VERSION=$(cat latest_tag.txt)" >> $GITHUB_ENV
-          echo "release_version=$(cat latest_tag.txt)" >> $GITHUB_OUTPUT
-
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # --continue: a failing test must not stop lint and detekt from running, so one run reports everything that is wrong.
+      # The Mapbox token comes from the environment (settings.gradle.kts reads it), not from -P on the command line.
       - name: Run unit tests, lint & detekt
-        run: ./gradlew testDebugUnitTest lintDebug detekt --no-daemon -PMAPBOX_DOWNLOADS_TOKEN=${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+        run: ./gradlew testDebugUnitTest lintDebug detekt --continue --build-cache
 
-      # Plain git instead of tj-actions/verify-changed-files (compromised in 2025)
+      # Plain git instead of tj-actions/verify-changed-files (compromised in 2025). Runs even when the checks above failed.
       - name: Fail on Room schema drift
+        if: always()
         run: |
           if [ -n "$(git status --porcelain -- app/schemas)" ]; then
             git status --porcelain -- app/schemas
             echo "::error::Room schema files changed without a version bump or uncommitted schema export."
             exit 1
           fi
+
+      - name: Summarise the test results
+        if: always()
+        run: |
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import glob
+          import xml.etree.ElementTree as ET
+
+          files = glob.glob("app/build/test-results/testDebugUnitTest/*.xml")
+          if not files:
+              print("## Unit tests\n\nNo test report was written (the build stopped before the tests ran).")
+              raise SystemExit
+
+          total = failed = skipped = 0
+          failures = []
+          for path in files:
+              for case in ET.parse(path).getroot().iter("testcase"):
+                  total += 1
+                  if case.find("skipped") is not None:
+                      skipped += 1
+                  if case.find("failure") is not None or case.find("error") is not None:
+                      failed += 1
+                      failures.append(f"{case.get('classname', '').split('.')[-1]}: {case.get('name', '')}")
+
+          print(f"## Unit tests\n\n{total} run, {failed} failed, {skipped} skipped.\n")
+          for line in failures[:30]:
+              print(f"- `{line}`")
+          if len(failures) > 30:
+              print(f"- ... and {len(failures) - 30} more")
+          PY
 
       - name: Upload test results
         if: always()
