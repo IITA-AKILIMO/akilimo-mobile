@@ -54,14 +54,19 @@ jobs:
       - name: Check author is an allowed bot
         if: steps.pr.outputs.skip != 'true'
         id: gate
+        env:
+          PR_AUTHOR: ${{ steps.pr.outputs.author }}
+          ALLOWED_BOTS: 'github-actions[bot] dependabot[bot] app/dependabot munywele-bot[bot]'
         run: |
-          case "${{ steps.pr.outputs.author }}" in
-            github-actions\[bot\]|dependabot\[bot\]|munywele-bot\[bot\])
-              echo "allowed=true" >> "$GITHUB_OUTPUT" ;;
-            *)
-              echo "Author '${{ steps.pr.outputs.author }}' is not an allowed bot — skipping."
-              echo "allowed=false" >> "$GITHUB_OUTPUT" ;;
-          esac
+          read -ra bots <<< "$ALLOWED_BOTS"
+          
+          if [[ " ${bots[*]} " == *" $PR_AUTHOR "* ]]; then
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+            echo "Author '$PR_AUTHOR' is allowed."
+          else
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+            echo "Author '$PR_AUTHOR' is not an allowed bot — skipping."
+          fi
 
       - name: Generate GitHub App Token
         if: steps.gate.outputs.allowed == 'true'
