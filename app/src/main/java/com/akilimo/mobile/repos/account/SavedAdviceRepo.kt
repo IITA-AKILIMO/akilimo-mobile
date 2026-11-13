@@ -12,9 +12,15 @@ import java.time.OffsetDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Narrows the saved-advice list; null means "any". */
+data class AdviceFilter(val useCase: String? = null, val country: String? = null)
+
 /**
  * The farmer's saved advice: a copy on the phone (so the list opens offline) kept in step with the account on the server.
  * Nothing is read or written unless a farmer who has given consent is signed in.
+ *
+ * Built for a long history (thousands of items): the list is read from the phone a screenful at a time, and a refresh costs
+ * one small request when nothing changed.
  */
 @Singleton
 class SavedAdviceRepo(
@@ -30,15 +36,27 @@ class SavedAdviceRepo(
     /** The signed-in farmer's id, or null while nobody is signed in or consent is still missing. */
     private fun activeAccount(): Long? = sessionStore.session.value?.takeIf { !it.consentRequired }?.accountId
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun observeAll(): Flow<List<SavedAdvice>> = sessionStore.session.flatMapLatest { session ->
-        if (session == null || session.consentRequired) flowOf(emptyList()) else dao.observe(session.accountId)
+    /** The first [limit] items that match [filter], newest first. The screen raises [limit] as the farmer scrolls. */
+    fun observePage(filter: AdviceFilter, limit: Int): Flow<List<SavedAdvice>> = whenActive(emptyList()) { account ->
+        dao.observePage(account, filter.useCase, filter.country, limit)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun observe(requestId: String): Flow<SavedAdvice?> = sessionStore.session.flatMapLatest { session ->
-        if (session == null || session.consentRequired) flowOf(null) else dao.observeOne(session.accountId, requestId)
+    /** How many items match [filter] in all, not only the ones on screen. */
+    fun observeCount(filter: AdviceFilter): Flow<Int> = whenActive(0) { account ->
+        dao.observeCount(account, filter.useCase, filter.country)
     }
+
+    fun observeUseCases(): Flow<List<String>> = whenActive(emptyList()) { dao.observeUseCases(it) }
+
+    fun observeCountries(): Flow<List<String>> = whenActive(emptyList()) { dao.observeCountries(it) }
+
+    fun observe(requestId: String): Flow<SavedAdvice?> = whenActive(null) { dao.observeOne(it, requestId) }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun <T> whenActive(none: T, source: (Long) -> Flow<T>): Flow<T> =
+        sessionStore.session.flatMapLatest { session ->
+            if (session == null || session.consentRequired) flowOf(none) else source(session.accountId)
+        }
 
     /** Keeps the advice just computed (the answer carries the id of the row the server saved). */
     suspend fun saveComputed(
@@ -62,18 +80,48 @@ class SavedAdviceRepo(
         )
     }
 
-    /** Pulls the account's list from the server and merges it in; text already on the phone is kept. */
+    /**
+     * Brings the phone in step with the account, cheaply:
+     *  1. one small request for the ids of everything on the server;
+     *  2. items the server no longer has are dropped here (deleted from another phone);
+     *  3. only the items the phone is missing are downloaded, newest first, and paging stops as soon as they are all found.
+     * With nothing new that is the whole refresh. A new phone with a long history pages through all of it, 100 at a time.
+     * Text already on the phone is kept.
+     */
     suspend fun refresh(): AccountResult<Unit> {
         val account = activeAccount() ?: return AccountResult.Failure(AccountError.SESSION_EXPIRED)
+
+        val idsResult = calls.execute(authenticated = true) { it.historyIds() }
+        if (idsResult is AccountResult.Failure) return idsResult
+        val ids = (idsResult as AccountResult.Success).value
+        val serverIds = ids.data.toSet()
+        val truncated = ids.meta?.truncated == true
+
+        val localIds = dao.allIds(account).toSet()
+        if (!truncated) {
+            // The list is complete, so anything the phone has beyond it was deleted elsewhere
+            (localIds - serverIds).chunked(DELETE_CHUNK).forEach { dao.deleteMany(account, it) }
+        }
+        // null: the id list was cut (a very long history), so what is missing is not known up front
+        var missing: Set<String>? = if (truncated) null else serverIds - localIds
+        if (missing?.isEmpty() == true) return AccountResult.Success(Unit)
+
         var page = 1
         while (page <= MAX_PAGES) {
             val result = calls.execute(authenticated = true) { it.history(page = page, perPage = PAGE_SIZE) }
             if (result is AccountResult.Failure) return result
             val body = (result as AccountResult.Success).value
-            val known = body.data.associate { it.requestId to dao.find(account, it.requestId) }
-            dao.upsertAll(body.data.map { item -> item.toEntity(account, known[item.requestId]) })
+
+            val onPhone = dao.findMany(account, body.data.map { it.requestId }).associateBy { it.requestId }
+            dao.upsertAll(body.data.map { item -> item.toEntity(account, onPhone[item.requestId]) })
+
             val last = body.meta?.lastPage ?: page
             if (page >= last) break
+            val stillMissing = missing?.minus(body.data.map { it.requestId }.toSet())
+            missing = stillMissing
+            // Stop when everything missing was found; with a cut id list, when a page was already all on the phone
+            val done = stillMissing?.isEmpty() ?: body.data.all { it.requestId in onPhone }
+            if (done) break
             page++
         }
         return AccountResult.Success(Unit)
@@ -104,6 +152,18 @@ class SavedAdviceRepo(
         }
     }
 
+    /** Removes all saved advice from the account and from the phone; the account itself stays. */
+    suspend fun deleteAll(): AccountResult<Unit> {
+        val account = activeAccount() ?: return AccountResult.Failure(AccountError.SESSION_EXPIRED)
+        return when (val result = calls.execute(authenticated = true) { it.deleteAllHistory() }) {
+            is AccountResult.Failure -> result
+            is AccountResult.Success -> {
+                dao.deleteForAccount(account)
+                AccountResult.Success(Unit)
+            }
+        }
+    }
+
     /** Wipes every saved item from the phone (sign-out, account deletion). */
     suspend fun clearAll() = dao.deleteAll()
 
@@ -126,7 +186,12 @@ class SavedAdviceRepo(
         value?.let { runCatching { OffsetDateTime.parse(it).toInstant().toEpochMilli() }.getOrNull() }
 
     private companion object {
-        const val PAGE_SIZE = 50
-        const val MAX_PAGES = 10
+        /** The API's largest page. */
+        const val PAGE_SIZE = 100
+
+        /** A safety stop at 20,000 items. */
+        const val MAX_PAGES = 200
+
+        const val DELETE_CHUNK = 500
     }
 }

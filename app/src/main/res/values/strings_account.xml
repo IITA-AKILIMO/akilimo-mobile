@@ -116,4 +116,17 @@
     <string name="settings_about_body">AKILIMO gives smallholder farmers advice that fits their own farm, for example on fertilizer, planting and intercropping. The advice is worked out from your farm\'s location and the answers you give.</string>
     <string name="settings_nigeria_site">AKILIMO Nigeria website</string>
     <string name="settings_nigeria_site_sub">For farmers in Nigeria</string>
+    <!-- Saved advice: a long list -->
+    <plurals name="saved_advice_count">
+        <item quantity="one">%1$d saved advice</item>
+        <item quantity="other">%1$d saved advice</item>
+    </plurals>
+    <string name="saved_advice_filter_all">All</string>
+    <string name="saved_advice_no_match_title">Nothing matches</string>
+    <string name="saved_advice_no_match_msg">No saved advice fits this filter. Choose All to see everything.</string>
+    <string name="saved_advice_more_options">More options</string>
+    <string name="saved_advice_delete_all">Delete all saved advice</string>
+    <string name="saved_advice_delete_all_title">Delete all saved advice?</string>
+    <string name="saved_advice_delete_all_body">All your saved advice is removed from your account and from this phone. Your account stays. This cannot be undone.</string>
+    <string name="saved_advice_delete_all_confirm">Delete all</string>
 </resources>

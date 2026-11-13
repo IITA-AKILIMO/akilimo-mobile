@@ -76,6 +76,8 @@ data class MessageResponse(
     @param:Json(name = "message") val message: String? = null,
     /** Consent: how many earlier requests of this phone were linked to the account. */
     @param:Json(name = "claimed_requests") val claimedRequests: Int = 0,
+    /** Delete all saved advice: how many items the server removed. */
+    @param:Json(name = "deleted") val deleted: Int = 0,
 )
 
 /** A saved recommendation in the history list; the detail view also carries [result]. */
@@ -97,3 +99,16 @@ data class HistoryResultDto(
 
 @JsonClass(generateAdapter = true)
 data class HistoryDetailResponse(@param:Json(name = "data") val data: HistoryItemDto)
+
+/** The ids of all saved advice, newest first (at most 5000; [IdsMeta.truncated] says when the list was cut). */
+@JsonClass(generateAdapter = true)
+data class HistoryIdsResponse(
+    @param:Json(name = "data") val data: List<String>,
+    @param:Json(name = "meta") val meta: IdsMeta? = null,
+)
+
+@JsonClass(generateAdapter = true)
+data class IdsMeta(
+    @param:Json(name = "count") val count: Int = 0,
+    @param:Json(name = "truncated") val truncated: Boolean = false,
+)

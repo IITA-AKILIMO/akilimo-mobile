@@ -5,6 +5,7 @@ import com.akilimo.mobile.network.dto.AuthResponse
 import com.akilimo.mobile.network.dto.ConsentRequest
 import com.akilimo.mobile.network.dto.ForgotPasswordRequest
 import com.akilimo.mobile.network.dto.HistoryDetailResponse
+import com.akilimo.mobile.network.dto.HistoryIdsResponse
 import com.akilimo.mobile.network.dto.HistoryItemDto
 import com.akilimo.mobile.network.dto.MessageResponse
 import com.akilimo.mobile.network.dto.PagedResponse
@@ -71,6 +72,11 @@ interface AccountApi {
         @Query("per_page") perPage: Int = 50,
     ): Response<PagedResponse<HistoryItemDto>>
 
+    /** The ids of all saved items: the phone drops its copies of items deleted elsewhere, and finds what it is missing. */
+    @Headers(CLIENT_ID_HEADER)
+    @GET("v1/account/history/ids")
+    suspend fun historyIds(): Response<HistoryIdsResponse>
+
     @Headers(CLIENT_ID_HEADER)
     @GET("v1/account/history/{requestId}")
     suspend fun historyItem(@Path("requestId") requestId: String): Response<HistoryDetailResponse>
@@ -78,6 +84,11 @@ interface AccountApi {
     @Headers(CLIENT_ID_HEADER)
     @DELETE("v1/account/history/{requestId}")
     suspend fun deleteHistoryItem(@Path("requestId") requestId: String): Response<MessageResponse>
+
+    /** Deletes all saved advice and keeps the account. */
+    @Headers(CLIENT_ID_HEADER)
+    @DELETE("v1/account/history")
+    suspend fun deleteAllHistory(): Response<MessageResponse>
 
     /** Deletes the account. Past requests stay as anonymous statistics (the link to the person is removed). */
     @Headers(CLIENT_ID_HEADER)
