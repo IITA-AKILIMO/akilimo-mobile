@@ -7,6 +7,7 @@ import com.akilimo.mobile.data.account.FakeSessionStorage
 import com.akilimo.mobile.data.account.FakeTokenCipher
 import com.akilimo.mobile.entities.SavedAdvice
 import com.akilimo.mobile.network.AccountApi
+import com.akilimo.mobile.network.dto.DeleteItemsRequest
 import com.akilimo.mobile.network.dto.HistoryDetailResponse
 import com.akilimo.mobile.network.dto.HistoryIdsResponse
 import com.akilimo.mobile.network.dto.HistoryItemDto
@@ -20,6 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -381,5 +383,54 @@ class SavedAdviceRepoTest {
 
         assertEquals(AccountResult.Failure(AccountError.SERVER), repo.deleteAll())
         assertEquals(2, dao.rows.value.size)
+    }
+
+    // ── Deleting several ─────────────────────────────────────────────────────
+
+    @Test
+    fun `deleting several sends one request and drops them from the phone`() = runTest {
+        signIn()
+        dao.upsertAll(listOf(advice("r1", 1), advice("r2", 2), advice("r3", 3)))
+        val sent = slot<DeleteItemsRequest>()
+        coEvery { api.deleteHistoryItems(capture(sent)) } returns Response.success(MessageResponse("ok", deleted = 2))
+
+        assertEquals(AccountResult.Success(Unit), repo.deleteMany(listOf("r1", "r3", "r1")))
+
+        assertEquals(listOf("r1", "r3"), sent.captured.ids)               // each id once
+        assertEquals(listOf("r2"), dao.rows.value.map { it.requestId })
+        coVerify(exactly = 1) { api.deleteHistoryItems(any()) }
+    }
+
+    @Test
+    fun `a long selection goes in requests of at most 500 ids`() = runTest {
+        signIn()
+        val ids = (1..1200).map { "d$it" }
+        dao.upsertAll(ids.map { advice(it, 1) })
+        val sizes = mutableListOf<Int>()
+        coEvery { api.deleteHistoryItems(any()) } answers {
+            sizes += firstArg<DeleteItemsRequest>().ids.size
+            Response.success(MessageResponse("ok"))
+        }
+
+        repo.deleteMany(ids)
+
+        assertEquals(listOf(500, 500, 200), sizes)
+        assertEquals(0, dao.rows.value.size)
+    }
+
+    @Test
+    fun `a failed request keeps its items and stops`() = runTest {
+        signIn()
+        dao.upsertAll(listOf(advice("r1", 1), advice("r2", 2)))
+        coEvery { api.deleteHistoryItems(any()) } returns error(500)
+
+        assertEquals(AccountResult.Failure(AccountError.SERVER), repo.deleteMany(listOf("r1", "r2")))
+        assertEquals(2, dao.rows.value.size)
+    }
+
+    @Test
+    fun `deleting several does nothing while signed out`() = runTest {
+        assertEquals(AccountResult.Failure(AccountError.SESSION_EXPIRED), repo.deleteMany(listOf("r1")))
+        coVerify(exactly = 0) { api.deleteHistoryItems(any()) }
     }
 }

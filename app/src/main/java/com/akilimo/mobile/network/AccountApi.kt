@@ -3,6 +3,7 @@ package com.akilimo.mobile.network
 import com.akilimo.mobile.network.dto.AccountLoginRequest
 import com.akilimo.mobile.network.dto.AuthResponse
 import com.akilimo.mobile.network.dto.ConsentRequest
+import com.akilimo.mobile.network.dto.DeleteItemsRequest
 import com.akilimo.mobile.network.dto.ForgotPasswordRequest
 import com.akilimo.mobile.network.dto.HistoryDetailResponse
 import com.akilimo.mobile.network.dto.HistoryIdsResponse
@@ -84,6 +85,11 @@ interface AccountApi {
     @Headers(CLIENT_ID_HEADER)
     @DELETE("v1/account/history/{requestId}")
     suspend fun deleteHistoryItem(@Path("requestId") requestId: String): Response<MessageResponse>
+
+    /** Deletes several saved items in one request (up to 500): swipe and multi-select in the app. */
+    @Headers(CLIENT_ID_HEADER)
+    @POST("v1/account/history/delete")
+    suspend fun deleteHistoryItems(@Body body: DeleteItemsRequest): Response<MessageResponse>
 
     /** Deletes all saved advice and keeps the account. */
     @Headers(CLIENT_ID_HEADER)

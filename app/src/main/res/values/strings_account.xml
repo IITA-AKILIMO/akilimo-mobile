@@ -129,4 +129,16 @@
     <string name="saved_advice_delete_all_title">Delete all saved advice?</string>
     <string name="saved_advice_delete_all_body">All your saved advice is removed from your account and from this phone. Your account stays. The requests may be kept without your name, for statistics. This cannot be undone.</string>
     <string name="saved_advice_delete_all_confirm">Delete all</string>
+    <!-- Saved advice: swipe and multi-select -->
+    <plurals name="saved_advice_deleted_count">
+        <item quantity="one">%1$d advice deleted</item>
+        <item quantity="other">%1$d advice deleted</item>
+    </plurals>
+    <plurals name="saved_advice_selected_count">
+        <item quantity="one">%1$d selected</item>
+        <item quantity="other">%1$d selected</item>
+    </plurals>
+    <string name="saved_advice_undo">Undo</string>
+    <string name="saved_advice_select_all">Select all</string>
+    <string name="saved_advice_swipe_delete">Swipe right to delete</string>
 </resources>

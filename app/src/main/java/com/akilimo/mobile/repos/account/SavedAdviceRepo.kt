@@ -3,6 +3,7 @@ package com.akilimo.mobile.repos.account
 import com.akilimo.mobile.dao.SavedAdviceDao
 import com.akilimo.mobile.data.account.AccountSessionStore
 import com.akilimo.mobile.entities.SavedAdvice
+import com.akilimo.mobile.network.dto.DeleteItemsRequest
 import com.akilimo.mobile.network.dto.HistoryItemDto
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -150,6 +151,21 @@ class SavedAdviceRepo(
             is AccountResult.Failure ->
                 if (result.error == AccountError.UNAVAILABLE) deleteLocal(account, requestId) else result
         }
+    }
+
+    /**
+     * Removes several items from the account and from the phone, a few hundred per request. The server keeps the requests for
+     * statistics, unlinked. If a request fails, the items in it (and any after it) stay where they are.
+     */
+    suspend fun deleteMany(requestIds: Collection<String>): AccountResult<Unit> {
+        val account = activeAccount() ?: return AccountResult.Failure(AccountError.SESSION_EXPIRED)
+        for (chunk in requestIds.distinct().chunked(DELETE_CHUNK)) {
+            when (val result = calls.execute(authenticated = true) { it.deleteHistoryItems(DeleteItemsRequest(chunk)) }) {
+                is AccountResult.Failure -> return result
+                is AccountResult.Success -> dao.deleteMany(account, chunk)
+            }
+        }
+        return AccountResult.Success(Unit)
     }
 
     /** Removes all saved advice from the account and from the phone; the account itself stays. */

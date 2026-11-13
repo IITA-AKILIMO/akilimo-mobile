@@ -1,7 +1,10 @@
 package com.akilimo.mobile.ui.screens.account
 
 import android.text.format.DateUtils
-import androidx.compose.foundation.clickable
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,10 +18,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.SelectAll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,17 +34,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +68,7 @@ import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.IconTile
 import com.akilimo.mobile.ui.components.compose.SkeletonList
 import com.akilimo.mobile.ui.components.compose.StateMessage
+import com.akilimo.mobile.ui.components.compose.TopBarNavigation
 import com.akilimo.mobile.ui.components.compose.cardSurface
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.screens.recommendations.navigateIfResumed
@@ -62,8 +79,9 @@ import com.akilimo.mobile.ui.viewmodels.SavedAdviceViewModel
 private const val LOAD_MORE_AHEAD = 8
 
 /**
- * The advice a farmer saved: read from the phone a screenful at a time (so a history of thousands stays quick and opens
- * offline), narrowed by use case and country, and refreshed from the account.
+ * The advice a farmer saved, laid out like a mail inbox: read from the phone a screenful at a time (so a history of thousands
+ * stays quick and opens offline), narrowed by use case and country, refreshed from the account. **Swipe an item to the right
+ * to delete it**, or long-press to select several and delete them together; both show an Undo for a few seconds.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,7 +97,31 @@ fun SavedAdviceScreen(
     var menuOpen by rememberSaveable { mutableStateOf(false) }
     var confirmDeleteAll by rememberSaveable { mutableStateOf(false) }
     val listState = rememberLazyListState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val resources = LocalContext.current.resources
+    val undoLabel = stringResource(R.string.saved_advice_undo)
     val filtered = state.filter.useCase != null || state.filter.country != null
+
+    // Back leaves the selection first, then the screen
+    BackHandler(enabled = state.selecting) { viewModel.clearSelection() }
+
+    // Leaving the screen sends what is waiting to be deleted rather than losing it
+    DisposableEffect(Unit) { onDispose { viewModel.flushPending() } }
+
+    // "N deleted. Undo", like a mail inbox
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            if (event is SavedAdviceViewModel.Event.Deleted) {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                val result = snackbarHostState.showSnackbar(
+                    message = resources.getQuantityString(R.plurals.saved_advice_deleted_count, event.count, event.count),
+                    actionLabel = undoLabel,
+                    duration = SnackbarDuration.Short,
+                )
+                if (result == SnackbarResult.ActionPerformed) viewModel.undo(event.batchId)
+            }
+        }
+    }
 
     // Reaching the end shows the next screenful
     LaunchedEffect(listState, items?.size) {
@@ -89,31 +131,48 @@ fun SavedAdviceScreen(
 
     Scaffold(
         topBar = {
-            BackTopAppBar(
-                title = stringResource(R.string.saved_advice_title),
-                onBack = { navController.popBackStackSafely() },
-                actions = {
-                    IconButton(onClick = viewModel::refresh, enabled = !state.refreshing) {
-                        Icon(Icons.Outlined.Refresh, contentDescription = stringResource(R.string.lbl_retry))
-                    }
-                    Box {
-                        IconButton(onClick = { menuOpen = true }) {
-                            Icon(Icons.Outlined.MoreVert, contentDescription = stringResource(R.string.saved_advice_more_options))
+            if (state.selecting) {
+                BackTopAppBar(
+                    title = pluralStringResource(R.plurals.saved_advice_selected_count, state.selected.size, state.selected.size),
+                    navigation = TopBarNavigation.CLOSE,
+                    onBack = viewModel::clearSelection,
+                    actions = {
+                        IconButton(onClick = viewModel::selectAll) {
+                            Icon(Icons.Outlined.SelectAll, contentDescription = stringResource(R.string.saved_advice_select_all))
                         }
-                        DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.saved_advice_delete_all), color = MaterialTheme.colorScheme.error) },
-                                onClick = {
-                                    menuOpen = false
-                                    confirmDeleteAll = true
-                                },
-                                enabled = !state.deleting,
-                            )
+                        IconButton(onClick = viewModel::deleteSelected) {
+                            Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.saved_advice_delete))
                         }
-                    }
-                },
-            )
+                    },
+                )
+            } else {
+                BackTopAppBar(
+                    title = stringResource(R.string.saved_advice_title),
+                    onBack = { navController.popBackStackSafely() },
+                    actions = {
+                        IconButton(onClick = viewModel::refresh, enabled = !state.refreshing) {
+                            Icon(Icons.Outlined.Refresh, contentDescription = stringResource(R.string.lbl_retry))
+                        }
+                        Box {
+                            IconButton(onClick = { menuOpen = true }) {
+                                Icon(Icons.Outlined.MoreVert, contentDescription = stringResource(R.string.saved_advice_more_options))
+                            }
+                            DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.saved_advice_delete_all), color = MaterialTheme.colorScheme.error) },
+                                    onClick = {
+                                        menuOpen = false
+                                        confirmDeleteAll = true
+                                    },
+                                    enabled = !state.deleting,
+                                )
+                            }
+                        }
+                    },
+                )
+            }
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             if (state.refreshing || state.deleting) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -160,7 +219,14 @@ fun SavedAdviceScreen(
                     verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
                 ) {
                     items(shown, key = { it.requestId }) { advice ->
-                        SavedAdviceRow(advice) { navController.navigateIfResumed(SavedAdviceDetailRoute(advice.requestId)) }
+                        SwipeableAdviceRow(
+                            advice = advice,
+                            selecting = state.selecting,
+                            selected = advice.requestId in state.selected,
+                            onOpen = { navController.navigateIfResumed(SavedAdviceDetailRoute(advice.requestId)) },
+                            onToggle = { viewModel.toggleSelected(advice.requestId) },
+                            onDelete = { viewModel.delete(advice.requestId) },
+                        )
                     }
                 }
             }
@@ -238,18 +304,80 @@ private fun FilterRow(
     }
 }
 
+/**
+ * One item. Swipe it to the right to delete it (with an Undo); long-press to start selecting, then tap to add or remove.
+ * Swiping is off while selecting, so the two never fight.
+ */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-private fun SavedAdviceRow(advice: SavedAdvice, onClick: () -> Unit) {
+private fun SwipeableAdviceRow(
+    advice: SavedAdvice,
+    selecting: Boolean,
+    selected: Boolean,
+    onOpen: () -> Unit,
+    onToggle: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.StartToEnd) {
+                onDelete()
+                true
+            } else {
+                false
+            }
+        },
+    )
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = !selecting,
+        enableDismissFromEndToStart = false,
+        backgroundContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.errorContainer, MaterialTheme.shapes.medium)
+                    .padding(horizontal = AkilimoSpacing.lg),
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = stringResource(R.string.saved_advice_delete),
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                )
+            }
+        },
+    ) {
+        SavedAdviceRow(
+            advice = advice,
+            selecting = selecting,
+            selected = selected,
+            modifier = Modifier.combinedClickable(
+                onClick = { if (selecting) onToggle() else onOpen() },
+                onLongClick = onToggle,
+            ),
+        )
+    }
+}
+
+@Composable
+private fun SavedAdviceRow(advice: SavedAdvice, selecting: Boolean, selected: Boolean, modifier: Modifier = Modifier) {
+    val highlight = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .cardSurface()
-            .clickable(onClick = onClick)
+            .background(highlight, MaterialTheme.shapes.medium)
+            .then(modifier)
             .padding(AkilimoSpacing.md),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
     ) {
-        IconTile(Icons.Outlined.Lightbulb)
+        if (selecting) {
+            Checkbox(checked = selected, onCheckedChange = null)
+        } else {
+            IconTile(Icons.Outlined.Lightbulb)
+        }
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.saved_advice_item_title, adviceKindLabel(advice.recType ?: advice.useCase)),

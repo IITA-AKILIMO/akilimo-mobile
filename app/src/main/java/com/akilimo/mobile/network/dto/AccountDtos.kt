@@ -112,3 +112,7 @@ data class IdsMeta(
     @param:Json(name = "count") val count: Int = 0,
     @param:Json(name = "truncated") val truncated: Boolean = false,
 )
+
+/** Delete several saved items at once (up to 500). */
+@JsonClass(generateAdapter = true)
+data class DeleteItemsRequest(@param:Json(name = "ids") val ids: List<String>)
