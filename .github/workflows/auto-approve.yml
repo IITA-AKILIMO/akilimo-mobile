@@ -9,6 +9,11 @@ concurrency:
   group: auto-approve-${{ github.event.workflow_run.id }}
   cancel-in-progress: true
 
+# Logins whose pull requests may be auto-approved, separated by spaces. GitHub CLI spells a bot as `name[bot]` or `app/name`,
+# so both forms are listed. To change the list without editing this file, set a repository variable called ALLOWED_BOTS.
+env:
+  ALLOWED_BOTS: ${{ vars.ALLOWED_BOTS || 'github-actions[bot] dependabot[bot] app/dependabot munywele-bot[bot] app/munywele-bot' }}
+
 jobs:
   pr-auto-approve:
     runs-on: ubuntu-24.04
@@ -56,7 +61,6 @@ jobs:
         id: gate
         env:
           PR_AUTHOR: ${{ steps.pr.outputs.author }}
-          ALLOWED_BOTS: 'github-actions[bot] dependabot[bot] app/dependabot munywele-bot[bot]'
         run: |
           read -ra bots <<< "$ALLOWED_BOTS"
           
