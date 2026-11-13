@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -60,6 +61,9 @@ class SavedAdviceViewModel @Inject constructor(
     sealed interface Event {
         /** [count] items were hidden and will be deleted soon; [batchId] undoes exactly that batch. */
         data class Deleted(val batchId: Long, val count: Int) : Event
+
+        /** Open the share sheet with this text (a left swipe on an item). */
+        data class Share(val text: String) : Event
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -147,6 +151,33 @@ class SavedAdviceViewModel @Inject constructor(
     }
 
     fun clearSelection() = _uiState.update { it.copy(selected = emptySet()) }
+
+    // ── Sharing ───────────────────────────────────────────────────────────────
+
+    /**
+     * Left swipe: share the advice text. If the phone does not have the text yet it is fetched first (the list carries none);
+     * when that fails the farmer is told, and nothing is shared.
+     */
+    fun share(requestId: String) {
+        val text = loaded.value?.firstOrNull { it.requestId == requestId }?.recommendation
+        if (text != null) {
+            _events.tryEmit(Event.Share(text))
+            return
+        }
+        viewModelScope.launch {
+            when (val result = repo.loadText(requestId)) {
+                is AccountResult.Failure -> _uiState.update { it.copy(messageRes = result.error.messageRes()) }
+                is AccountResult.Success -> {
+                    val loadedText = repo.observe(requestId).first()?.recommendation
+                    if (loadedText != null) {
+                        _events.tryEmit(Event.Share(loadedText))
+                    } else {
+                        _uiState.update { it.copy(messageRes = R.string.saved_advice_text_unavailable) }
+                    }
+                }
+            }
+        }
+    }
 
     // ── Deleting, with undo ───────────────────────────────────────────────────
 

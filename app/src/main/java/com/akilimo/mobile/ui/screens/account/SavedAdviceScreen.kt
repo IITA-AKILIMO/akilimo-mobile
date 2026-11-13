@@ -1,5 +1,6 @@
 package com.akilimo.mobile.ui.screens.account
 
+import android.content.Intent
 import android.text.format.DateUtils
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.SelectAll
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
@@ -52,8 +54,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -99,7 +103,10 @@ fun SavedAdviceScreen(
     val listState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
     val resources = LocalResources.current
+    val context = LocalContext.current
     val undoLabel = stringResource(R.string.saved_advice_undo)
+    val shareSubject = stringResource(R.string.saved_advice_share_subject)
+    val shareLabel = stringResource(R.string.saved_advice_share)
     val filtered = state.filter.useCase != null || state.filter.country != null
 
     // Back leaves the selection first, then the screen
@@ -108,17 +115,29 @@ fun SavedAdviceScreen(
     // Leaving the screen sends what is waiting to be deleted rather than losing it
     DisposableEffect(Unit) { onDispose { viewModel.flushPending() } }
 
-    // "N deleted. Undo", like a mail inbox
+    // "N deleted. Undo", like a mail inbox; and the share sheet for a left swipe
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
-            if (event is SavedAdviceViewModel.Event.Deleted) {
-                snackbarHostState.currentSnackbarData?.dismiss()
-                val result = snackbarHostState.showSnackbar(
-                    message = resources.getQuantityString(R.plurals.saved_advice_deleted_count, event.count, event.count),
-                    actionLabel = undoLabel,
-                    duration = SnackbarDuration.Short,
-                )
-                if (result == SnackbarResult.ActionPerformed) viewModel.undo(event.batchId)
+            when (event) {
+                is SavedAdviceViewModel.Event.Deleted -> launch {
+                    // In its own coroutine: showing a snackbar waits for it to go, and the next event must not wait with it
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    val result = snackbarHostState.showSnackbar(
+                        message = resources.getQuantityString(R.plurals.saved_advice_deleted_count, event.count, event.count),
+                        actionLabel = undoLabel,
+                        duration = SnackbarDuration.Short,
+                    )
+                    if (result == SnackbarResult.ActionPerformed) viewModel.undo(event.batchId)
+                }
+
+                is SavedAdviceViewModel.Event.Share -> {
+                    val send = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_SUBJECT, shareSubject)
+                        putExtra(Intent.EXTRA_TEXT, event.text)
+                    }
+                    context.startActivity(Intent.createChooser(send, shareLabel))
+                }
             }
         }
     }
@@ -226,6 +245,7 @@ fun SavedAdviceScreen(
                             onOpen = { navController.navigateIfResumed(SavedAdviceDetailRoute(advice.requestId)) },
                             onToggle = { viewModel.toggleSelected(advice.requestId) },
                             onDelete = { viewModel.delete(advice.requestId) },
+                            onShare = { viewModel.share(advice.requestId) },
                         )
                     }
                 }
@@ -305,8 +325,8 @@ private fun FilterRow(
 }
 
 /**
- * One item. Swipe it to the right to delete it (with an Undo); long-press to start selecting, then tap to add or remove.
- * Swiping is off while selecting, so the two never fight.
+ * One item. Swipe it to the **right to delete** it (with an Undo) or to the **left to share** it; the row springs back after a
+ * share. Long-press to start selecting, then tap to add or remove. Swiping is off while selecting, so the two never fight.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -317,34 +337,53 @@ private fun SwipeableAdviceRow(
     onOpen: () -> Unit,
     onToggle: () -> Unit,
     onDelete: () -> Unit,
+    onShare: () -> Unit,
 ) {
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.StartToEnd) {
-                onDelete()
-                true
-            } else {
-                false
+            when (value) {
+                SwipeToDismissBoxValue.StartToEnd -> {
+                    onDelete()
+                    true
+                }
+                SwipeToDismissBoxValue.EndToStart -> {
+                    // Sharing is not a dismissal: do it, and let the row spring back (false keeps it in place)
+                    onShare()
+                    false
+                }
+                SwipeToDismissBoxValue.Settled -> false
             }
         },
     )
     SwipeToDismissBox(
         state = dismissState,
         enableDismissFromStartToEnd = !selecting,
-        enableDismissFromEndToStart = false,
+        enableDismissFromEndToStart = !selecting,
         backgroundContent = {
+            val sharing = dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.errorContainer, MaterialTheme.shapes.medium)
+                    .background(
+                        if (sharing) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+                        MaterialTheme.shapes.medium,
+                    )
                     .padding(horizontal = AkilimoSpacing.lg),
-                contentAlignment = Alignment.CenterStart,
+                contentAlignment = if (sharing) Alignment.CenterEnd else Alignment.CenterStart,
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = stringResource(R.string.saved_advice_delete),
-                    tint = MaterialTheme.colorScheme.onErrorContainer,
-                )
+                if (sharing) {
+                    Icon(
+                        imageVector = Icons.Outlined.Share,
+                        contentDescription = stringResource(R.string.saved_advice_share),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = stringResource(R.string.saved_advice_delete),
+                        tint = MaterialTheme.colorScheme.onErrorContainer,
+                    )
+                }
             }
         },
     ) {

@@ -7,9 +7,13 @@ import com.akilimo.mobile.data.account.FakeSessionStorage
 import com.akilimo.mobile.data.account.FakeTokenCipher
 import com.akilimo.mobile.entities.SavedAdvice
 import com.akilimo.mobile.network.AccountApi
+import com.akilimo.mobile.network.dto.HistoryDetailResponse
 import com.akilimo.mobile.network.dto.HistoryIdsResponse
+import com.akilimo.mobile.network.dto.HistoryItemDto
+import com.akilimo.mobile.network.dto.HistoryResultDto
 import com.akilimo.mobile.network.dto.IdsMeta
 import com.akilimo.mobile.network.dto.MessageResponse
+import com.akilimo.mobile.network.dto.RecommendationData
 import com.akilimo.mobile.repos.account.AccountApiFactory
 import com.akilimo.mobile.repos.account.AccountCalls
 import com.akilimo.mobile.repos.account.AdviceFilter
@@ -409,5 +413,69 @@ class SavedAdviceViewModelTest {
         advanceUntilIdle()
 
         coVerify(exactly = 0) { api.deleteHistoryItems(any()) }
+    }
+
+    // ── Sharing (left swipe) ─────────────────────────────────────────────────
+
+    private fun withoutText(i: Int) = SavedAdvice("r$i", 5, "NG", "FR", "FR", null, i.toLong())
+
+    @Test
+    fun `sharing an item whose text is on the phone opens the share sheet with it`() = runTest {
+        val rows = listOf(advice(1).copy(recommendation = "Apply 50 kg of urea"))
+        dao.upsertAll(rows)
+        serverHasExactly(rows)
+        val vm = SavedAdviceViewModel(repo)
+        watch(vm)
+        val events = mutableListOf<SavedAdviceViewModel.Event>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { vm.events.toList(events) }
+        advanceUntilIdle()
+
+        vm.share("r1")
+        runCurrent()
+
+        assertEquals(listOf<SavedAdviceViewModel.Event>(SavedAdviceViewModel.Event.Share("Apply 50 kg of urea")), events)
+        coVerify(exactly = 0) { api.historyItem(any()) }
+    }
+
+    @Test
+    fun `sharing an item without text fetches it first, then shares it`() = runTest {
+        val rows = listOf(withoutText(1))
+        dao.upsertAll(rows)
+        serverHasExactly(rows)
+        coEvery { api.historyItem("r1") } returns Response.success(
+            HistoryDetailResponse(
+                HistoryItemDto("r1", "NG", "FR", "2026-11-12T10:00:00+00:00", HistoryResultDto("success", RecommendationData("FR", "Fetched advice")))
+            )
+        )
+        val vm = SavedAdviceViewModel(repo)
+        watch(vm)
+        val events = mutableListOf<SavedAdviceViewModel.Event>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { vm.events.toList(events) }
+        advanceUntilIdle()
+
+        vm.share("r1")
+        advanceUntilIdle()
+
+        assertEquals(listOf<SavedAdviceViewModel.Event>(SavedAdviceViewModel.Event.Share("Fetched advice")), events)
+        coVerify(exactly = 1) { api.historyItem("r1") }
+    }
+
+    @Test
+    fun `when the text cannot be fetched nothing is shared and the farmer is told`() = runTest {
+        val rows = listOf(withoutText(1))
+        dao.upsertAll(rows)
+        serverHasExactly(rows)
+        coEvery { api.historyItem("r1") } throws IOException("offline")
+        val vm = SavedAdviceViewModel(repo)
+        watch(vm)
+        val events = mutableListOf<SavedAdviceViewModel.Event>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { vm.events.toList(events) }
+        advanceUntilIdle()
+
+        vm.share("r1")
+        advanceUntilIdle()
+
+        assertEquals(emptyList<SavedAdviceViewModel.Event>(), events)
+        assertEquals(R.string.account_err_network, vm.uiState.value.messageRes)
     }
 }
