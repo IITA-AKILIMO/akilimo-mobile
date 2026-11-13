@@ -30,16 +30,51 @@ on:
       - 'gradle/**'
   workflow_dispatch:
 
-# A push and the pull request of the same branch share one group, so the newer run replaces the older
+# Runs of the same kind on one branch replace each other. A push run and a pull-request run never do: the gate job below skips
+# the push run when a pull request is open, because cancelling one of the two would leave a cancelled check on the pull request
 concurrency:
-  group: ci-checks-${{ github.head_ref || github.ref_name }}
+  group: ci-checks-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
+  # A push to a branch that has an open pull request is checked by the pull request's own run, so the push run is skipped here.
+  # Without this, the push run and the pull-request run check the same commit, one of them is cancelled, and GitHub shows a
+  # cancelled (not passing) check on the pull request. Pushes to branches without a pull request still run.
+  gate:
+    name: Decide whether to run
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+    steps:
+      - id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          run=true
+
+          if [ "$EVENT" = "push" ]; then
+            # An open pull request runs the same checks on this commit, so the push run would only duplicate it
+            open="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq 'length' 2>/dev/null || echo 0)"
+            if [ "${open:-0}" != "0" ]; then
+              run=false
+              echo "A pull request is open for $BRANCH, so its own run checks this commit. This push run is skipped." >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+
   checks:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-24.04
     name: Unit tests, Lint & Detekt
     timeout-minutes: 30
