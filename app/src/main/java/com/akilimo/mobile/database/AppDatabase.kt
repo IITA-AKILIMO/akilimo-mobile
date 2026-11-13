@@ -9,6 +9,7 @@ import com.akilimo.mobile.dao.AdviceCompletionDao
 import com.akilimo.mobile.dao.AkilimoUserDao
 import com.akilimo.mobile.dao.CassavaMarketPriceDao
 import com.akilimo.mobile.dao.CassavaUnitDao
+import com.akilimo.mobile.dao.MaizeUnitDao
 import com.akilimo.mobile.dao.CassavaYieldDao
 import com.akilimo.mobile.dao.CurrentPracticeDao
 import com.akilimo.mobile.dao.FertilizerDao
@@ -17,6 +18,7 @@ import com.akilimo.mobile.dao.FieldOperationCostDao
 import com.akilimo.mobile.dao.InvestmentAmountDao
 import com.akilimo.mobile.dao.MaizePerformanceDao
 import com.akilimo.mobile.dao.ProduceMarketDao
+import com.akilimo.mobile.dao.SavedAdviceDao
 import com.akilimo.mobile.dao.SelectedCassavaMarketDao
 import com.akilimo.mobile.dao.SelectedFertilizerDao
 import com.akilimo.mobile.dao.SelectedInvestmentDao
@@ -26,6 +28,7 @@ import com.akilimo.mobile.entities.AdviceCompletion
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.CassavaMarketPrice
 import com.akilimo.mobile.entities.CassavaUnit
+import com.akilimo.mobile.entities.MaizeUnit
 import com.akilimo.mobile.entities.CassavaYield
 import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.Fertilizer
@@ -34,6 +37,7 @@ import com.akilimo.mobile.entities.FieldOperationCost
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.MaizePerformance
 import com.akilimo.mobile.entities.ProduceMarket
+import com.akilimo.mobile.entities.SavedAdvice
 import com.akilimo.mobile.entities.SelectedCassavaMarket
 import com.akilimo.mobile.entities.SelectedFertilizer
 import com.akilimo.mobile.entities.SelectedInvestment
@@ -66,14 +70,16 @@ import com.akilimo.mobile.database.EnumWeedControlConverter
         SelectedCassavaMarket::class,
         ProduceMarket::class,
         CassavaUnit::class,
+        MaizeUnit::class,
         CassavaYield::class,
         AdviceCompletion::class,
         FieldOperationCost::class,
         CurrentPractice::class,
         MaizePerformance::class,
-        UserPreferences::class
+        UserPreferences::class,
+        SavedAdvice::class
     ],
-    version = 6,
+    version = 9,
     exportSchema = true
 )
 @TypeConverters(
@@ -108,6 +114,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun selectedCassavaMarketDao(): SelectedCassavaMarketDao
 
     abstract fun cassavaUnitDao(): CassavaUnitDao
+    abstract fun maizeUnitDao(): MaizeUnitDao
 
     abstract fun cassavaYieldDao(): CassavaYieldDao
 
@@ -120,6 +127,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun produceMarketDao(): ProduceMarketDao
     abstract fun maizePerformanceDao(): MaizePerformanceDao
     abstract fun userPreferencesDao(): UserPreferencesDao
+
+    abstract fun savedAdviceDao(): SavedAdviceDao
 
 
     companion object {
@@ -145,6 +154,8 @@ abstract class AppDatabase : RoomDatabase() {
                     DatabaseMigrations.MIGRATION_3_4,
                     DatabaseMigrations.MIGRATION_4_5,
                     DatabaseMigrations.MIGRATION_5_6,
+                    DatabaseMigrations.MIGRATION_6_8,
+                    DatabaseMigrations.MIGRATION_8_9,
                 )
                 .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
                 .build()

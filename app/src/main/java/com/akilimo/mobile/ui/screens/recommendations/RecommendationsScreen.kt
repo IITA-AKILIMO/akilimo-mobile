@@ -1,6 +1,7 @@
 @file:Suppress("MagicNumber") // parallax math constants extracted below; float literals remain for formula legibility
 package com.akilimo.mobile.ui.screens.recommendations
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +20,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Eco
 import androidx.compose.material.icons.outlined.Grass
@@ -28,7 +30,6 @@ import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -40,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -64,11 +66,14 @@ import com.akilimo.mobile.navigation.BppRoute
 import com.akilimo.mobile.navigation.FrRoute
 import com.akilimo.mobile.navigation.IcMaizeRoute
 import com.akilimo.mobile.navigation.IcSweetPotatoRoute
-import com.akilimo.mobile.navigation.SettingsRoute
 import com.akilimo.mobile.navigation.SphRoute
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.theme.AkilimoTheme
 import com.akilimo.mobile.ui.viewmodels.RecommendationsViewModel
+
+/** Short hero so the first advice cards are visible without scrolling. */
+private val HERO_HEIGHT = 200.dp
 
 private fun EnumAdvice.icon(): ImageVector = when (this) {
     EnumAdvice.FERTILIZER_RECOMMENDATIONS -> Icons.Outlined.Science
@@ -82,7 +87,6 @@ private fun EnumAdvice.icon(): ImageVector = when (this) {
 fun RecommendationsScreen(navController: NavHostController) {
     val viewModel = hiltViewModel<RecommendationsViewModel>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
     RecommendationsContent(
         uiState = state,
         onAdviceClick = { option ->
@@ -94,9 +98,9 @@ fun RecommendationsScreen(navController: NavHostController) {
                 EnumAdvice.INTERCROPPING_MAIZE -> IcMaizeRoute
                 EnumAdvice.INTERCROPPING_SWEET_POTATO -> IcSweetPotatoRoute
             }
-            navController.navigate(route)
+            navController.navigateIfResumed(route)
         },
-        onSettingsClick = { navController.navigate(SettingsRoute) }
+        onBack = { navController.popBackStackSafely() },
     )
 }
 
@@ -105,10 +109,10 @@ fun RecommendationsScreen(navController: NavHostController) {
 private fun RecommendationsContent(
     uiState: RecommendationsViewModel.UiState,
     onAdviceClick: (AdviceOption) -> Unit,
-    onSettingsClick: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val listState = rememberLazyListState()
-    val heroPx = with(LocalDensity.current) { 240.dp.toPx() }
+    val heroPx = with(LocalDensity.current) { HERO_HEIGHT.toPx() }
 
     val scrollOffsetPx by remember {
         derivedStateOf {
@@ -128,18 +132,6 @@ private fun RecommendationsContent(
     }
 
     Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onSettingsClick,
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = stringResource(R.string.lbl_settings),
-                )
-            }
-        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -156,7 +148,7 @@ private fun RecommendationsContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(240.dp)
+                            .height(HERO_HEIGHT)
                             .background(MaterialTheme.colorScheme.primary)
                             .background(
                                 Brush.verticalGradient(
@@ -181,7 +173,7 @@ private fun RecommendationsContent(
                                 painter = painterResource(R.drawable.ic_akilimo_logo_white),
                                 contentDescription = null,
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                modifier = Modifier.size(120.dp),
+                                modifier = Modifier.size(96.dp),
                             )
                             Text(
                                 text = stringResource(R.string.lbl_recommendations),
@@ -208,14 +200,14 @@ private fun RecommendationsContent(
                     )
                 },
                 navigationIcon = {
-                    Image(
-                        painter = painterResource(R.drawable.ic_akilimo_logo_white),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                        modifier = Modifier
-                            .padding(start = AkilimoSpacing.md)
-                            .size(AkilimoSpacing.xxl),
-                    )
+                    IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                            contentDescription = stringResource(R.string.lbl_back),
+                            tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f),
+                            modifier = Modifier.size(22.dp),
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary.copy(alpha = appBarAlpha),
@@ -238,7 +230,8 @@ private fun AdviceOptionCard(option: AdviceOption, onClick: () -> Unit) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Row(
             modifier = Modifier.padding(AkilimoSpacing.md),
@@ -265,7 +258,7 @@ private fun AdviceOptionCard(option: AdviceOption, onClick: () -> Unit) {
                 )
                 Text(
                     text = option.valueOption.label(context),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
@@ -295,7 +288,7 @@ private fun RecommendationsScreenPreview() {
         RecommendationsContent(
             uiState = uiState,
             onAdviceClick = {},
-            onSettingsClick = {}
+            onBack = {},
         )
     }
 }

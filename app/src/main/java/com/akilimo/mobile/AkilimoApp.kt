@@ -4,8 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import com.akilimo.mobile.data.toNightMode
 import androidx.core.os.LocaleListCompat
-import dev.b3nedikt.app_locale.AppLocale
+import com.akilimo.mobile.data.AppLanguage
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
@@ -14,6 +15,7 @@ import com.akilimo.mobile.network.NetworkMonitor
 import com.akilimo.mobile.utils.StartupManager
 import com.akilimo.mobile.workers.CassavaPriceWorker
 import com.akilimo.mobile.workers.CassavaUnitWorker
+import com.akilimo.mobile.workers.MaizeUnitWorker
 import com.akilimo.mobile.workers.FertilizerPriceWorker
 import com.akilimo.mobile.workers.FertilizerWorker
 import com.akilimo.mobile.workers.InvestmentAmountWorker
@@ -21,7 +23,6 @@ import com.akilimo.mobile.workers.StarchFactoryWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
 import com.akilimo.mobile.data.AppSettingsDataStore
-import com.blongho.country_data.World
 import dagger.hilt.android.HiltAndroidApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import javax.inject.Inject
@@ -33,7 +34,8 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
 
     @Inject lateinit var appSettings: AppSettingsDataStore
 
-    val networkMonitor: NetworkMonitor by lazy { NetworkMonitor(this) }
+    /** Injected so the hub's sync status sees the same connectivity callbacks. */
+    @Inject lateinit var networkMonitor: NetworkMonitor
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
@@ -65,7 +67,6 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
         initLocale()
         initDarkMode()
         initVectorSupport()
-        initTimeAndCountry()
         runStartupTasks()
 
         WorkerScheduler.scheduleOneTimeWorker<InvestmentAmountWorker>(
@@ -84,6 +85,12 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
             context = this,
             workName = WorkConstants.CASSAVA_UNITS_WORK_NAME,
             inputData = workDataOf("perPage" to 100)
+        )
+
+        WorkerScheduler.scheduleOneTimeWorker<MaizeUnitWorker>(
+            context = this,
+            workName = WorkConstants.MAIZE_UNITS_WORK_NAME,
+            inputData = workDataOf()
         )
 
         WorkerScheduler.scheduleOneTimeWorker<StarchFactoryWorker>(
@@ -130,31 +137,18 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
     }
 
     private fun initLocale() {
-        val tag = appSettings.getLanguageTagSync()
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
-        if (appSettings.lockAppLanguage) {
-            AppLocale.supportedLocales = Locales.supportedLocales
-            AppLocale.desiredLocale = Locales.supportedLocales
-                .find { it.toLanguageTag() == tag } ?: Locales.english
-        }
-        Log.d("Akilimo", "Locale initialized to: $tag (locked=${appSettings.lockAppLanguage})")
+        // null = follow the phone's language ("Override system language" off)
+        val tag = appSettings.appliedLanguageTag
+        AppLanguage.apply(tag)
+        Log.d("Akilimo", "Locale initialized to: ${tag ?: "system"}")
     }
 
     private fun initDarkMode() {
-        val darkMode = appSettings.getDarkModeSync()
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkMode) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
+        AppCompatDelegate.setDefaultNightMode(appSettings.getThemeModeSync().toNightMode())
     }
 
     private fun initVectorSupport() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-    }
-
-    private fun initTimeAndCountry() {
-//        AndroidThreeTen.init(this)
-        World.init(this)
     }
 
     private fun runStartupTasks() {

@@ -18,6 +18,11 @@ class StarchFactoryRepo(private val dao: StarchFactoryDao) {
         }
     }
 
+    /** Replaces the cached factories with the full list just fetched. */
+    suspend fun replaceAll(fetched: List<StarchFactory>) {
+        if (fetched.isNotEmpty()) dao.replaceAll(fetched)
+    }
+
     fun observeByCountry(countryCode: String): Flow<List<StarchFactory>> =
         dao.observeAllByCountry(countryCode)
 

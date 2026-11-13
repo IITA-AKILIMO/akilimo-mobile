@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.data.ReadingTextScale
+import com.akilimo.mobile.data.ThemeMode
+import com.akilimo.mobile.data.toNightMode
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.repos.AdviceCompletionRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -31,11 +34,12 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     data class UiState(
-        val darkMode: Boolean = false,
+        val themeMode: ThemeMode = ThemeMode.LIGHT,
         val languageTag: String = Locales.english.toLanguageTag(),
         val rememberAreaUnit: Boolean = false,
         val fertilizerGrid: Boolean = false,
         val lockAppLanguage: Boolean = false,
+        val textScale: Float = ReadingTextScale.DEFAULT,
     )
 
     sealed interface Effect {
@@ -52,8 +56,8 @@ class SettingsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            appSettings.darkModeFlow.collect { dark ->
-                _uiState.update { it.copy(darkMode = dark) }
+            appSettings.themeModeFlow.collect { mode ->
+                _uiState.update { it.copy(themeMode = mode) }
             }
         }
         viewModelScope.launch {
@@ -76,15 +80,17 @@ class SettingsViewModel @Inject constructor(
                 _uiState.update { it.copy(lockAppLanguage = value) }
             }
         }
+        viewModelScope.launch {
+            appSettings.readingTextScaleFlow.collect { value ->
+                _uiState.update { it.copy(textScale = value) }
+            }
+        }
     }
 
-    fun setDarkMode(enabled: Boolean) {
+    fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
-            appSettings.setDarkMode(enabled)
-            AppCompatDelegate.setDefaultNightMode(
-                if (enabled) AppCompatDelegate.MODE_NIGHT_YES
-                else AppCompatDelegate.MODE_NIGHT_NO
-            )
+            appSettings.setThemeMode(mode)
+            AppCompatDelegate.setDefaultNightMode(mode.toNightMode())
         }
     }
 
@@ -95,7 +101,7 @@ class SettingsViewModel @Inject constructor(
             userRepo.saveOrUpdateUser(user.copy(languageCode = tag), userName)
             val currentPrefs = prefsRepo.getOrDefault()
             prefsRepo.save(currentPrefs.copy(languageCode = tag))
-            appSettings.setLanguageTag(tag)
+            appSettings.setLanguageTagAndOverride(tag)
             _effect.send(Effect.LanguageChanged(tag))
         }
     }
@@ -106,6 +112,10 @@ class SettingsViewModel @Inject constructor(
 
     fun setFertilizerGrid(value: Boolean) {
         viewModelScope.launch { appSettings.setFertilizerGrid(value) }
+    }
+
+    fun setTextScale(value: Float) {
+        viewModelScope.launch { appSettings.setReadingTextScale(value) }
     }
 
     fun setLockAppLanguage(locked: Boolean) {

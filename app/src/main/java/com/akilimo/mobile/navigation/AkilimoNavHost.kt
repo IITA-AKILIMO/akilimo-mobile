@@ -1,14 +1,10 @@
 package com.akilimo.mobile.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.akilimo.mobile.data.AppSettingsEntryPoint
-import dagger.hilt.android.EntryPointAccessors
 
 /**
  * Root navigation host for the AKILIMO app.
@@ -22,20 +18,15 @@ fun AkilimoNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: Any = OnboardingRoute,
 ) {
-    val context = LocalContext.current
-    val appSettings = remember {
-        EntryPointAccessors.fromApplication(context, AppSettingsEntryPoint::class.java)
-            .appSettings()
-    }
-
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        onboardingGraph(navController = navController, appSettings = appSettings)
+        onboardingGraph(navController = navController)
         recommendationsGraph(navController = navController)
         useCaseGraph(navController = navController)
+        accountGraph(navController = navController)
         settingsGraph(navController = navController)
     }
 }

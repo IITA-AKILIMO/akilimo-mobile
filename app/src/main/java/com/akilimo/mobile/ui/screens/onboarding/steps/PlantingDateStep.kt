@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.DateInputField
 import com.akilimo.mobile.ui.viewmodels.OnboardingViewModel
+import com.akilimo.mobile.utils.PlantingSchedule
 import com.akilimo.mobile.utils.DateHelper
 import java.time.Instant
 import java.time.LocalDate
@@ -38,8 +40,6 @@ import java.time.ZoneOffset
 
 private const val PLANTING_MONTHS_BEFORE = 4L
 private const val PLANTING_MONTHS_AHEAD = 12L
-private const val HARVEST_MONTHS_MIN = 8L
-private const val HARVEST_MONTHS_MAX = 16L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,8 +62,9 @@ fun PlantingDateStep(
         )
     }
 
-    var showPlantingPicker by remember { mutableStateOf(false) }
-    var showHarvestPicker by remember { mutableStateOf(false) }
+    // rememberSaveable: an open picker survives rotation and process death
+    var showPlantingPicker by rememberSaveable { mutableStateOf(false) }
+    var showHarvestPicker by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -131,10 +132,10 @@ fun PlantingDateStep(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        if (showHarvestPicker) {
-            val pDate = plantingDate!! // only shown when plantingDate != null
-            val hMin = pDate.plusMonths(HARVEST_MONTHS_MIN - harvestFlex)
-            val hMax = pDate.plusMonths(HARVEST_MONTHS_MAX + harvestFlex)
+        if (showHarvestPicker && plantingDate != null) {
+            val pDate = plantingDate
+            val hMin = PlantingSchedule.earliestHarvest(pDate)
+            val hMax = PlantingSchedule.latestHarvest(pDate)
             val harvestSelectableDates = remember(hMin, hMax) {
                 object : SelectableDates {
                     override fun isSelectableDate(utcTimeMillis: Long): Boolean {

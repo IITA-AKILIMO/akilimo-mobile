@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import app.cash.turbine.test
 import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.UserPreferences
 import com.akilimo.mobile.repos.AdviceCompletionRepo
@@ -39,7 +40,7 @@ class SettingsViewModelTest {
     @Before
     fun setUp() {
         clearAllMocks()
-        every { appSettings.darkModeFlow } returns flowOf(false)
+        every { appSettings.themeModeFlow } returns flowOf(ThemeMode.SYSTEM)
         every { appSettings.languageTagFlow } returns flowOf("en")
         every { appSettings.rememberAreaUnitFlow } returns flowOf(false)
         every { appSettings.fertilizerGridFlow } returns flowOf(false)
@@ -54,7 +55,7 @@ class SettingsViewModelTest {
 
     @Test
     fun `init populates state from all DataStore flows`() = runTest {
-        every { appSettings.darkModeFlow } returns flowOf(true)
+        every { appSettings.themeModeFlow } returns flowOf(ThemeMode.DARK)
         every { appSettings.languageTagFlow } returns flowOf("sw-TZ")
         every { appSettings.rememberAreaUnitFlow } returns flowOf(true)
         every { appSettings.fertilizerGridFlow } returns flowOf(true)
@@ -64,7 +65,7 @@ class SettingsViewModelTest {
         advanceUntilIdle()
 
         with(viewModel.uiState.value) {
-            assertTrue(darkMode)
+            assertEquals(ThemeMode.DARK, themeMode)
             assertEquals("sw-TZ", languageTag)
             assertTrue(rememberAreaUnit)
             assertTrue(fertilizerGrid)
@@ -78,7 +79,7 @@ class SettingsViewModelTest {
         advanceUntilIdle()
 
         with(viewModel.uiState.value) {
-            assertFalse(darkMode)
+            assertEquals(ThemeMode.SYSTEM, themeMode)
             assertEquals("en", languageTag)
             assertFalse(rememberAreaUnit)
             assertFalse(fertilizerGrid)
@@ -89,21 +90,21 @@ class SettingsViewModelTest {
     // ── Dark mode ─────────────────────────────────────────────────────────────
 
     @Test
-    fun `setDarkMode persists enabled state to DataStore`() = runTest {
+    fun `setThemeMode persists dark to DataStore`() = runTest {
         val viewModel = buildViewModel()
-        viewModel.setDarkMode(true)
+        viewModel.setThemeMode(ThemeMode.DARK)
         advanceUntilIdle()
 
-        coVerify { appSettings.setDarkMode(true) }
+        coVerify { appSettings.setThemeMode(ThemeMode.DARK) }
     }
 
     @Test
-    fun `setDarkMode persists disabled state to DataStore`() = runTest {
+    fun `setThemeMode persists system default to DataStore`() = runTest {
         val viewModel = buildViewModel()
-        viewModel.setDarkMode(false)
+        viewModel.setThemeMode(ThemeMode.SYSTEM)
         advanceUntilIdle()
 
-        coVerify { appSettings.setDarkMode(false) }
+        coVerify { appSettings.setThemeMode(ThemeMode.SYSTEM) }
     }
 
     // ── Display toggles ───────────────────────────────────────────────────────
@@ -139,7 +140,7 @@ class SettingsViewModelTest {
             viewModel.setLanguage("sw-TZ")
             advanceUntilIdle()
 
-            coVerify { appSettings.setLanguageTag("sw-TZ") }
+            coVerify { appSettings.setLanguageTagAndOverride("sw-TZ") }
             coVerify { userRepo.saveOrUpdateUser(any(), "user1") }
             coVerify { prefsRepo.save(any()) }
 

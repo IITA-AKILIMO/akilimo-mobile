@@ -46,4 +46,6 @@ class InvestmentAmountWorker(
         Timber.d("Saving ${items.size} investments to local DB")
         repo.saveAll(items)
     }
+
+    override suspend fun afterAllPagesSaved(allItems: List<InvestmentAmount>) = repo.pruneStale(allItems)
 }

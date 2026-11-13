@@ -33,4 +33,6 @@ class ProduceMarketRepo(private val dao: ProduceMarketDao) {
     suspend fun getUserMarket(userId: Int, produceType: EnumProduceType): ProduceMarket? {
         return dao.getUserMarket(userId, produceType)
     }
+
+    suspend fun clearForUser(userId: Int) = dao.deleteByUser(userId)
 }

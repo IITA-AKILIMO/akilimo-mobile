@@ -31,6 +31,9 @@ interface FieldOperationCostDao {
     @Delete
     suspend fun deleteCost(cost: FieldOperationCost)
 
+    @Query("DELETE FROM field_operation_costs WHERE user_id = :userId")
+    suspend fun deleteByUser(userId: Int)
+
     // Fetch all costs
     @Query("SELECT * FROM field_operation_costs")
     fun getAllCosts(): Flow<List<FieldOperationCost>>

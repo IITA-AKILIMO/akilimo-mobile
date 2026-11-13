@@ -1,25 +1,33 @@
 package com.akilimo.mobile.ui.activities
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akilimo.mobile.data.AppSettingsDataStore
-import dev.b3nedikt.app_locale.AppLocale
-import javax.inject.Inject
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
+import com.akilimo.mobile.data.AppLanguage
+import com.akilimo.mobile.data.ReadingTextScale
+import com.akilimo.mobile.data.account.AccountSessionStore
+import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.navigation.AkilimoNavHost
 import com.akilimo.mobile.navigation.LegalWizardRoute
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.akilimo.mobile.navigation.HubRoute
 import com.akilimo.mobile.navigation.OnboardingRoute
-import com.akilimo.mobile.navigation.RecommendationsRoute
-import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.components.SingletonComponent
 import com.akilimo.mobile.ui.theme.AkilimoTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
+// Same scrims androidx.activity uses for 3-button navigation on older Android versions
+private val LIGHT_NAV_SCRIM = Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
+private val DARK_NAV_SCRIM = Color.argb(0x80, 0x1b, 0x1b, 0x1b)
 
 /**
  * Single-Activity host for the AKILIMO app.
@@ -34,12 +42,20 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var appSettings: AppSettingsDataStore
 
+    @Inject
+    lateinit var accountSession: AccountSessionStore
+
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(AppLocale.wrap(newBase))
+        // Runs before Hilt injection, so read settings directly
+        val tag = AppSettingsDataStore.readAppliedLanguageTagSync(newBase)
+        super.attachBaseContext(AppLanguage.wrap(newBase, tag))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
+        // Brand launch screen; must run before super.onCreate and switches to Theme.NewAkilimo after
+        installSplashScreen()
+        // Re-applied from Compose below once the theme is known
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
 
         val startRoute = if (appSettings.isFirstRun) {
@@ -49,13 +65,45 @@ class MainActivity : ComponentActivity() {
                 OnboardingRoute
             }
         } else {
-            RecommendationsRoute
+            HubRoute
         }
 
         setContent {
-            val darkMode by appSettings.darkModeFlow
-                .collectAsStateWithLifecycle(initialValue = appSettings.getDarkModeSync())
-            AkilimoTheme(darkTheme = darkMode) {
+            val themeMode by appSettings.themeModeFlow
+                .collectAsStateWithLifecycle(initialValue = appSettings.getThemeModeSync())
+            val darkTheme = when (themeMode) {
+                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+                ThemeMode.LIGHT -> false
+                ThemeMode.DARK -> true
+            }
+
+            // Status bar icons sit on the top app bar, which is filled with colorScheme.primary:
+            // dark green with white text in the light theme, light green with dark text in the dark one.
+            // The automatic style would follow the system theme instead and can pick the wrong icons.
+            DisposableEffect(darkTheme) {
+                enableEdgeToEdge(
+                    statusBarStyle = if (darkTheme) {
+                        SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+                    } else {
+                        SystemBarStyle.dark(Color.TRANSPARENT)
+                    },
+                    navigationBarStyle = if (darkTheme) {
+                        SystemBarStyle.dark(DARK_NAV_SCRIM)
+                    } else {
+                        SystemBarStyle.light(LIGHT_NAV_SCRIM, DARK_NAV_SCRIM)
+                    },
+                )
+                onDispose { }
+            }
+
+            val textScale by appSettings.readingTextScaleFlow
+                .collectAsStateWithLifecycle(initialValue = ReadingTextScale.DEFAULT)
+
+            // A farmer who is signed in (and has consented) gets the IITA-coloured theme, so it is plain at a glance
+            val session by accountSession.session.collectAsStateWithLifecycle()
+            val signedIn = session?.consentRequired == false
+
+            AkilimoTheme(darkTheme = darkTheme, textScale = textScale, signedIn = signedIn) {
                 AkilimoNavHost(startDestination = startRoute)
             }
         }

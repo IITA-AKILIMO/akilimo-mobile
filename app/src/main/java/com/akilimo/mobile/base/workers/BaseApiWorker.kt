@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.akilimo.mobile.R
+import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.enums.EnumServiceType
@@ -87,6 +88,7 @@ abstract class BaseApiWorker<TApi>(
         if (WorkerRetryPolicy.shouldRetry(error, runAttemptCount)) {
             resultRetry("$reason (attempt ${runAttemptCount + 1}/${WorkerRetryPolicy.MAX_ATTEMPTS})")
         } else {
+            AppSettingsDataStore.recordSyncFailure(applicationContext)
             resultFailure(reason)
         }
 
@@ -96,8 +98,10 @@ abstract class BaseApiWorker<TApi>(
         setProgress(workDataOf("progress" to percent.coerceIn(0, 100)))
     }
 
-    protected fun resultSuccess(data: Map<String, Any> = emptyMap()): Result =
-        Result.success(workDataOf(*data.map { it.key to it.value }.toTypedArray()))
+    protected fun resultSuccess(data: Map<String, Any> = emptyMap()): Result {
+        AppSettingsDataStore.recordSyncSuccess(applicationContext)
+        return Result.success(workDataOf(*data.map { it.key to it.value }.toTypedArray()))
+    }
 
     protected fun resultRetry(reason: String): Result {
         Timber.w("Retry scheduled: $reason")

@@ -9,5 +9,5 @@ object WorkConstants {
     const val STARCH_FACTORY_WORK_NAME = "StarchFactories"
     const val CASSAVA_MARKET_PRICES_WORK_NAME = "CassavaMarketPrices"
     const val CASSAVA_UNITS_WORK_NAME = "CassavaUnit"
-    const val MAIZE_MARKET_PRICES_WORK_NAME = "MaizeMarketPrices"
+    const val MAIZE_UNITS_WORK_NAME = "MaizeUnits"
 }

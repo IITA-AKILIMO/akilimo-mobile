@@ -1,11 +1,14 @@
 package com.akilimo.mobile.data
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
@@ -44,7 +47,9 @@ private val Context.appSettingsDataStore: DataStore<Preferences> by preferencesD
 private object Keys {
     // Names intentionally match the old SharedPrefs keys so migration is lossless.
     val LANGUAGE_CODE = stringPreferencesKey("languageCode")
+    /** Legacy on/off dark mode; read only to migrate to [THEME_MODE], kept in step for downgrades */
     val DARK_MODE = booleanPreferencesKey("darkMode")
+    val THEME_MODE = stringPreferencesKey("themeMode")
     val AKILIMO_USER = stringPreferencesKey("userName")
     val AKILIMO_ENDPOINT = stringPreferencesKey("apiResource")
     val FUELROD_ENDPOINT = stringPreferencesKey("fuelrodResource")
@@ -61,7 +66,45 @@ private object Keys {
     val FERTILIZER_GRID = booleanPreferencesKey("isFertilizerGrid")
     val REMEMBER_AREA_UNIT = booleanPreferencesKey("rememberAreaUnit")
     val LOCK_APP_LANGUAGE = booleanPreferencesKey("lockAppLanguage")
+    val READING_TEXT_SCALE = floatPreferencesKey("readingTextScale")
+    val READING_LANDSCAPE = booleanPreferencesKey("readingLandscape")
+
+    // Sync status (see SyncStatusSource): epoch millis of the last success/failure. The newest
+    // of the two decides whether the app should say it is up to date or a sync failed.
+    val LAST_SYNC_AT = longPreferencesKey("lastSyncAt")
+    val LAST_SYNC_FAILED_AT = longPreferencesKey("lastSyncFailedAt")
 }
+
+/** Reader-chosen text size for long-form advice, on top of the phone's own font scale. */
+object ReadingTextScale {
+    const val DEFAULT = 1f
+    val options = listOf(DEFAULT, 1.25f, 1.5f)
+
+    /** Snaps any stored value to the nearest supported step so a bad value can't break layout. */
+    fun normalize(value: Float?): Float =
+        if (value == null || value.isNaN()) DEFAULT
+        else options.minByOrNull { kotlin.math.abs(it - value) } ?: DEFAULT
+}
+
+/** App theme choice. SYSTEM follows the phone's dark-theme setting. */
+enum class ThemeMode { SYSTEM, LIGHT, DARK }
+
+/** AppCompat night mode for the remaining View-based screens. */
+fun ThemeMode.toNightMode(): Int = when (this) {
+    ThemeMode.SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    ThemeMode.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+    ThemeMode.DARK -> AppCompatDelegate.MODE_NIGHT_YES
+}
+
+/**
+ * Reads [Keys.THEME_MODE]; before it existed only the on/off "darkMode" flag was stored. That flag
+ * defaulted to off and cannot tell "chose light" from "never touched", so on maps to DARK and off
+ * (or missing) maps to LIGHT: the app starts light and only follows the phone or goes dark when
+ * the user picks that in Settings.
+ */
+internal fun Preferences.themeMode(): ThemeMode =
+    this[Keys.THEME_MODE]?.let { stored -> ThemeMode.entries.firstOrNull { it.name == stored } }
+        ?: if (this[Keys.DARK_MODE] == true) ThemeMode.DARK else ThemeMode.LIGHT
 
 @Singleton
 class AppSettingsDataStore @Inject constructor(
@@ -69,8 +112,9 @@ class AppSettingsDataStore @Inject constructor(
 ) {
     companion object {
         private const val DEFAULT_USER = "akilimo_user"
-        //"https://akilimo.org/index.php/akilimo-privacy-policy"
-        private const val DEFAULT_TERMS_URL = "file:///android_asset/privacy_policy.html"
+        // Same bundled page Settings opens under Terms (works offline)
+        private const val DEFAULT_TERMS_URL = "file:///android_asset/terms.html"
+        private const val LEGACY_TERMS_URL = "file:///android_asset/privacy_policy.html"
 
         /** Language tag — synchronous read for use in [android.app.Activity.attachBaseContext]. */
         fun readLanguageTagSync(context: Context): String = runBlocking {
@@ -78,6 +122,24 @@ class AppSettingsDataStore @Inject constructor(
                 .map { prefs -> Locales.normalize(prefs[Keys.LANGUAGE_CODE] ?: "") }
                 .first()
         }
+
+        /**
+         * The language the app must use, or null to follow the phone's language.
+         * Synchronous for [android.app.Activity.attachBaseContext] (runs before Hilt injection).
+         */
+        fun readAppliedLanguageTagSync(context: Context): String? = runBlocking {
+            context.appSettingsDataStore.data.map { prefs ->
+                if (isLanguageLocked(prefs)) Locales.normalize(prefs[Keys.LANGUAGE_CODE] ?: "") else null
+            }.first()
+        }
+
+        /**
+         * "Override system language". When never set explicitly it defaults to ON if the user
+         * has picked a language, so people who chose a language before this setting existed
+         * keep it instead of silently switching to the phone's language.
+         */
+        private fun isLanguageLocked(prefs: Preferences): Boolean =
+            prefs[Keys.LOCK_APP_LANGUAGE] ?: (prefs[Keys.LANGUAGE_CODE] != null)
 
         /** Endpoint — synchronous read for [com.akilimo.mobile.config.AppConfig] / Workers. */
         fun readEndpointSync(context: Context, service: EnumServiceType): String = runBlocking {
@@ -100,6 +162,22 @@ class AppSettingsDataStore @Inject constructor(
                 }
             }
         }
+
+        /** Records that a background sync finished successfully; called from the workers. */
+        fun recordSyncSuccess(context: Context) {
+            val now = System.currentTimeMillis()
+            runBlocking {
+                context.appSettingsDataStore.edit { prefs -> prefs[Keys.LAST_SYNC_AT] = now }
+            }
+        }
+
+        /** Records a sync that gave up; a later success supersedes it. Called from the workers. */
+        fun recordSyncFailure(context: Context) {
+            val now = System.currentTimeMillis()
+            runBlocking {
+                context.appSettingsDataStore.edit { prefs -> prefs[Keys.LAST_SYNC_FAILED_AT] = now }
+            }
+        }
     }
 
     private val dataStore = context.appSettingsDataStore
@@ -110,8 +188,8 @@ class AppSettingsDataStore @Inject constructor(
     val languageTagFlow: Flow<String> =
         dataStore.data.map { prefs -> Locales.normalize(prefs[Keys.LANGUAGE_CODE] ?: "") }
 
-    val darkModeFlow: Flow<Boolean> =
-        dataStore.data.map { prefs -> prefs[Keys.DARK_MODE] ?: false }
+    val themeModeFlow: Flow<ThemeMode> =
+        dataStore.data.map { prefs -> prefs.themeMode() }
 
     val rememberAreaUnitFlow: Flow<Boolean> =
         dataStore.data.map { prefs -> prefs[Keys.REMEMBER_AREA_UNIT] ?: false }
@@ -120,11 +198,28 @@ class AppSettingsDataStore @Inject constructor(
         dataStore.data.map { prefs -> prefs[Keys.FERTILIZER_GRID] ?: false }
 
     val lockAppLanguageFlow: Flow<Boolean> =
-        dataStore.data.map { prefs -> prefs[Keys.LOCK_APP_LANGUAGE] ?: false }
+        dataStore.data.map { prefs -> isLanguageLocked(prefs) }
+
+    val readingLandscapeFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.READING_LANDSCAPE] ?: false }
+
+    val readingTextScaleFlow: Flow<Float> =
+        dataStore.data.map { prefs -> ReadingTextScale.normalize(prefs[Keys.READING_TEXT_SCALE]) }
+
+    val lastSyncAtFlow: Flow<Long?> =
+        dataStore.data.map { prefs -> prefs[Keys.LAST_SYNC_AT] }
+
+    /** True when the last finished sync failed; a success after it clears this. */
+    val lastSyncFailedFlow: Flow<Boolean> =
+        dataStore.data.map { prefs ->
+            val failedAt = prefs[Keys.LAST_SYNC_FAILED_AT] ?: 0L
+            val succeededAt = prefs[Keys.LAST_SYNC_AT] ?: 0L
+            failedAt > succeededAt
+        }
 
     // ── Synchronous property accessors ────────────────────────────────────────
     // After the first DataStore read (done in AkilimoApp.onCreate via getLanguageTagSync /
-    // getDarkModeSync), subsequent data.first() calls are served from DataStore's in-memory
+    // getThemeModeSync), subsequent data.first() calls are served from DataStore's in-memory
     // cache — no disk I/O, safe to call on the main thread.
 
     private fun <T> syncGet(key: Preferences.Key<T>, default: T): T =
@@ -140,9 +235,8 @@ class AppSettingsDataStore @Inject constructor(
             .let { Locales.normalize(it) }
         set(value) = asyncSet(Keys.LANGUAGE_CODE, value)
 
-    var darkMode: Boolean
-        get() = syncGet(Keys.DARK_MODE, false)
-        set(value) = asyncSet(Keys.DARK_MODE, value)
+    val themeMode: ThemeMode
+        get() = runBlocking { dataStore.data.map { it.themeMode() }.first() }
 
     // User identity
     var akilimoUser: String
@@ -198,15 +292,21 @@ class AppSettingsDataStore @Inject constructor(
         set(value) = asyncSet(Keys.FERTILIZER_GRID, value)
 
     var lockAppLanguage: Boolean
-        get() = syncGet(Keys.LOCK_APP_LANGUAGE, false)
+        get() = runBlocking { dataStore.data.map { isLanguageLocked(it) }.first() }
         set(value) = asyncSet(Keys.LOCK_APP_LANGUAGE, value)
+
+    /** Language tag to apply, or null to follow the phone's language. */
+    val appliedLanguageTag: String?
+        get() = if (lockAppLanguage) languageTag else null
 
     var notificationCount: Int
         get() = syncGet(Keys.NOTIFICATION_COUNT, 3)
         set(value) = asyncSet(Keys.NOTIFICATION_COUNT, value)
 
     var termsLink: String
-        get() = syncGet(Keys.TERMS_LINK, DEFAULT_TERMS_URL).ifBlank { DEFAULT_TERMS_URL }
+        // The old default pointed at the privacy policy: treat a stored copy of it as unset
+        get() = syncGet(Keys.TERMS_LINK, DEFAULT_TERMS_URL)
+            .takeUnless { it.isBlank() || it == LEGACY_TERMS_URL } ?: DEFAULT_TERMS_URL
         set(value) = asyncSet(Keys.TERMS_LINK, value)
 
     // Device token — auto-generates a UUID on first access and persists it
@@ -228,15 +328,26 @@ class AppSettingsDataStore @Inject constructor(
 
     // Convenience sync reads used in Application.onCreate (before reactive collection starts)
     fun getLanguageTagSync(): String = languageTag
-    fun getDarkModeSync(): Boolean = darkMode
+    fun getThemeModeSync(): ThemeMode = themeMode
 
     // Suspend versions for coroutine-friendly callers
     suspend fun setLanguageTag(tag: String) {
         dataStore.edit { it[Keys.LANGUAGE_CODE] = tag }
     }
 
-    suspend fun setDarkMode(enabled: Boolean) {
-        dataStore.edit { it[Keys.DARK_MODE] = enabled }
+    suspend fun setThemeMode(mode: ThemeMode) {
+        dataStore.edit {
+            it[Keys.THEME_MODE] = mode.name
+            it[Keys.DARK_MODE] = mode == ThemeMode.DARK
+        }
+    }
+
+    /** Picking a language explicitly means "use this language": also turns the override on. */
+    suspend fun setLanguageTagAndOverride(tag: String) {
+        dataStore.edit {
+            it[Keys.LANGUAGE_CODE] = tag
+            it[Keys.LOCK_APP_LANGUAGE] = true
+        }
     }
 
     suspend fun setLockAppLanguage(locked: Boolean) {
@@ -245,6 +356,14 @@ class AppSettingsDataStore @Inject constructor(
 
     suspend fun setRememberAreaUnit(value: Boolean) {
         dataStore.edit { it[Keys.REMEMBER_AREA_UNIT] = value }
+    }
+
+    suspend fun setReadingLandscape(value: Boolean) {
+        dataStore.edit { it[Keys.READING_LANDSCAPE] = value }
+    }
+
+    suspend fun setReadingTextScale(value: Float) {
+        dataStore.edit { it[Keys.READING_TEXT_SCALE] = ReadingTextScale.normalize(value) }
     }
 
     suspend fun setFertilizerGrid(value: Boolean) {

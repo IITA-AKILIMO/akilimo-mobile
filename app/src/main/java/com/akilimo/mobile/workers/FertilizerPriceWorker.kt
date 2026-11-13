@@ -57,4 +57,6 @@ class FertilizerPriceWorker(
         Timber.d("Saving ${items.size} fertilizer prices to local DB")
         repo.saveAll(items)
     }
+
+    override suspend fun afterAllPagesSaved(allItems: List<FertilizerPrice>) = repo.pruneStale(allItems)
 }

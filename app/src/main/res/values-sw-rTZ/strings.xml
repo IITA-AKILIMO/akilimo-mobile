@@ -245,6 +245,12 @@
     <string name="error_weed_control_required">Tafadhali chagua njia ya kudhibiti magugu</string>
     <string name="error_investment_preference_required">Tafadhali chagua upendeleo wa uwekezaji</string>
     <string name="lbl_feedback">Maoni</string>
+    <string name="lbl_text_size">Ukubwa wa maandishi</string>
+    <string name="lbl_landscape_view">Mwonekano mlalo</string>
+    <string name="lbl_portrait_view">Mwonekano wima</string>
+    <string name="lbl_text_size_normal">Ukubwa wa kawaida</string>
+    <string name="lbl_text_size_large">Ukubwa mkubwa</string>
+    <string name="lbl_text_size_largest">Ukubwa mkubwa zaidi</string>
     <string name="lbl_how_satisfied">Umeridhika kwa kiwango gani?</string>
     <string name="lbl_nps_prompt">Una uwezekano gani wa kutupendekeza? (0-10)</string>
     <string name="lbl_submit_feedback">Wasilisha maoni</string>

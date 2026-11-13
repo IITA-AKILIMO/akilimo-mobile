@@ -6,15 +6,17 @@ import com.akilimo.mobile.network.dto.FeedbackResponse
 import com.akilimo.mobile.network.dto.FertilizerDto
 import com.akilimo.mobile.network.dto.FertilizerPriceDto
 import com.akilimo.mobile.network.dto.InvestmentAmounts
-import com.akilimo.mobile.network.dto.MaizePriceDto
+import com.akilimo.mobile.network.dto.MaizeUnitDto
 import com.akilimo.mobile.network.dto.PagedResponse
 import com.akilimo.mobile.network.dto.StarchFactoryDto
 import com.akilimo.mobile.network.dto.UserFeedBackRequest
 import com.akilimo.mobile.network.dto.RecommendationResponse
 import com.akilimo.mobile.network.request.RecommendationRequest
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -73,18 +75,26 @@ interface AkilimoApi {
 
 
     @Headers(CLIENT_ID_HEADER)
+    @GET("v1/maize-units")
+    suspend fun getMaizeUnits(): PagedResponse<MaizeUnitDto>
+
+    @Headers(CLIENT_ID_HEADER)
     @GET("v1/cassava-prices")
     suspend fun getCassavaMarketPrices(
         @Query("page") page: Int = DEFAULT_PAGE,
         @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
     ): PagedResponse<CassavaPriceDto>
 
+    /**
+     * GeoJSON of the area where AKILIMO can compute a recommendation for [country] (ISO alpha-2).
+     * Answers 304 when [etag] still matches, 404 when the API has no area for the country.
+     */
     @Headers(CLIENT_ID_HEADER)
-    @GET("v1/maize-prices")
-    suspend fun getMaizePrices(
-        @Query("page") page: Int = DEFAULT_PAGE,
-        @Query("per_page") perPage: Int = DEFAULT_PER_PAGE
-    ): PagedResponse<MaizePriceDto>
+    @GET("v1/coverage/{country}")
+    suspend fun getCoverage(
+        @Path("country") country: String,
+        @Header("If-None-Match") etag: String? = null,
+    ): Response<ResponseBody>
 
     @Headers(CLIENT_ID_HEADER)
     @POST("v1/recommendations/compute")

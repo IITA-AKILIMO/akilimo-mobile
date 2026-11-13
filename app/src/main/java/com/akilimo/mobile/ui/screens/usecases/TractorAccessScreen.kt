@@ -1,31 +1,30 @@
 package com.akilimo.mobile.ui.screens.usecases
 
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -33,13 +32,17 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.FormCard
 import com.akilimo.mobile.ui.components.compose.BinaryToggleChips
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.TractorAccessViewModel
+import com.akilimo.mobile.ui.viewmodels.TractorAccessViewModel.SaveBlocker
 import com.akilimo.mobile.utils.AmountInput
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TractorAccessScreen(
     navController: NavHostController,
@@ -47,17 +50,23 @@ fun TractorAccessScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val numberFormat = rememberNumberFormat()
 
-    var tractorAvailable by remember { mutableStateOf(false) }
-    var usePlough by remember { mutableStateOf(false) }
-    var useRidge by remember { mutableStateOf(false) }
-    var useHarrow by remember { mutableStateOf(false) }
-    var ploughCost by remember { mutableStateOf("") }
-    var ridgeCost by remember { mutableStateOf("") }
-    var harrowCost by remember { mutableStateOf("") }
+    var tractorAvailable by rememberSaveable { mutableStateOf(false) }
+    var usePlough by rememberSaveable { mutableStateOf(false) }
+    var useRidge by rememberSaveable { mutableStateOf(false) }
+    var useHarrow by rememberSaveable { mutableStateOf(false) }
+    var ploughCost by rememberSaveable { mutableStateOf("") }
+    var ridgeCost by rememberSaveable { mutableStateOf("") }
+    var harrowCost by rememberSaveable { mutableStateOf("") }
+
+    // Prefill once from the DB; after rotation keep the user's unsaved edits
+    var prefilled by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(state.userId) {
-        if (state.userId != 0) {
+        if (state.userId != 0 && !prefilled) {
+            prefilled = true
             tractorAvailable = state.tractorAvailable
             usePlough = state.tractorPloughCost > 0.0
             useRidge = state.tractorRidgeCost > 0.0
@@ -68,11 +77,16 @@ fun TractorAccessScreen(
         }
     }
 
-    // A selected implement needs a positive cost (0 would read back as "not used")
-    fun costOk(enabled: Boolean, text: String) =
-        !enabled || (AmountInput.parse(text) ?: 0.0) > 0.0
-    val canSave = !tractorAvailable ||
-            (costOk(usePlough, ploughCost) && costOk(useRidge, ridgeCost) && costOk(useHarrow, harrowCost))
+    val blocker = TractorAccessViewModel.saveBlocker(
+        tractorAvailable,
+        listOf(usePlough to ploughCost, useRidge to ridgeCost, useHarrow to harrowCost)
+    )
+    val canSave = blocker == SaveBlocker.NONE
+    val disabledReason = when (blocker) {
+        SaveBlocker.NO_IMPLEMENT -> stringResource(R.string.msg_select_tractor_operation)
+        SaveBlocker.MISSING_COST -> stringResource(R.string.msg_enter_cost_for_each)
+        SaveBlocker.NONE -> null
+    }
     val invalidAmount = stringResource(R.string.error_amount_invalid)
     fun errorFor(text: String) =
         invalidAmount.takeIf { AmountInput.isInvalid(text, requirePositive = true) }
@@ -83,9 +97,18 @@ fun TractorAccessScreen(
             viewModel.onSaveHandled()
         }
     }
+    SaveErrorEffect(state.saveFailed, snackbarHostState, viewModel::onSaveErrorShown)
 
     val areaUnitLabel = state.enumAreaUnit.label(context)
-    val farmSize = state.farmSize
+    fun costLabel(template: String) =
+        fillFarmSizeTemplate(template, state.farmSize, areaUnitLabel, numberFormat)
+
+    // The last visible cost field gets the Done key; the others move to the next field
+    val lastField = when {
+        useHarrow -> "harrow"
+        useRidge -> "ridge"
+        else -> "plough"
+    }
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
@@ -96,19 +119,35 @@ fun TractorAccessScreen(
                 title = stringResource(R.string.lbl_tractor_access),
                 collapsedTitle = stringResource(R.string.lbl_tractor_access_title),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
             )
-        }
+        },
+        bottomBar = {
+            FormSaveBar(
+                enabled = canSave,
+                isSaving = state.isSaving,
+                disabledReason = disabledReason,
+                onSave = {
+                    viewModel.saveCosts(
+                        tractorAvailable = tractorAvailable,
+                        ploughingCost = if (usePlough) AmountInput.parse(ploughCost) else 0.0,
+                        ridingCost = if (useRidge) AmountInput.parse(ridgeCost) else 0.0,
+                        harrowingCost = if (useHarrow) AmountInput.parse(harrowCost) else 0.0
+                    )
+                },
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         ScrollableFormColumn(padding = padding) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
             // Tractor available Yes / No
             Text(
-                text = stringResource(R.string.lbl_tractor_access),
+                text = stringResource(R.string.lbl_tractor_available_question),
                 style = MaterialTheme.typography.titleMedium
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
             BinaryToggleChips(
                 labelA = stringResource(R.string.lbl_yes),
                 labelB = stringResource(R.string.lbl_no),
@@ -122,15 +161,16 @@ fun TractorAccessScreen(
             )
 
             if (tractorAvailable) {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
 
                 // Implement selector
                 Text(
-                    text = stringResource(R.string.lbl_tractor_access),
+                    text = stringResource(R.string.lbl_select_tractor_operations),
                     style = MaterialTheme.typography.bodyMedium
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Row {
+                Spacer(modifier = Modifier.height(AkilimoSpacing.xxs))
+                // FlowRow wraps on narrow phones and with longer sw/rw labels
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs)) {
                     FilterChip(
                         selected = usePlough,
                         onClick = {
@@ -138,7 +178,6 @@ fun TractorAccessScreen(
                             if (!usePlough) ploughCost = ""
                         },
                         label = { Text(stringResource(R.string.lbl_plough)) },
-                        modifier = Modifier.padding(end = 8.dp)
                     )
                     FilterChip(
                         selected = useRidge,
@@ -147,7 +186,6 @@ fun TractorAccessScreen(
                             if (!useRidge) ridgeCost = ""
                         },
                         label = { Text(stringResource(R.string.lbl_ridger)) },
-                        modifier = Modifier.padding(end = 8.dp)
                     )
                     FilterChip(
                         selected = useHarrow,
@@ -159,62 +197,44 @@ fun TractorAccessScreen(
                     )
                 }
 
-                if (usePlough) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    AkilimoTextField(
-                        value = ploughCost,
-                        onValueChange = { ploughCost = it },
-                        label = stringResource(R.string.lbl_tractor_plough_cost_hint)
-                            .replace("{farm_size}", farmSize.toString())
-                            .replace("{size_unit}", areaUnitLabel),
-                        error = errorFor(ploughCost),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                    )
-                }
-                if (useRidge) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    AkilimoTextField(
-                        value = ridgeCost,
-                        onValueChange = { ridgeCost = it },
-                        label = stringResource(R.string.lbl_tractor_ridge_cost_hint)
-                            .replace("{farm_size}", farmSize.toString())
-                            .replace("{size_unit}", areaUnitLabel),
-                        error = errorFor(ridgeCost),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                    )
-                }
-                if (useHarrow) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    AkilimoTextField(
-                        value = harrowCost,
-                        onValueChange = { harrowCost = it },
-                        label = stringResource(R.string.lbl_tractor_harrow_cost_hint)
-                            .replace("{farm_size}", farmSize.toString())
-                            .replace("{size_unit}", areaUnitLabel),
-                        error = errorFor(harrowCost),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                    )
+                if (usePlough || useRidge || useHarrow) {
+                    Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
+                    FormCard {
+                        if (usePlough) {
+                            AkilimoTextField(
+                                value = ploughCost,
+                                onValueChange = { ploughCost = it },
+                                label = costLabel(stringResource(R.string.lbl_tractor_plough_cost_hint)),
+                                error = errorFor(ploughCost),
+                                trailingIcon = currencySuffix(state.currencyCode),
+                                keyboardOptions = amountKeyboard(isLast = lastField == "plough")
+                            )
+                        }
+                        if (useRidge) {
+                            AkilimoTextField(
+                                value = ridgeCost,
+                                onValueChange = { ridgeCost = it },
+                                label = costLabel(stringResource(R.string.lbl_tractor_ridge_cost_hint)),
+                                error = errorFor(ridgeCost),
+                                trailingIcon = currencySuffix(state.currencyCode),
+                                keyboardOptions = amountKeyboard(isLast = lastField == "ridge")
+                            )
+                        }
+                        if (useHarrow) {
+                            AkilimoTextField(
+                                value = harrowCost,
+                                onValueChange = { harrowCost = it },
+                                label = costLabel(stringResource(R.string.lbl_tractor_harrow_cost_hint)),
+                                error = errorFor(harrowCost),
+                                trailingIcon = currencySuffix(state.currencyCode),
+                                keyboardOptions = amountKeyboard(isLast = lastField == "harrow")
+                            )
+                        }
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {
-                    viewModel.saveCosts(
-                        tractorAvailable = tractorAvailable,
-                        ploughingCost = if (usePlough) AmountInput.parse(ploughCost) else 0.0,
-                        ridingCost = if (useRidge) AmountInput.parse(ridgeCost) else 0.0,
-                        harrowingCost = if (useHarrow) AmountInput.parse(harrowCost) else 0.0
-                    )
-                },
-                enabled = canSave,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.lbl_save))
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.md))
         }
     }
 }

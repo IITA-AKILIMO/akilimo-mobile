@@ -3,8 +3,10 @@
     <!-- Window background — referenced by values/themes.xml and values-night/themes.xml only.
          All other colours are defined in Kotlin via AkilimoTheme. -->
 
-    <color name="color_background">#F5FCE9</color>
-    <color name="color_dark_background">#10140C</color>
+    <color name="color_background">#FDFDF6</color>
+    <color name="color_dark_background">#141811</color>
+    <!-- Logo deep green, the launch screen background -->
+    <color name="color_splash_background">#006F45</color>
 
     <!-- Used by res/drawable/ic_fertilizer_bag.xml -->
     <color name="color_primary">#3D7600</color>

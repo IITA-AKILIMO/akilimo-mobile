@@ -3,7 +3,6 @@ package com.akilimo.mobile.ui.screens.usecases
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,10 +23,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -36,20 +36,21 @@ import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.DateInputField
+import com.akilimo.mobile.ui.components.compose.FormCard
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.SwitchRow
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.DatesViewModel
+import com.akilimo.mobile.utils.PlantingSchedule
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 private const val PLANTING_MONTHS_BEFORE = 4L
 private const val PLANTING_MONTHS_AHEAD = 12L
-private const val HARVEST_MONTHS_MIN = 8L
-private const val HARVEST_MONTHS_MAX = 16L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,29 +62,52 @@ fun DatesScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    var plantingDate by remember { mutableStateOf<LocalDate?>(null) }
-    var harvestDate by remember { mutableStateOf<LocalDate?>(null) }
-    var plantingFlex by remember { mutableStateOf(0L) }
-    var harvestFlex by remember { mutableStateOf(0L) }
-    var alternativeDate by remember { mutableStateOf(false) }
-    var useFlexDates by remember { mutableStateOf(false) }
+    var plantingDate by rememberSaveable { mutableStateOf<LocalDate?>(null) }
+    var harvestDate by rememberSaveable { mutableStateOf<LocalDate?>(null) }
+    var plantingFlex by rememberSaveable { mutableStateOf(0L) }
+    var harvestFlex by rememberSaveable { mutableStateOf(0L) }
+    var alternativeDate by rememberSaveable { mutableStateOf(false) }
+    var useFlexDates by rememberSaveable { mutableStateOf(false) }
 
-    var showPlantingDatePicker by remember { mutableStateOf(false) }
-    var showHarvestDatePicker by remember { mutableStateOf(false) }
+    var showPlantingDatePicker by rememberSaveable { mutableStateOf(false) }
+    var showHarvestDatePicker by rememberSaveable { mutableStateOf(false) }
 
     // True when the user's planting date is already in the past
     val alreadyPlanted by remember(plantingDate) {
         derivedStateOf { plantingDate?.isBefore(LocalDate.now()) == true }
     }
 
-    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+    val locale = currentLocale()
+    val dateFormatter = remember(locale) { DateTimeFormatter.ofPattern("dd MMM yyyy", locale) }
     val flexOptions = listOf(0L, 1L, 2L)
+    val noFlexLabel = stringResource(R.string.lbl_no_flexibility)
+    val oneMonthLabel = stringResource(R.string.lbl_one_month_window)
+    val twoMonthLabel = stringResource(R.string.lbl_two_month_window)
+    fun flexLabel(months: Long) = when (months) {
+        0L -> noFlexLabel
+        1L -> oneMonthLabel
+        else -> twoMonthLabel
+    }
+
+    // Planting date: [now − (4+flex), now + (12+flex)]
+    val today = LocalDate.now()
+    val plantingFlexMonths = if (useFlexDates) plantingFlex else 0L
+    val plantingMin = today.minusMonths(PLANTING_MONTHS_BEFORE + plantingFlexMonths)
+    val plantingMax = today.plusMonths(PLANTING_MONTHS_AHEAD + plantingFlexMonths)
+    // Harvest date: 235 to 452 days after planting, what the engine accepts (flexibility does not widen it)
+    val harvestMin = plantingDate?.let(PlantingSchedule::earliestHarvest)
+    val harvestMax = plantingDate?.let(PlantingSchedule::latestHarvest)
 
     // Initialize local state from loaded state
+    // Prefill once from the DB; after rotation keep the user's unsaved edits
+    var prefilled by rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(state.user) {
-        if (state.user != null) {
+        if (state.user != null && !prefilled) {
+            prefilled = true
             plantingDate = state.plantingDate
-            harvestDate = state.harvestDate
+            // A date saved under the older, wider range may be refused by the engine: pick it again
+            harvestDate = state.harvestDate?.takeIf { h -> state.plantingDate?.let { PlantingSchedule.isValid(it, h) } == true }
             plantingFlex = state.plantingFlex
             harvestFlex = state.harvestFlex
             alternativeDate = state.alternativeDate
@@ -97,24 +121,22 @@ fun DatesScreen(
             viewModel.onSaveHandled()
         }
     }
+    SaveErrorEffect(state.saveFailed, snackbarHostState, viewModel::onSaveErrorShown)
 
-    // Planting date: [now − (4+flex), now + (12+flex)]
     if (showPlantingDatePicker) {
-        val flex = if (useFlexDates) plantingFlex else 0L
-        val pMin = LocalDate.now().minusMonths(PLANTING_MONTHS_BEFORE + flex)
-        val pMax = LocalDate.now().plusMonths(PLANTING_MONTHS_AHEAD + flex)
-        val plantingSelectableDates = remember(pMin, pMax) {
+        val plantingSelectableDates = remember(plantingMin, plantingMax) {
             object : SelectableDates {
                 override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                     val d = Instant.ofEpochMilli(utcTimeMillis).atOffset(ZoneOffset.UTC).toLocalDate()
-                    return !d.isBefore(pMin) && !d.isAfter(pMax)
+                    return !d.isBefore(plantingMin) && !d.isAfter(plantingMax)
                 }
-                override fun isSelectableYear(year: Int) = year in pMin.year..pMax.year
+                override fun isSelectableYear(year: Int) = year in plantingMin.year..plantingMax.year
             }
         }
+        // Start on today when nothing is picked yet: most farmers plant within days of now
         val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = plantingDate
-                ?.atStartOfDay(ZoneOffset.UTC)?.toInstant()?.toEpochMilli(),
+            initialSelectedDateMillis = (plantingDate ?: today)
+                .atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
             selectableDates = plantingSelectableDates,
         )
         DatePickerDialog(
@@ -140,23 +162,18 @@ fun DatesScreen(
         ) { DatePicker(state = datePickerState, modifier = Modifier.weight(1f, fill = false)) }
     }
 
-    // Harvest date: [planting + (8−flex), planting + (16+flex)]
-    if (showHarvestDatePicker) {
-        val pDate = plantingDate!! // only shown when plantingDate != null
-        val flex = if (useFlexDates) harvestFlex else 0L
-        val hMin = pDate.plusMonths(HARVEST_MONTHS_MIN - flex)
-        val hMax = pDate.plusMonths(HARVEST_MONTHS_MAX + flex)
-        val harvestSelectableDates = remember(hMin, hMax) {
+    if (showHarvestDatePicker && harvestMin != null && harvestMax != null) {
+        val harvestSelectableDates = remember(harvestMin, harvestMax) {
             object : SelectableDates {
                 override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                     val d = Instant.ofEpochMilli(utcTimeMillis).atOffset(ZoneOffset.UTC).toLocalDate()
-                    return !d.isBefore(hMin) && !d.isAfter(hMax)
+                    return !d.isBefore(harvestMin) && !d.isAfter(harvestMax)
                 }
-                override fun isSelectableYear(year: Int) = year in hMin.year..hMax.year
+                override fun isSelectableYear(year: Int) = year in harvestMin.year..harvestMax.year
             }
         }
         val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = (harvestDate ?: hMin)
+            initialSelectedDateMillis = (harvestDate ?: harvestMin)
                 .atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
             selectableDates = harvestSelectableDates,
         )
@@ -188,81 +205,20 @@ fun DatesScreen(
                 title = stringResource(R.string.lbl_consider_alternative_planting),
                 collapsedTitle = stringResource(R.string.lbl_dates),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-    ) { padding ->
-        ScrollableFormColumn(padding = padding) {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            SwitchRow(
-                label = stringResource(R.string.lbl_consider_alternative_planting),
-                checked = alternativeDate,
-                onCheckedChange = { alternativeDate = it }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            DateInputField(
-                value = plantingDate?.format(dateFormatter) ?: "",
-                label = stringResource(R.string.lbl_planting_date),
-                placeholder = stringResource(R.string.lbl_pick_planting_date),
-                onClick = { showPlantingDatePicker = true },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            val noPlantingMsg = stringResource(R.string.lbl_planting_date_prompt)
-            DateInputField(
-                value = harvestDate?.format(dateFormatter) ?: "",
-                label = stringResource(R.string.lbl_harvesting_date),
-                placeholder = stringResource(R.string.lbl_pick_harvest_date),
-                onClick = {
-                    if (plantingDate == null) {
-                        scope.launch { snackbarHostState.showSnackbar(noPlantingMsg) }
-                    } else {
-                        showHarvestDatePicker = true
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            SwitchRow(
-                label = stringResource(R.string.lbl_flexible_dates),
-                checked = useFlexDates,
-                onCheckedChange = { useFlexDates = it }
-            )
-
-            if (useFlexDates) {
-                Spacer(modifier = Modifier.height(8.dp))
-                AkilimoDropdown(
-                    label = stringResource(R.string.lbl_planting_flex),
-                    options = flexOptions,
-                    selectedOption = plantingFlex,
-                    onOptionSelected = { plantingFlex = it; harvestDate = null },
-                    displayText = { months -> if (months == 1L) "$months month" else "$months months" },
-                    enabled = !alreadyPlanted,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                AkilimoDropdown(
-                    label = stringResource(R.string.lbl_harvest_flex),
-                    options = flexOptions,
-                    selectedOption = harvestFlex,
-                    onOptionSelected = { harvestFlex = it; harvestDate = null },
-                    displayText = { months -> if (months == 1L) "$months month" else "$months months" },
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {
-                    val pDate = plantingDate ?: return@Button
-                    val hDate = harvestDate ?: return@Button
+        bottomBar = {
+            FormSaveBar(
+                enabled = plantingDate != null && harvestDate != null,
+                isSaving = state.isSaving,
+                disabledReason = stringResource(
+                    if (plantingDate == null) R.string.error_planting_date_required
+                    else R.string.error_harvest_date_required
+                ),
+                onSave = {
+                    val pDate = plantingDate ?: return@FormSaveBar
+                    val hDate = harvestDate ?: return@FormSaveBar
                     viewModel.saveSchedule(
                         plantingDate = pDate,
                         harvestDate = hDate,
@@ -271,13 +227,91 @@ fun DatesScreen(
                         alternativeDate = alternativeDate
                     )
                 },
-                enabled = plantingDate != null && harvestDate != null,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.lbl_save))
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { padding ->
+        ScrollableFormColumn(padding = padding) {
+            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
+
+            FormCard {
+                SwitchRow(
+                    label = stringResource(R.string.lbl_open_to_alternative_dates),
+                    checked = alternativeDate,
+                    onCheckedChange = { alternativeDate = it }
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
+
+            FormCard {
+                DateInputField(
+                    value = plantingDate?.format(dateFormatter) ?: "",
+                    label = stringResource(R.string.lbl_planting_date),
+                    placeholder = stringResource(R.string.lbl_pick_planting_date),
+                    helperText = stringResource(
+                        R.string.msg_date_window,
+                        plantingMin.format(dateFormatter),
+                        plantingMax.format(dateFormatter),
+                    ),
+                    onClick = { showPlantingDatePicker = true },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                val noPlantingMsg = stringResource(R.string.lbl_planting_date_prompt)
+                DateInputField(
+                    value = harvestDate?.format(dateFormatter) ?: "",
+                    label = stringResource(R.string.lbl_harvesting_date),
+                    placeholder = stringResource(R.string.lbl_pick_harvest_date),
+                    helperText = if (harvestMin != null && harvestMax != null) {
+                        stringResource(
+                            R.string.msg_date_window,
+                            harvestMin.format(dateFormatter),
+                            harvestMax.format(dateFormatter),
+                        )
+                    } else {
+                        null
+                    },
+                    onClick = {
+                        if (plantingDate == null) {
+                            scope.launch { snackbarHostState.showSnackbar(noPlantingMsg) }
+                        } else {
+                            showHarvestDatePicker = true
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
+
+            FormCard {
+                SwitchRow(
+                    label = stringResource(R.string.lbl_flexible_dates),
+                    checked = useFlexDates,
+                    onCheckedChange = { useFlexDates = it }
+                )
+
+                if (useFlexDates) {
+                    AkilimoDropdown(
+                        label = stringResource(R.string.lbl_planting_flex),
+                        options = flexOptions,
+                        selectedOption = plantingFlex,
+                        onOptionSelected = { plantingFlex = it; harvestDate = null },
+                        displayText = { months -> flexLabel(months) },
+                        enabled = !alreadyPlanted,
+                    )
+                    AkilimoDropdown(
+                        label = stringResource(R.string.lbl_harvest_flex),
+                        options = flexOptions,
+                        selectedOption = harvestFlex,
+                        onOptionSelected = { harvestFlex = it; harvestDate = null },
+                        displayText = { months -> flexLabel(months) },
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(AkilimoSpacing.md))
         }
     }
 }

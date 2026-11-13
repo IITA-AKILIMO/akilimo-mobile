@@ -1,15 +1,21 @@
 package com.akilimo.mobile.ui.viewmodels
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akilimo.mobile.R
 import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.network.dto.UserFeedBackRequest
 import com.akilimo.mobile.enums.EnumServiceType
 import com.akilimo.mobile.enums.EnumUseCase
+import com.akilimo.mobile.data.account.AccountSessionStore
 import com.akilimo.mobile.network.AkilimoApi
+import com.akilimo.mobile.network.dto.RecommendationResponse
+import com.akilimo.mobile.network.request.RecommendationRequest
+import com.akilimo.mobile.repos.account.SavedAdviceRepo
 import com.akilimo.mobile.network.ApiClient
 import com.akilimo.mobile.network.parseError
 import com.akilimo.mobile.repos.AkilimoUserRepo
@@ -17,12 +23,18 @@ import com.akilimo.mobile.repos.RecommendationBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
+import kotlinx.coroutines.CancellationException
+import com.akilimo.mobile.data.ReadingTextScale
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,60 +42,133 @@ class GetRecommendationViewModel @Inject constructor(
     private val userRepo: AkilimoUserRepo,
     private val appSettings: AppSettingsDataStore,
     private val database: AppDatabase,
+    private val accountSession: AccountSessionStore,
+    private val savedAdvice: SavedAdviceRepo,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     sealed interface UiState {
         data object Idle : UiState
         data object Loading : UiState
-        data class Success(val title: String, val description: String) : UiState
-        data class Error(val message: String) : UiState
+        data class Success(
+            val title: String,
+            val description: String,
+            /** True when the advice was kept in the farmer's account (signed in, consent given). */
+            val savedToAccount: Boolean = false,
+        ) : UiState
+
+        /** [messageRes] is resolved by the screen so it follows the in-app locale. */
+        data class Error(@StringRes val messageRes: Int) : UiState
     }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    /** Reader-chosen text size (1.0 = default), remembered across screens and launches. */
+    val textScale: StateFlow<Float> = appSettings.readingTextScaleFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), ReadingTextScale.DEFAULT)
+
+    fun setTextScale(scale: Float) {
+        viewModelScope.launch { appSettings.setReadingTextScale(scale) }
+    }
+
+    /** Whether the reader keeps this screen in landscape; remembered across visits. */
+    val landscapeLocked: StateFlow<Boolean> = appSettings.readingLandscapeFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), false)
+
+    fun setLandscapeLocked(locked: Boolean) {
+        viewModelScope.launch { appSettings.setReadingLandscape(locked) }
+    }
+
     private val _feedbackResult = MutableSharedFlow<Boolean>()
     val feedbackResult = _feedbackResult.asSharedFlow()
 
-    fun fetchRecommendation(useCase: EnumUseCase, noRecsLabel: String, errorLabel: String) =
+    /**
+     * Fetch once per screen instance. The screen calls this from a LaunchedEffect, which
+     * re-runs after rotation; skipping when a request is in flight or already succeeded
+     * avoids discarding the result and repeating the network call. Errors can be retried.
+     */
+    fun fetchRecommendation(useCase: EnumUseCase) {
+        val current = _uiState.value
+        if (current is UiState.Loading || current is UiState.Success) return
+        loadRecommendation(useCase)
+    }
+
+    private fun loadRecommendation(useCase: EnumUseCase) =
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
                 val builder = RecommendationBuilder(database, appSettings, useCase)
                 val payload = builder.build() ?: run {
-                    _uiState.value = UiState.Error(errorLabel)
+                    // The only reason build() returns null is a missing farmer profile
+                    _uiState.value = UiState.Error(R.string.error_rec_profile_missing)
                     return@launch
                 }
 
                 val base = AppConfig.resolveBaseUrlFor(context, EnumServiceType.AKILIMO)
-                val client = ApiClient.createService<AkilimoApi>(context, base)
+                // A signed-in farmer's token goes along, so the server saves the advice in their account;
+                // without one the call is anonymous, exactly as before.
+                val client = ApiClient.createService<AkilimoApi>(context, base, bearerToken = { accountSession.token })
                 val result = client.computeRecommendations(payload)
 
                 if (result.isSuccessful) {
                     val resp = result.body()
-                    if (resp != null) {
-                        _uiState.value = UiState.Success(
+                    _uiState.value = if (resp != null) {
+                        UiState.Success(
                             title = resp.data.recType,
-                            description = resp.data.recommendation
+                            description = resp.data.recommendation,
+                            savedToAccount = keepInAccount(useCase, payload, resp),
                         )
                     } else {
-                        _uiState.value = UiState.Error(noRecsLabel)
+                        UiState.Error(R.string.lbl_no_recommendations_prompt)
                     }
                 } else {
-                    val error = result.parseError()
-                    _uiState.value = UiState.Error(error?.message ?: errorLabel)
+                    // Never show the raw server message: it is English-only and technical
+                    val outsideCoverage = result.parseError()?.isOutsideCoverage == true
+                    _uiState.value = UiState.Error(
+                        if (outsideCoverage) R.string.error_recommendation_outside_coverage
+                        else errorMessageForHttpCode(result.code())
+                    )
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                Sentry.captureException(e)
-                _uiState.value = UiState.Error(e.message ?: errorLabel)
+                // Offline/timeouts are expected in the field; only report real bugs
+                if (e !is IOException) Sentry.captureException(e)
+                _uiState.value = UiState.Error(
+                    if (e is IOException) R.string.error_rec_network else R.string.error_fetch_recommendation
+                )
             }
         }
+
+    /** Keeps a copy on the phone for the saved-advice list; the server saved its own when the token was valid. */
+    private suspend fun keepInAccount(useCase: EnumUseCase, payload: RecommendationRequest, resp: RecommendationResponse): Boolean {
+        val session = accountSession.session.value ?: return false
+        if (session.consentRequired) return false
+        savedAdvice.saveComputed(
+            requestId = resp.requestId,
+            useCase = useCase.name,
+            countryCode = payload.computeRequest.farmInformation.countryCode,
+            recType = resp.data.recType,
+            recommendation = resp.data.recommendation,
+        )
+        return true
+    }
+
+    /** True while a farmer is signed in, so the screen can say the advice is saved or offer to save it. */
+    val signedIn: StateFlow<Boolean> = accountSession.session
+        .map { it != null && !it.consentRequired }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), accountSession.isSignedIn)
 
     fun submitFeedback(useCase: EnumUseCase, rating: Int, npsScore: Int) =
         viewModelScope.launch {
             try {
-                val user = userRepo.getUser(appSettings.akilimoUser) ?: return@launch
+                val user = userRepo.getUser(appSettings.akilimoUser)
+                if (user == null) {
+                    // Without a profile there is nothing to send; tell the user it failed
+                    _feedbackResult.emit(false)
+                    return@launch
+                }
                 val base = AppConfig.resolveBaseUrlFor(context, EnumServiceType.AKILIMO)
                 val client = ApiClient.createService<AkilimoApi>(context, base)
                 val request = UserFeedBackRequest(
@@ -97,9 +182,29 @@ class GetRecommendationViewModel @Inject constructor(
                 )
                 val result = client.submitUserFeedback(request)
                 _feedbackResult.emit(result.isSuccessful)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                Sentry.captureException(e)
+                if (e !is IOException) Sentry.captureException(e)
                 _feedbackResult.emit(false)
             }
         }
+
+    companion object {
+        private const val STOP_TIMEOUT_MS = 5_000L
+        private const val HTTP_BAD_REQUEST = 400
+        private const val HTTP_UNPROCESSABLE = 422
+        private const val HTTP_TIMEOUT = 408
+        private const val HTTP_TOO_MANY = 429
+        private const val HTTP_SERVER_MIN = 500
+
+        /** Maps an unsuccessful HTTP status to a farmer-friendly, translatable message. */
+        @StringRes
+        fun errorMessageForHttpCode(code: Int): Int = when {
+            code == HTTP_BAD_REQUEST || code == HTTP_UNPROCESSABLE -> R.string.error_rec_invalid_input
+            code == HTTP_TIMEOUT || code == HTTP_TOO_MANY || code >= HTTP_SERVER_MIN ->
+                R.string.error_rec_server_busy
+            else -> R.string.error_fetch_recommendation
+        }
+    }
 }

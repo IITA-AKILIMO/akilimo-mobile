@@ -24,19 +24,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture Overview
 
-The app is a **dual-layer in-migration codebase**: legacy View-based screens coexist with a partially complete Compose migration. All new screens must be Compose.
+The app is a **single-Activity Compose app**: `MainActivity` hosts one Compose `NavHost` (`navigation/`). There are no fragments or XML layouts. The only View interop is `AndroidView` for the WebView and the map; keep it that way and write every new screen in Compose.
 
 **Package layout** (under `com.akilimo.mobile`):
-- `ui/screens/` — Compose screens grouped by feature (`usecases/`, `settings/`, etc.)
+- `navigation/` — `Route.kt` (serializable routes), `FeatureGraphs.kt` (graph per feature), `AkilimoNavHost.kt`
+- `ui/screens/` — Compose screens grouped by feature (`hub/`, `profile/`, `onboarding/`, `recommendations/`, `usecases/`, `settings/`)
 - `ui/viewmodels/` — one ViewModel per screen, pattern: `StateFlow<UiState>` + Hilt `@HiltViewModel`
-- `ui/components/compose/` — shared Compose primitives (`BackTopAppBar`, `SaveBottomBar`, `ScrollableFormColumn`, `NavExtensions.kt`)
+- `ui/components/compose/` — shared Compose components (see "Design conventions")
+- `ui/theme/` — colours, shapes, spacing, typography
 - `repos/` — Room DAO wrappers + Retrofit API wrappers; the only layer ViewModels call
 - `entities/` — Room `@Entity` data classes
-- `data/AppSettingsDataStore.kt` — DataStore-backed settings; single source of truth for `akilimoUser`, language, country
+- `data/AppSettingsDataStore.kt` — DataStore-backed settings; single source of truth for `akilimoUser`, language, country, theme
 
-**Startup:** `SplashActivity` → onboarding (View-based) → `HomeActivity` → `MainActivity` (Compose nav host).
+**Navigation flow:** first run: `LegalWizardRoute` → `OnboardingRoute` (first-run wizard only) → `HubRoute`. Every later launch starts at `HubRoute`, the app home, whose cards open `RecommendationsRoute` (advice types, then the use-case screens), `ProfileRoute` (edit details, same sections and view model as onboarding) and `SettingsRoute`.
 
-**Database:** Room v2 with `fallbackToDestructiveMigration()` still active. Always write a proper `Migration` object for schema changes and remove the fallback flag.
+**Theme:** the app starts in the light theme; `ThemeMode` (System / Light / Dark) is chosen in Settings and stored in `AppSettingsDataStore`.
+
+**Database:** Room v8 with explicit `Migration` objects (`DatabaseMigrations.kt`); the destructive fallback is only used on downgrade. Always write a proper `Migration` for schema changes, bump the version and update the exported schema.
 
 ## Compose Screen Conventions
 
@@ -56,7 +60,21 @@ ScrollableFormColumn(padding = paddingValues) { /* content */ }
 navController.completeTask(EnumAdviceTask.SOME_TASK)
 ```
 
-`@OptIn(ExperimentalMaterial3Api::class)` is only needed on screens that use `ModalBottomSheet` or `DatePicker` directly. `BackTopAppBar` carries its own `@OptIn` internally.
+`@OptIn(ExperimentalMaterial3Api::class)` is needed on any screen that calls `BackTopAppBar` (its scroll-behaviour parameter is experimental), `ModalBottomSheet` or `DatePicker`.
+
+## Design conventions
+
+Use the theme tokens (`MaterialTheme.colorScheme`, `MaterialTheme.shapes`, `AkilimoSpacing`); never hard-code colours or sizes in screens. The palette follows the logo (deep green `#006F45`, leaf lime `#9ACA3C` used only as a fill with dark text). Cards and buttons use `MaterialTheme.shapes.medium` (12dp).
+
+Reuse the shared components in `ui/components/compose/` before adding a new one:
+- `FormCard` / `Modifier.cardSurface()` — raised card that groups fields or sections
+- `AkilimoTextField`, `AkilimoDropdown`, `DateInputField` — the label sits above the field
+- `RadioButtonRow` — raised, selectable option card (optional `supportingText`)
+- `SegmentedTabRow` (and `BinaryToggleChips`) — two to four mutually exclusive choices
+- `StatusChip` / `StatusTone` — status in words plus semantic colour
+- `StatSummaryCard`, `ProgressSummaryCard` — key figures and progress at the top of a screen
+- `IconTile` — icon on a soft tile for list rows and cards
+- `InfoCard`, `ResultCard`, `SelectionCard`, `SectionHeader`, `WizardBottomBar`
 
 When the confirm action depends on nullable state, use `?.let` instead of early-return:
 ```kotlin

@@ -1,5 +1,2130 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues name="AGP (8.13.0)" by="lint 8.13.0" client="gradle" dependencies="false" format="6"
-    type="baseline" variant="all" version="8.13.0">
+<issues format="6" by="lint 8.13.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.13.2)" variant="all" version="8.13.2">
+
+    <issue
+        id="OldTargetApi"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
+        errorLine1="        targetSdk = 36"
+        errorLine2="        ~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="101"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `localeConfig` is only used in API level 33 and higher (current min is 31)"
+        errorLine1="        android:localeConfig=&quot;@xml/locales_config&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="27"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="VectorRaster"
+        message="Resource references will not work correctly in images generated for this vector icon for API &lt; 24; check generated icon to make sure it looks acceptable"
+        errorLine1="        android:fillColor=&quot;@android:color/white&quot;"
+        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/ic_grid.xml"
+            line="9"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="VectorRaster"
+        message="Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more"
+        errorLine1="    android:width=&quot;400dp&quot;"
+        errorLine2="                   ~~~~~">
+        <location
+            file="src/main/res/drawable/ic_maize_1.xml"
+            line="2"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="VectorRaster"
+        message="Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more"
+        errorLine1="    android:width=&quot;400dp&quot;"
+        errorLine2="                   ~~~~~">
+        <location
+            file="src/main/res/drawable/ic_maize_2.xml"
+            line="2"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="VectorRaster"
+        message="Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more"
+        errorLine1="    android:viewportWidth=&quot;238.39&quot; android:width=&quot;400dp&quot; xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="                                                  ~~~~~">
+        <location
+            file="src/main/res/drawable/ic_maize_3.xml"
+            line="2"
+            column="51"/>
+    </issue>
+
+    <issue
+        id="AndroidGradlePluginVersion"
+        message="A newer version of com.android.application than 8.13.2 is available: 9.5.1"
+        errorLine1="agp = &quot;8.13.2&quot;"
+        errorLine2="      ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="2"
+            column="7"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.core:core-ktx than 1.17.0 is available: 1.19.1"
+        errorLine1="coreKtx = &quot;1.17.0&quot;"
+        errorLine2="          ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="5"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.appcompat:appcompat than 1.7.1 is available: 1.8.0"
+        errorLine1="appcompat = &quot;1.7.1&quot;"
+        errorLine2="            ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="9"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.android.material:material than 1.13.0 is available: 1.14.0"
+        errorLine1="material = &quot;1.13.0&quot;"
+        errorLine2="           ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="10"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.activity:activity than 1.11.0 is available: 1.13.0"
+        errorLine1="activity = &quot;1.11.0&quot;"
+        errorLine2="           ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="11"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.constraintlayout:constraintlayout than 2.2.1 is available: 2.2.2"
+        errorLine1="constraintlayout = &quot;2.2.1&quot;"
+        errorLine2="                   ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="12"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.navigation:navigation-fragment than 2.9.0 is available: 2.10.2"
+        errorLine1="navigation = &quot;2.9.0&quot;"
+        errorLine2="             ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="13"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.navigation:navigation-testing than 2.9.0 is available: 2.10.2"
+        errorLine1="navigation = &quot;2.9.0&quot;"
+        errorLine2="             ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="13"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.navigation:navigation-ui than 2.9.0 is available: 2.10.2"
+        errorLine1="navigation = &quot;2.9.0&quot;"
+        errorLine2="             ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="13"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.navigation:navigation-compose than 2.9.0 is available: 2.10.2"
+        errorLine1="navigationCompose = &quot;2.9.0&quot;"
+        errorLine2="                    ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="14"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.hilt:hilt-navigation-compose than 1.2.0 is available: 1.4.0"
+        errorLine1="hiltNavigationCompose = &quot;1.2.0&quot;"
+        errorLine2="                        ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="15"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-compiler than 2.7.1 is available: 2.8.5"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="20"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-ktx than 2.7.1 is available: 2.8.5"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="20"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-runtime than 2.7.1 is available: 2.8.5"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="20"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.room:room-testing than 2.7.1 is available: 2.8.5"
+        errorLine1="room = &quot;2.7.1&quot;"
+        errorLine2="       ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="20"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.gms.google-services than 4.4.0 is available: 4.5.0"
+        errorLine1="google-services = &quot;4.4.0&quot;"
+        errorLine2="                  ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="33"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.android.gms:play-services-location than 21.3.0 is available: 21.4.0"
+        errorLine1="play-services-location = &quot;21.3.0&quot;"
+        errorLine2="                         ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="34"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.firebase:firebase-bom than 32.7.0 is available: 35.1.0"
+        errorLine1="firebase-bom = &quot;32.7.0&quot;"
+        errorLine2="               ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="35"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.firebase:firebase-installations than 18.0.0 is available: 20.0.0"
+        errorLine1="firebase-installations = &quot;18.0.0&quot;"
+        errorLine2="                         ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="36"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.firebase.crashlytics than 3.0.6 is available: 3.0.8"
+        errorLine1="firebase-crashlytics-plugin = &quot;3.0.6&quot;"
+        errorLine2="                              ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="37"
+            column="31"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.datastore:datastore-preferences than 1.1.4 is available: 1.3.0"
+        errorLine1="datastore = &quot;1.1.4&quot;"
+        errorLine2="            ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="42"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.work:work-runtime-ktx than 2.10.5 is available: 2.12.0"
+        errorLine1="work = &quot;2.10.5&quot;"
+        errorLine2="       ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="56"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.9.4 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.9.4&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="58"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.9.4 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.9.4&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="58"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.9.4 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.9.4&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="58"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-ktx than 2.9.4 is available: 2.11.0"
+        errorLine1="lifecycleRuntimeKtx = &quot;2.9.4&quot;"
+        errorLine2="                      ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="58"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.activity:activity-compose than 1.11.0 is available: 1.13.0"
+        errorLine1="activityCompose = &quot;1.11.0&quot;"
+        errorLine2="                  ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="59"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.compose:compose-bom than 2025.10.00 is available: 2026.09.00"
+        errorLine1="composeBom = &quot;2025.10.00&quot;"
+        errorLine2="             ~~~~~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="60"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of org.jetbrains.kotlin.android than 2.2.20 is available: 2.4.21"
+        errorLine1="kotlin = &quot;2.2.20&quot;"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="4"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of org.jetbrains.kotlin.plugin.compose than 2.2.20 is available: 2.4.21"
+        errorLine1="kotlin = &quot;2.2.20&quot;"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="4"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of org.jetbrains.kotlin.plugin.serialization than 2.2.20 is available: 2.4.21"
+        errorLine1="kotlin = &quot;2.2.20&quot;"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="4"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.google.dagger.hilt.android than 2.57.1 is available: 2.60.1"
+        errorLine1="hilt = &quot;2.57.1&quot;"
+        errorLine2="       ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="21"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.google.dagger:hilt-android than 2.57.1 is available: 2.60.1"
+        errorLine1="hilt = &quot;2.57.1&quot;"
+        errorLine2="       ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="21"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.google.dagger:hilt-android-compiler than 2.57.1 is available: 2.60.1"
+        errorLine1="hilt = &quot;2.57.1&quot;"
+        errorLine2="       ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="21"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.google.dagger:hilt-android-testing than 2.57.1 is available: 2.60.1"
+        errorLine1="hilt = &quot;2.57.1&quot;"
+        errorLine2="       ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="21"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of io.sentry.android.gradle than 5.12.1 is available: 6.26.0"
+        errorLine1="sentry-gradle = &quot;5.12.1&quot;"
+        errorLine2="                ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="25"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.squareup.okhttp3:logging-interceptor than 5.2.1 is available: 5.5.1"
+        errorLine1="okhttp = &quot;5.2.1&quot;"
+        errorLine2="         ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="26"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.squareup.okhttp3:okhttp than 5.2.1 is available: 5.5.1"
+        errorLine1="okhttp = &quot;5.2.1&quot;"
+        errorLine2="         ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="26"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of net.danlew:android.joda than 2.13.1 is available: 2.15.1"
+        errorLine1="joda = &quot;2.13.1&quot;"
+        errorLine2="       ~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="52"
+            column="8"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of org.sonarqube than 7.0.1.6134 is available: 7.5.0.8588"
+        errorLine1="sonar = &quot;7.0.1.6134&quot;"
+        errorLine2="        ~~~~~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="64"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-test than 1.9.0 is available: 1.11.0"
+        errorLine1="coroutines = &quot;1.9.0&quot;"
+        errorLine2="             ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="67"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of app.cash.turbine:turbine than 1.2.0 is available: 1.2.1"
+        errorLine1="turbine = &quot;1.2.0&quot;"
+        errorLine2="          ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="68"
+            column="11"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of io.mockk:mockk than 1.13.14 is available: 1.14.12"
+        errorLine1="mockk = &quot;1.13.14&quot;"
+        errorLine2="        ~~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="69"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of io.mockk:mockk-android than 1.13.14 is available: 1.14.12"
+        errorLine1="mockk-android = &quot;1.13.14&quot;"
+        errorLine2="                ~~~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="70"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of org.jetbrains.kotlinx:kotlinx-serialization-json than 1.7.3 is available: 1.12.0"
+        errorLine1="kotlinx-serialization-json = { group = &quot;org.jetbrains.kotlinx&quot;, name = &quot;kotlinx-serialization-json&quot;, version = &quot;1.7.3&quot; }"
+        errorLine2="                                                                                                               ~~~~~~~">
+        <location
+            file="$HOME/AppData/Local/Temp/claude/5cf4ed54d5b55c46/5e8bbf6b-d4cb-4824-b26a-c22362032551/scratchpad/restack/gradle/libs.versions.toml"
+            line="177"
+            column="112"/>
+    </issue>
+
+    <issue
+        id="LocalContextResourcesRead"
+        message="Reading Resources using LocalContext.current.resources"
+        errorLine1="                            context.resources.getQuantityString("
+        errorLine2="                            ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/screens/onboarding/OnboardingScreen.kt"
+            line="148"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/components/compose/BackTopAppBar.kt"
+            line="58"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/components/compose/InfoCard.kt"
+            line="40"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/components/compose/LabeledTextField.kt"
+            line="30"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/components/compose/ResultCard.kt"
+            line="34"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/components/compose/SaveBottomBar.kt"
+            line="48"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/components/compose/ScrollableFormColumn.kt"
+            line="34"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/components/compose/SectionHeader.kt"
+            line="24"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ModifierParameter"
+        message="Modifier parameter should be the first optional parameter"
+        errorLine1="    modifier: Modifier = Modifier,"
+        errorLine2="    ~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/components/compose/SelectionCard.kt"
+            line="53"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Aligned16KB"
+        message="The native library `arm64-v8a/libmockkjvmtiagent.so` (from `io.mockk:mockk-agent-android:1.13.14`) is not 16 KB aligned">
+        <location
+            file="$GRADLE_USER_HOME/caches/8.14.3/transforms/60d1339357d6d716313c46b20b760a73/transformed/jetified-mockk-agent-android-1.13.14/jni/arm64-v8a/libmockkjvmtiagent.so"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;error_location_outside_coverage&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;error_location_outside_coverage&quot;>Your field is outside the area where AKILIMO can give advice in %1$s. Pick a location inside the shaded area on the map.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="315"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;error_recommendation_outside_coverage&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;error_recommendation_outside_coverage&quot;>Your field is outside the area where AKILIMO can give advice. Change your field location in your profile and try again.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="316"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_coverage_legend&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_coverage_legend&quot;>The shaded area is where AKILIMO can give advice&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="317"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_coverage_inside&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_coverage_inside&quot;>AKILIMO can give advice for this location&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="318"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_coverage_outside&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_coverage_outside&quot;>AKILIMO cannot give advice here. Move the pin into the shaded area.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="319"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;cmp_wizard_step_progress&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;cmp_wizard_step_progress&quot;>Step %1$d of %2$d&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_components.xml"
+            line="5"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;cmp_choose_date&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;cmp_choose_date&quot;>choose date&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_components.xml"
+            line="7"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;cmp_loading&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;cmp_loading&quot;>Loading&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_components.xml"
+            line="9"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;cmp_close&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;cmp_close&quot;>Close&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_components.xml"
+            line="11"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_lat_lng_format&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_lat_lng_format&quot;>Lat: %1$.5f, Lng: %2$.5f&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="5"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;cd_location_map&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;cd_location_map&quot;>Map. Tap to mark your farm location.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="8"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_locating&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_locating&quot;>Finding your location…&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="9"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_location_disabled&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_location_disabled&quot;>Location is turned off on this phone.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="10"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_location_permission_denied&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_location_permission_denied&quot;>AKILIMO is not allowed to use your location.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="11"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_turn_on_location&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_turn_on_location&quot;>Turn on location&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="12"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_allow_location&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_allow_location&quot;>Allow location&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="13"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_tap_map_instead&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_tap_map_instead&quot;>Tap the map instead&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="14"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_map_load_failed&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_map_load_failed&quot;>The map could not load. Check your internet connection. You can still use your current location.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="15"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_coverage_loading&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_coverage_loading&quot;>Loading the area AKILIMO supports…&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="16"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_coverage_unavailable&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_coverage_unavailable&quot;>The supported area could not be loaded. You can still choose your farm.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="17"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_optional_field&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_optional_field&quot;>%1$s (optional)&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="20"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;error_farm_size_number&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;error_farm_size_number&quot;>Enter a number, for example 1.5&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="21"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;error_phone_invalid&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;error_phone_invalid&quot;>This doesn\&apos;t look like a phone number from %1$s. Check the number or the country code.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="24"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_choose_country_code&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_choose_country_code&quot;>Choose country code&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="25"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_search_country_code&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_search_country_code&quot;>Search country or code&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="26"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_suggested_countries&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_suggested_countries&quot;>Suggested&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="27"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_all_countries&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_all_countries&quot;>All countries&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="28"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_no_country_found&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_no_country_found&quot;>No country found&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="29"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;cd_phone_country_code&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;cd_phone_country_code&quot;>Country code: %1$s, +%2$d&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="31"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_onboarding_errors&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;plurals name=&quot;msg_onboarding_errors&quot;>"
+        errorLine2="             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="32"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_harvest_date_cleared&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_harvest_date_cleared&quot;>The harvest date was cleared because the planting date or window changed. Please pick it again.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="36"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_change_country_title&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_change_country_title&quot;>Change country?&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="37"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_change_country_clears_fertilizers&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_change_country_clears_fertilizers&quot;>Changing the country will remove the fertilizers you selected when you save. You will need to choose them again.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="38"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_change_country&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_change_country&quot;>Change country&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="39"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_step_about_you&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_step_about_you&quot;>About you&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="42"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_step_farm_location&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_step_farm_location&quot;>Where is your farm?&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="43"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_step_your_field&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_step_your_field&quot;>Your field&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="44"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_step_practices&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_step_practices&quot;>How you farm&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="45"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_step_review&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_step_review&quot;>Check your answers&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="46"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_page_load_failed&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_page_load_failed&quot;>This page could not load.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="49"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_theme&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_theme&quot;>Theme&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="52"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_theme_system&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_theme_system&quot;>System default&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="53"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_theme_light&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_theme_light&quot;>Light&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="54"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_theme_dark&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_theme_dark&quot;>Dark&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_onboarding.xml"
+            line="55"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;error_rec_profile_missing&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;error_rec_profile_missing&quot;>We could not find your farm details. Please complete your profile and try again.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="6"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;error_rec_network&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;error_rec_network&quot;>No internet connection. Check your connection and try again.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="7"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;error_rec_invalid_input&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;error_rec_invalid_input&quot;>Some of your answers could not be used. Check the steps and try again.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="8"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;error_rec_server_busy&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;error_rec_server_busy&quot;>The AKILIMO service is busy right now. Please try again later.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="9"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_steps_remaining_title&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_steps_remaining_title&quot;>Steps to complete&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="12"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_steps_remaining&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_steps_remaining&quot;>%1$d of %2$d steps are not complete yet. Complete them for more accurate advice.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="13"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_incomplete_steps_title&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_incomplete_steps_title&quot;>Some steps are not complete&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="14"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_incomplete_steps&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_incomplete_steps&quot;>These steps are not complete:\n%1$s\n\nAKILIMO will use default values for them, so the advice may be less accurate.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="15"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_continue_anyway&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_continue_anyway&quot;>Continue anyway&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="16"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_status_completed&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_status_completed&quot;>Completed&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="17"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_status_in_progress&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_status_in_progress&quot;>In progress&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="18"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_status_not_started&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_status_not_started&quot;>Not started&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="19"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;error_save_failed&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;error_save_failed&quot;>Could not save your answer. Please try again.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="22"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_nothing_to_show&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_nothing_to_show&quot;>Nothing to show&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="23"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_optional&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_optional&quot;>Optional&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="24"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_show_as_list&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_show_as_list&quot;>Show as list&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="25"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_show_as_grid&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_show_as_grid&quot;>Show as grid&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="26"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_fix_amounts_to_save&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_fix_amounts_to_save&quot;>Correct the highlighted amounts to save&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="27"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_enter_cost_for_each&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_enter_cost_for_each&quot;>Enter a cost for each selected operation&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="28"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_select_an_option&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_select_an_option&quot;>Select an option to save&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="29"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_no_options_available&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_no_options_available&quot;>No options are available yet. Please check your internet connection and try again later.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="30"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_no_prices_available&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_no_prices_available&quot;>No prices are available for your country yet.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="31"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_unit_of_sale&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_unit_of_sale&quot;>Unit of sale&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="34"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_price_per_unit&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_price_per_unit&quot;>Price per %1$s&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="35"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_price_per_unit_currency&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_price_per_unit_currency&quot;>Price per %1$s (%2$s)&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="36"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_with_currency&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_with_currency&quot;>%1$s (%2$s)&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="37"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_currency_amount&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_currency_amount&quot;>%1$s %2$s&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="38"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_select_unit_of_sale&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_select_unit_of_sale&quot;>Select the unit you sell in&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="39"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_enter_price&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_enter_price&quot;>Enter the price you get&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="40"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_weed_control_method&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_weed_control_method&quot;>Weed control method&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="43"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_tractor_available_question&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_tractor_available_question&quot;>Do you have access to a tractor?&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="46"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_select_tractor_operations&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_select_tractor_operations&quot;>Select the operations the tractor can do&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="47"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_select_tractor_operation&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_select_tractor_operation&quot;>Select at least one operation the tractor can do&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="48"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_select_tillage_operation&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_select_tillage_operation&quot;>Select at least one operation&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="49"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_open_to_alternative_dates&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_open_to_alternative_dates&quot;>I can plant or harvest on other dates&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="52"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;lbl_investment_for_field&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;lbl_investment_for_field&quot;>For your %1$s %2$s field&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="55"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_select_investment_amount&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_select_investment_amount&quot;>Select how much you can invest&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="56"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_no_investment_options&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_no_investment_options&quot;>No investment amounts are available for your country yet.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="57"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_select_where_you_sell&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_select_where_you_sell&quot;>Select where you sell your cassava&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="60"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_select_starch_factory&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_select_starch_factory&quot;>Select the starch factory you sell to&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="61"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_select_unit_and_price&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_select_unit_and_price&quot;>Select a unit and confirm its price&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="62"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_no_starch_factories&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_no_starch_factories&quot;>No starch factories are listed for your area yet.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="63"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_no_units_of_sale&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_no_units_of_sale&quot;>No units of sale are available yet.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="64"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_select_fertilizer&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_select_fertilizer&quot;>Select at least one fertilizer you can buy&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="67"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;msg_no_fertilizers&quot; is not translated in &quot;sw&quot; (Swahili) or &quot;rw&quot; (Kinyarwanda)"
+        errorLine1="    &lt;string name=&quot;msg_no_fertilizers&quot;>No fertilizers are available for your country yet.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="68"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="ExtraTranslation"
+        message="&quot;cd_show_as_list&quot; is translated here but not found in default locale"
+        errorLine1="    &lt;string name=&quot;cd_show_as_list&quot;>Erekana nk\&apos;urutonde&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-rw-rRW/strings.xml"
+            line="250"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="ExtraTranslation"
+        message="&quot;cd_show_as_grid&quot; is translated here but not found in default locale"
+        errorLine1="    &lt;string name=&quot;cd_show_as_grid&quot;>Erekana nk\&apos;imbonerahamwe&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-rw-rRW/strings.xml"
+            line="251"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;items&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;msg_items_processed&quot;>%1$d items processed&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="354"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;steps&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;msg_steps_remaining&quot;>%1$d of %2$d steps are not complete yet. Complete them for more accurate advice.&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings_usecases.xml"
+            line="13"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="AutoboxingStateCreation"
+        message="Prefer `mutableLongStateOf` instead of `mutableStateOf`"
+        errorLine1="    var plantingFlex by rememberSaveable { mutableStateOf(0L) }"
+        errorLine2="                                           ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/screens/usecases/DatesScreen.kt"
+            line="67"
+            column="44"/>
+    </issue>
+
+    <issue
+        id="AutoboxingStateCreation"
+        message="Prefer `mutableLongStateOf` instead of `mutableStateOf`"
+        errorLine1="    var harvestFlex by rememberSaveable { mutableStateOf(0L) }"
+        errorLine2="                                          ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/screens/usecases/DatesScreen.kt"
+            line="68"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.bg_splash_image` appears to be unused">
+        <location
+            file="src/main/res/drawable-hdpi/bg_splash_image.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.PORT_NUMBER` appears to be unused">
+        <location
+            file="build.gradle.kts"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.PORT_NUMBER` appears to be unused">
+        <location
+            file="build.gradle.kts"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.PORT_NUMBER` appears to be unused">
+        <location
+            file="build.gradle.kts"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.font.google_sans` appears to be unused"
+        errorLine1="&lt;font-family xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/font/google_sans.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_add` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_add.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_akilimo_head` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_akilimo_head.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_akilimo_logo` appears to be unused"
+        errorLine1="&lt;vector android:height=&quot;134.71317dp&quot; android:viewportHeight=&quot;443.24&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_akilimo_logo.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_menu` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_menu.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_refresh` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_refresh.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_search` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_search.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.raster_akilimo_logo_black` appears to be unused">
+        <location
+            file="src/main/res/drawable-hdpi/raster_akilimo_logo_black.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.raster_akilimo_logo_colored` appears to be unused">
+        <location
+            file="src/main/res/drawable-hdpi/raster_akilimo_logo_colored.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.raster_akilimo_logo_white` appears to be unused">
+        <location
+            file="src/main/res/drawable-hdpi/raster_akilimo_logo_white.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.rating_background_selector` appears to be unused"
+        errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/color/rating_background_selector.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.rating_stroke_selector` appears to be unused"
+        errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/color/rating_stroke_selector.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.rating_text_selector` appears to be unused"
+        errorLine1="&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/color/rating_text_selector.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_disclaimer` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_disclaimer&quot;>Disclaimer&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="34"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_complete_onboarding` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_complete_onboarding&quot;>Complete Onboarding&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="40"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_dark_mode` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_dark_mode&quot;>Dark mode&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="68"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_tillage_operation` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_tillage_operation&quot;>Tillage operations&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="198"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.cd_show_as_list` appears to be unused"
+        errorLine1="    &lt;string name=&quot;cd_show_as_list&quot;>Erekana nk\&apos;urutonde&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-rw-rRW/strings.xml"
+            line="250"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.cd_show_as_grid` appears to be unused"
+        errorLine1="    &lt;string name=&quot;cd_show_as_grid&quot;>Erekana nk\&apos;imbonerahamwe&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-rw-rRW/strings.xml"
+            line="251"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_weed_management` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_weed_management&quot;>Weed management&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="298"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.error_worker_cancelled` appears to be unused"
+        errorLine1="    &lt;string name=&quot;error_worker_cancelled&quot;>Worker cancelled&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="305"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_selected` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_selected&quot;>Selected&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="361"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_maize_perf_50` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_maize_perf_50&quot; translatable=&quot;false&quot;>50&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="362"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_maize_perf_150` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_maize_perf_150&quot; translatable=&quot;false&quot;>150&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="363"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_maize_perf_yellow` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_maize_perf_yellow&quot;>yellow&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="364"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_maize_perf_green` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_maize_perf_green&quot;>green&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="365"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lbl_maize_perf_dark_green` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lbl_maize_perf_dark_green&quot;>dark green&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="366"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;lbl_nps_prompt&quot;>Ni kangahe washishikariza abandi kudukoresha? (0-10)&lt;/string>"
+        errorLine2="                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-rw-rRW/strings.xml"
+            line="216"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;lbl_nps_prompt&quot;>Una uwezekano gani wa kutupendekeza? (0-10)&lt;/string>"
+        errorLine2="                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-sw-rTZ/strings.xml"
+            line="249"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;lbl_nps_prompt&quot;>How likely are you to recommend us? (0-10)&lt;/string>"
+        errorLine2="                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="351"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/yield_15_to_22point5.webp` in densityless folder">
+        <location
+            file="src/main/res/drawable/yield_15_to_22point5.webp"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/yield_22_to_30.webp` in densityless folder">
+        <location
+            file="src/main/res/drawable/yield_22_to_30.webp"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/yield_7point5_to_15.webp` in densityless folder">
+        <location
+            file="src/main/res/drawable/yield_7point5_to_15.webp"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/yield_less_than_7point5.webp` in densityless folder">
+        <location
+            file="src/main/res/drawable/yield_less_than_7point5.webp"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/yield_more_than_30.webp` in densityless folder">
+        <location
+            file="src/main/res/drawable/yield_more_than_30.webp"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val bmp = Bitmap.createBitmap("
+        errorLine2="                  ^">
+        <location
+            file="src/main/java/com/akilimo/mobile/ui/screens/settings/LocationPickerScreen.kt"
+            line="523"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseTomlInstead"
+        message="Use version catalog instead"
+        errorLine1="    coreLibraryDesugaring(&quot;com.android.tools:desugar_jdk_libs:2.1.5&quot;)"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="238"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="ConstantLocale"
+        message="Assigning `Locale.getDefault()` to a final static field is suspicious; this code will not work correctly if the user changes locale while the app is running"
+        errorLine1="        DateTimeFormatter.ofPattern(&quot;dd MMM yyyy&quot;, Locale.getDefault())"
+        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/akilimo/mobile/utils/DateHelper.kt"
+            line="13"
+            column="52"/>
+    </issue>
 
 </issues>

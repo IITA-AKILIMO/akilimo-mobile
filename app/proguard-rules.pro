@@ -1,21 +1,51 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# AKILIMO R8 rules.
+# Libraries (Retrofit, OkHttp, Room, Hilt, Mapbox, Sentry, WorkManager, Compose) ship their
+# own consumer rules; these cover reflection done by THIS app's code.
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Readable stack traces in Sentry (mapping is uploaded by the Sentry Gradle plugin when
+# SENTRY_AUTH_TOKEN is set).
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Generic signatures and annotations are needed by Retrofit and Moshi.
+-keepattributes Signature,InnerClasses,EnclosingMethod,*Annotation*
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# --- Moshi -------------------------------------------------------------------------------
+# ApiClient uses KotlinJsonAdapterFactory (reflection), which reads Kotlin metadata and
+# constructor/property names of every JSON model. Keep the metadata and the models.
+-keep class kotlin.Metadata { *; }
+-keepclassmembers class kotlin.Metadata { public <methods>; }
+
+# Request/response models and DTOs sent to or parsed from the AKILIMO, weather and geocoding APIs.
+-keep class com.akilimo.mobile.network.** { *; }
+-keep class com.akilimo.mobile.dto.** { *; }
+
+# Entities are also used in API payloads and via toEntity() mappers; enums are serialized
+# by name (Moshi reads the enum fields reflectively for @Json names).
+-keep class com.akilimo.mobile.entities.** { *; }
+-keep enum com.akilimo.mobile.enums.** { *; }
+
+# Classes annotated with @JsonClass(generateAdapter = true) use generated adapters looked up
+# by name.
+-keep @com.squareup.moshi.JsonClass class * { *; }
+-keepnames @com.squareup.moshi.JsonClass class *
+
+# --- Navigation (type-safe routes) ----------------------------------------------------------
+# @Serializable route objects/classes are looked up via kotlinx.serialization.
+-keep @kotlinx.serialization.Serializable class com.akilimo.mobile.navigation.** { *; }
+-keepclassmembers class com.akilimo.mobile.navigation.** {
+    *** Companion;
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# --- WorkManager ----------------------------------------------------------------------------
+# Workers are instantiated by class name stored in the WorkManager database.
+-keep class * extends androidx.work.ListenableWorker {
+    <init>(android.content.Context, androidx.work.WorkerParameters);
+}
+
+# --- Misc -----------------------------------------------------------------------------------
+# country_data looks up flag drawables by name.
+-keep class com.blongho.country_data.** { *; }
+
+-dontwarn org.slf4j.**

@@ -2,11 +2,14 @@ package com.akilimo.mobile.di
 
 import android.content.Context
 import com.akilimo.mobile.database.AppDatabase
+import com.akilimo.mobile.network.NetworkMonitor
 import com.akilimo.mobile.repos.MaizePerformanceRepo
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CassavaMarketPriceRepo
 import com.akilimo.mobile.repos.CassavaUnitRepo
+import com.akilimo.mobile.repos.MaizeUnitRepo
 import com.akilimo.mobile.repos.CassavaYieldRepo
+import com.akilimo.mobile.repos.CoverageRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.FieldOperationCostsRepo
 import com.akilimo.mobile.repos.InvestmentRepo
@@ -19,6 +22,8 @@ import com.akilimo.mobile.repos.FertilizerPriceRepo
 import com.akilimo.mobile.repos.FertilizerRepo
 import com.akilimo.mobile.repos.SelectedFertilizerRepo
 import com.akilimo.mobile.repos.UserPreferencesRepo
+import com.akilimo.mobile.utils.LibPhoneNumberHelper
+import com.akilimo.mobile.utils.PhoneNumberHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,8 +42,18 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideNetworkMonitor(@ApplicationContext context: Context): NetworkMonitor =
+        NetworkMonitor(context)
+
+    @Provides
+    @Singleton
     fun provideAkilimoUserRepo(db: AppDatabase): AkilimoUserRepo =
         AkilimoUserRepo(db.akilimoUserDao())
+
+    @Provides
+    @Singleton
+    fun provideCoverageRepo(@ApplicationContext context: Context): CoverageRepo =
+        CoverageRepo(context)
 
     @Provides
     @Singleton
@@ -87,6 +102,11 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideMaizeUnitRepo(db: AppDatabase): MaizeUnitRepo =
+        MaizeUnitRepo(db.maizeUnitDao())
+
+    @Provides
+    @Singleton
     fun provideFieldOperationCostsRepo(db: AppDatabase): FieldOperationCostsRepo =
         FieldOperationCostsRepo(db.fieldOperationCostsDao())
 
@@ -119,4 +139,9 @@ object AppModule {
     @Singleton
     fun provideProduceMarketRepo(db: AppDatabase): ProduceMarketRepo =
         ProduceMarketRepo(db.produceMarketDao())
+
+    @Provides
+    @Singleton
+    fun providePhoneNumberHelper(@ApplicationContext context: Context): PhoneNumberHelper =
+        LibPhoneNumberHelper(context)
 }

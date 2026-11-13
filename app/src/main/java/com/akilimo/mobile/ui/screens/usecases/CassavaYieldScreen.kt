@@ -9,8 +9,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.TopAppBarDefaults
@@ -18,14 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import com.akilimo.mobile.ui.theme.AkilimoSpacing
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -34,10 +31,10 @@ import com.akilimo.mobile.entities.CassavaYield
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumAreaUnit
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
-import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.SelectionCard
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.viewmodels.CassavaYieldViewModel
+import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 private const val YIELD_LOW = 3.75
 private const val YIELD_NORMAL = 11.25
@@ -53,14 +50,36 @@ fun CassavaYieldScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    var isGridLayout by remember { mutableStateOf(true) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(state.seedRequest) {
         val areaUnit = state.seedRequest ?: return@LaunchedEffect
         viewModel.seedYields(buildCassavaYieldSeeds(context, areaUnit))
     }
 
+    LaunchedEffect(state.saved) {
+        if (state.saved) {
+            navController.completeTask(EnumAdviceTask.CURRENT_CASSAVA_YIELD)
+            viewModel.onSaveHandled()
+        }
+    }
+    SaveErrorEffect(state.saveFailed, snackbarHostState, viewModel::onSaveErrorShown)
+
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
+    @Composable
+    fun YieldCard(yield: CassavaYield, grid: Boolean) {
+        val imageRes = yield.imageRes.takeIf { it != 0 } ?: yieldImageByOrder(yield.sortOrder)
+        SelectionCard(
+            imageRes = imageRes,
+            title = yield.yieldLabel,
+            subtitle = yield.amountLabel,
+            description = yield.description,
+            isSelected = state.selectedYieldId == yield.id,
+            isGridLayout = grid,
+            onClick = { viewModel.selectYield(yield) }
+        )
+    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -69,72 +88,56 @@ fun CassavaYieldScreen(
                 title = stringResource(R.string.lbl_typical_yield),
                 collapsedTitle = stringResource(R.string.lbl_yield),
                 scrollBehavior = scrollBehavior,
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStackSafely() },
                 actions = {
-                    IconButton(onClick = { isGridLayout = !isGridLayout }) {
-                        Icon(
-                            painter = painterResource(
-                                if (isGridLayout) R.drawable.ic_list else R.drawable.ic_grid
-                            ),
-                            contentDescription = null
-                        )
-                    }
+                    LayoutToggleButton(isGridLayout = state.isGridLayout, onToggle = viewModel::toggleLayout)
                 }
             )
         },
         bottomBar = {
-            SaveBottomBar(
-                label = stringResource(R.string.lbl_save),
+            FormSaveBar(
                 enabled = state.selectedYieldId != null,
-                onClick = { navController.completeTask(EnumAdviceTask.CURRENT_CASSAVA_YIELD) }
+                isSaving = state.isSaving,
+                disabledReason = stringResource(R.string.msg_select_an_option)
+                    .takeIf { state.yields.isNotEmpty() },
+                onSave = viewModel::saveSelection,
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
-        if (isGridLayout) {
-            LazyVerticalGrid(
+        when {
+            // Seeding an empty DB also shows the spinner until the list arrives
+            state.isLoading || (state.yields.isEmpty() && state.seedRequest != null) ->
+                ListLoading(modifier = Modifier.padding(padding))
+
+            state.yields.isEmpty() -> ListEmpty(
+                message = stringResource(R.string.msg_no_options_available),
+                showRefreshHint = false,
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(horizontal = AkilimoSpacing.md),
+            )
+
+            state.isGridLayout -> LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 contentPadding = padding,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
+                verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = AkilimoSpacing.xs)
             ) {
-                items(state.yields, key = { it.id }) { yield ->
-                    val imageRes = yield.imageRes.takeIf { it != 0 }
-                        ?: yieldImageByOrder(yield.sortOrder)
-                    SelectionCard(
-                        imageRes = imageRes,
-                        title = yield.yieldLabel,
-                        subtitle = yield.amountLabel,
-                        description = yield.description,
-                        isSelected = state.selectedYieldId == yield.id,
-                        isGridLayout = true,
-                        onClick = { viewModel.selectYield(yield) }
-                    )
-                }
+                items(state.yields, key = { it.id }) { yield -> YieldCard(yield, grid = true) }
             }
-        } else {
-            LazyColumn(
+
+            else -> LazyColumn(
                 contentPadding = padding,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs),
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = AkilimoSpacing.xs)
             ) {
-                items(state.yields, key = { it.id }) { yield ->
-                    val imageRes = yield.imageRes.takeIf { it != 0 }
-                        ?: yieldImageByOrder(yield.sortOrder)
-                    SelectionCard(
-                        imageRes = imageRes,
-                        title = yield.yieldLabel,
-                        subtitle = yield.amountLabel,
-                        description = yield.description,
-                        isSelected = state.selectedYieldId == yield.id,
-                        isGridLayout = false,
-                        onClick = { viewModel.selectYield(yield) }
-                    )
-                }
+                items(state.yields, key = { it.id }) { yield -> YieldCard(yield, grid = false) }
             }
         }
     }

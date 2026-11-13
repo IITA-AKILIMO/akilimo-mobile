@@ -3,7 +3,6 @@ package com.akilimo.mobile.repos
 import com.akilimo.mobile.dao.FertilizerDao
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.enums.EnumCountry
-import com.akilimo.mobile.enums.EnumUseCase
 import kotlinx.coroutines.flow.Flow
 
 class FertilizerRepo(private val dao: FertilizerDao) {
@@ -17,12 +16,14 @@ class FertilizerRepo(private val dao: FertilizerDao) {
     }
 
 
+    /** Drops cached fertilizers missing from [current], the full list just fetched. */
+    suspend fun pruneStale(current: List<Fertilizer>) {
+        val ids = current.mapNotNull { it.id }
+        if (ids.isNotEmpty()) dao.deleteStale(ids)
+    }
+
     suspend fun byCountry(countryCode: EnumCountry): List<Fertilizer> =
         dao.findAllByCountry(countryCode)
-
-    suspend fun getAllFertilizers(): List<Fertilizer> {
-        return dao.getAll()
-    }
 
     fun observeAll(): Flow<List<Fertilizer>> =
         dao.observeAll()

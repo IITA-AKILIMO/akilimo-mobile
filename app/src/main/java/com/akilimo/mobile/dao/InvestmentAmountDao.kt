@@ -24,14 +24,15 @@ interface InvestmentAmountDao {
     @Query("SELECT * FROM investment_amounts WHERE id = :id LIMIT 1")
     suspend fun findOne(id: Int): InvestmentAmount?
 
-    @Query("SELECT * FROM investment_amounts WHERE country_code = :countryCode ORDER BY sort_order ASC")
-    suspend fun getByCountry(countryCode: EnumCountry): List<InvestmentAmount>
-
-    @Query("SELECT * FROM investment_amounts WHERE active = 1 ORDER BY sort_order ASC")
-    suspend fun getActive(): List<InvestmentAmount>
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(item: InvestmentAmount): Long
+
+    /** Removes amounts the API no longer serves, keeping any a farmer's saved pick still points at. */
+    @Query(
+        "DELETE FROM investment_amounts WHERE id NOT IN (:keepIds) AND id NOT IN " +
+            "(SELECT investment_id FROM selected_investments)"
+    )
+    suspend fun deleteStale(keepIds: List<Int>): Int
 
     @Upsert
     suspend fun upsert(item: InvestmentAmount)
@@ -41,9 +42,6 @@ interface InvestmentAmountDao {
 
     @Delete
     suspend fun delete(item: InvestmentAmount): Int
-
-    @Query("DELETE FROM investment_amounts WHERE id = :id")
-    suspend fun deleteById(id: Int): Int
 
 
 }

@@ -2,7 +2,6 @@ package com.akilimo.mobile.repos
 
 import com.akilimo.mobile.dao.FertilizerPriceDao
 import com.akilimo.mobile.entities.FertilizerPrice
-import kotlinx.coroutines.flow.Flow
 
 class FertilizerPriceRepo(private val dao: FertilizerPriceDao) {
 
@@ -19,19 +18,13 @@ class FertilizerPriceRepo(private val dao: FertilizerPriceDao) {
         }
     }
 
-    suspend fun updatePrice(price: FertilizerPrice) {
-        dao.update(price)
-    }
-
-    suspend fun getPrice(key: String, country: String): FertilizerPrice? {
-        return dao.getByKeyAndCountry(key, country)
+    /** Drops cached options missing from [current], the full list just fetched. */
+    suspend fun pruneStale(current: List<FertilizerPrice>) {
+        if (current.isNotEmpty()) dao.pruneStale(current.map { it.id })
     }
 
     suspend fun getByFertilizerKey(key: String): List<FertilizerPrice> {
         return dao.getByKey(key)
     }
 
-    fun observePrices(): Flow<List<FertilizerPrice>> {
-        return dao.observeAll()
-    }
 }

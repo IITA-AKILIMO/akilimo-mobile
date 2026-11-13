@@ -16,12 +16,14 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import com.akilimo.mobile.workers.DataRefresher
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Assert.assertFalse
 import org.junit.Test
 
 class FertilizerViewModelTest {
@@ -34,6 +36,7 @@ class FertilizerViewModelTest {
     private val userRepo: AkilimoUserRepo = mockk(relaxed = true)
     private val priceRepo: FertilizerPriceRepo = mockk(relaxed = true)
     private val appSettings: AppSettingsDataStore = mockk(relaxed = true)
+    private val dataRefresher: DataRefresher = mockk(relaxed = true)
     private val testUser = AkilimoUser(id = 42, userName = "user1", enumCountry = EnumCountry.NG)
 
     private fun buildViewModel(flow: EnumFertilizerFlow = EnumFertilizerFlow.DEFAULT): FertilizerViewModel {
@@ -50,6 +53,7 @@ class FertilizerViewModelTest {
             userRepo = userRepo,
             priceRepo = priceRepo,
             appSettings = appSettings,
+            dataRefresher = dataRefresher,
             fertilizerFlow = flow
         )
     }
@@ -157,5 +161,17 @@ class FertilizerViewModelTest {
         advanceUntilIdle()
 
         coVerify { fertilizerRepo.observeByCisAvailable(EnumCountry.NG) }
+    }
+
+    @Test
+    fun `refresh fetches the fertilizers again and stops the spinner`() = runTest {
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { dataRefresher.fertilizers() }
+        assertFalse(viewModel.uiState.value.isRefreshing)
     }
 }
