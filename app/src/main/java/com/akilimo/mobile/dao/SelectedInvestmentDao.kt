@@ -31,6 +31,9 @@ interface SelectedInvestmentDao {
     suspend fun deleteSelected(userId: Int, investmentId: Int)
 
 
+    @Query("DELETE FROM selected_investments WHERE user_id = :userId")
+    suspend fun deleteAllByUser(userId: Int)
+
     @Query("SELECT * FROM selected_investments WHERE user_id = :userId")
     fun observeByUser(userId: Int): Flow<SelectedInvestment?>
 

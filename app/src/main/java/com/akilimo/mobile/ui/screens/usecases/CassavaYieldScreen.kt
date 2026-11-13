@@ -112,6 +112,7 @@ fun CassavaYieldScreen(
 
             state.yields.isEmpty() -> ListEmpty(
                 message = stringResource(R.string.msg_no_options_available),
+                showRefreshHint = false,
                 modifier = Modifier
                     .padding(padding)
                     .padding(horizontal = AkilimoSpacing.md),

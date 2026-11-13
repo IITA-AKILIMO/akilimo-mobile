@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Strings for the home hub and the Profile and Your farm screens. English only for now:
+     sw/rw fall back to these until translated. -->
+<resources>
+    <string name="lbl_profile">Profile</string>
+    <string name="msg_hub_recommendations_desc">Get advice for your farm</string>
+    <string name="msg_hub_profile_desc">Your personal details</string>
+    <string name="lbl_your_farm">Your farm</string>
+    <string name="lbl_edit_farm">Edit your farm</string>
+    <string name="msg_hub_farm_desc">Location, field size and investment</string>
+    <string name="msg_hub_settings_desc">Language, theme, data</string>
+</resources>

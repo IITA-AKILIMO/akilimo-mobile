@@ -45,6 +45,7 @@ import com.akilimo.mobile.enums.EnumUnitOfSale
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.RadioButtonRow
+import com.akilimo.mobile.ui.components.compose.SegmentedTabRow
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
@@ -123,23 +124,20 @@ fun CassavaMarketScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // Market choice radio buttons
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xs)
-                    .selectableGroup()
-            ) {
-                RadioButtonRow(
-                    label = stringResource(R.string.lbl_starch_factory),
-                    selected = marketChoice == MarketChoice.FACTORY,
-                    onClick = { marketChoice = MarketChoice.FACTORY },
-                )
-                RadioButtonRow(
-                    label = stringResource(R.string.lbl_regular_market),
-                    selected = marketChoice == MarketChoice.MARKET,
-                    onClick = { marketChoice = MarketChoice.MARKET },
-                )
-            }
+            // Market choice: two mutually exclusive options side by side
+            SegmentedTabRow(
+                options = listOf(
+                    stringResource(R.string.lbl_starch_factory),
+                    stringResource(R.string.lbl_regular_market),
+                ),
+                selectedIndex = when (marketChoice) {
+                    MarketChoice.FACTORY -> 0
+                    MarketChoice.MARKET -> 1
+                    MarketChoice.NONE -> -1
+                },
+                onSelect = { marketChoice = if (it == 0) MarketChoice.FACTORY else MarketChoice.MARKET },
+                modifier = Modifier.padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xs),
+            )
 
             val listModifier = Modifier
                 .weight(1f)
@@ -256,7 +254,7 @@ private fun CassavaPriceSheet(
 
             when {
                 loaded == null -> ListLoading()
-                loaded.isEmpty() -> ListEmpty(stringResource(R.string.msg_no_prices_available))
+                loaded.isEmpty() -> ListEmpty(stringResource(R.string.msg_no_prices_available), showRefreshHint = false)
                 else -> Column(modifier = Modifier.selectableGroup()) {
                     loaded.forEach { price ->
                         val computedPrice = MathHelper.computeUnitPrice(price.averagePrice, uos)

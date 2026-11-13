@@ -2,6 +2,9 @@
 <!-- Onboarding, location picker and settings strings. English only for now: sw-TZ and rw-RW need translations. -->
 <resources>
     <!-- Coordinates -->
+    <string name="msg_location_reason">We use your farm\'s location to give advice for your area.</string>
+    <string name="lbl_location_inside">Inside the supported area</string>
+    <string name="lbl_location_outside">Outside the supported area</string>
     <string name="lbl_lat_lng_format">Lat: %1$.5f, Lng: %2$.5f</string>
 
     <!-- Location picker / location step -->
@@ -35,7 +38,7 @@
     </plurals>
     <string name="msg_harvest_date_cleared">The harvest date was cleared because the planting date or window changed. Please pick it again.</string>
     <string name="lbl_change_country_title">Change country?</string>
-    <string name="msg_change_country_clears_fertilizers">Changing the country will remove the fertilizers you selected when you save. You will need to choose them again.</string>
+    <string name="msg_change_country_clears_choices">Changing the country will remove your choices and completed steps when you save. You will need to do them again.</string>
     <string name="lbl_change_country">Change country</string>
 
     <!-- Onboarding steps (first run) -->

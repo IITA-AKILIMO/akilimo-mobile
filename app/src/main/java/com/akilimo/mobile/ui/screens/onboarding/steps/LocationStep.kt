@@ -11,6 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import com.akilimo.mobile.ui.components.compose.StatusTone
+import com.akilimo.mobile.ui.components.compose.StatusChip
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.outlined.WarningAmber
+import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.MyLocation
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -101,33 +109,44 @@ fun LocationStep(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(stringResource(R.string.lbl_farm_location), style = MaterialTheme.typography.headlineMedium)
+        Text(stringResource(R.string.lbl_farm_location), style = MaterialTheme.typography.headlineSmall)
+        Text(
+            text = stringResource(R.string.msg_location_reason),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
 
+        // Coverage in words plus colour; the outside case keeps its advice to move the pin
+        when (coverage) {
+            EnumCoverageStatus.INSIDE -> StatusChip(
+                text = stringResource(R.string.lbl_location_inside),
+                tone = StatusTone.Success,
+                icon = Icons.Outlined.Check,
+            )
+            EnumCoverageStatus.OUTSIDE -> StatusChip(
+                text = stringResource(R.string.lbl_location_outside),
+                tone = StatusTone.Error,
+                icon = Icons.Outlined.WarningAmber,
+            )
+            else -> Unit
+        }
         if (hasLocation) {
             Text(
                 stringResource(R.string.lbl_lat_lng_format, latitude, longitude),
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
-        when {
-            error != null -> Text(
-                error,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-            )
-            coverage == EnumCoverageStatus.OUTSIDE -> Text(
+        if (error != null) {
+            Text(error, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium)
+        } else if (coverage == EnumCoverageStatus.OUTSIDE) {
+            Text(
                 stringResource(R.string.lbl_coverage_outside),
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-            )
-            coverage == EnumCoverageStatus.INSIDE -> Text(
-                stringResource(R.string.lbl_coverage_inside),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
         errorMsg?.let {
-            Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+            Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium)
         }
 
         Button(
@@ -144,6 +163,7 @@ fun LocationStep(
                 }
             },
             enabled = !isLocating,
+            shape = MaterialTheme.shapes.medium,
             modifier = Modifier.fillMaxWidth(),
         ) {
             if (isLocating) {
@@ -151,6 +171,8 @@ fun LocationStep(
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.lbl_locating))
             } else {
+                Icon(Icons.Outlined.MyLocation, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.lbl_current_location))
             }
         }
@@ -167,8 +189,11 @@ fun LocationStep(
                 )
             },
             enabled = !isLocating,
+            shape = MaterialTheme.shapes.medium,
             modifier = Modifier.fillMaxWidth(),
         ) {
+            Icon(Icons.Outlined.Place, contentDescription = null, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(8.dp))
             Text(stringResource(R.string.lbl_manual_location))
         }
     }

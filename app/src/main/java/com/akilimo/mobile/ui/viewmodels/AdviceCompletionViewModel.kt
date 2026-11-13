@@ -25,5 +25,9 @@ class AdviceCompletionViewModel @Inject constructor(
         /** Tasks, in display order, whose status is anything other than COMPLETED. */
         fun incompleteTasks(taskItems: List<Pair<EnumAdviceTask, EnumStepStatus>>): List<EnumAdviceTask> =
             taskItems.filter { (_, status) -> status != EnumStepStatus.COMPLETED }.map { it.first }
+
+        /** Share of tasks that are COMPLETED, 0..1; 0 when there are no tasks. */
+        fun progress(taskItems: List<Pair<EnumAdviceTask, EnumStepStatus>>): Float =
+            if (taskItems.isEmpty()) 0f else 1f - incompleteTasks(taskItems).size.toFloat() / taskItems.size
     }
 }

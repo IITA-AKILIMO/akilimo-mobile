@@ -40,8 +40,7 @@ import com.akilimo.mobile.navigation.SweetPotatoMarketRoute
 import com.akilimo.mobile.navigation.TractorAccessRoute
 import com.akilimo.mobile.navigation.WeedControlCostsRoute
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
-import com.akilimo.mobile.ui.components.compose.InfoCard
-import com.akilimo.mobile.ui.components.compose.InfoCardType
+import com.akilimo.mobile.ui.components.compose.ProgressSummaryCard
 import com.akilimo.mobile.ui.components.compose.SaveBottomBar
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
@@ -125,15 +124,19 @@ fun UseCaseScreen(
         }
     ) { padding ->
         LazyColumn(contentPadding = padding) {
-            if (incompleteLabels.isNotEmpty()) {
-                item(key = "incomplete_hint") {
-                    InfoCard(
-                        title = stringResource(R.string.lbl_steps_remaining_title),
-                        message = stringResource(
-                            R.string.msg_steps_remaining,
-                            incompleteLabels.size,
-                            taskItems.size
-                        ),
+            if (taskItems.isNotEmpty()) {
+                item(key = "progress") {
+                    val done = taskItems.count { it.second == EnumStepStatus.COMPLETED }
+                    ProgressSummaryCard(
+                        title = stringResource(R.string.lbl_your_progress),
+                        figure = stringResource(R.string.msg_steps_done_of, done, taskItems.size),
+                        caption = stringResource(R.string.lbl_steps_done),
+                        progress = AdviceCompletionViewModel.progress(taskItems),
+                        footer = if (done == taskItems.size) {
+                            stringResource(R.string.msg_all_steps_done)
+                        } else {
+                            stringResource(R.string.msg_steps_left, taskItems.size - done)
+                        },
                         modifier = Modifier.padding(
                             horizontal = AkilimoSpacing.md,
                             vertical = AkilimoSpacing.xs

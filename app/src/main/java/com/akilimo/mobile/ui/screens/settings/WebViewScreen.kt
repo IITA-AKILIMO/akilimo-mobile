@@ -43,6 +43,7 @@ import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 
 private const val PROGRESS_MAX = 100f
 private const val DARK_LUMINANCE_THRESHOLD = 0.5f
+private const val WEB_TEXT_ZOOM_PERCENT = 115
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,6 +94,9 @@ fun AkilimoWebView(
             factory = { context ->
                 WebView(context).apply {
                     setBackgroundColor(backgroundColor)
+                    // Legal pages are long reads: a little larger than the default, and still
+                    // following the phone's font size setting
+                    settings.textZoom = (WEB_TEXT_ZOOM_PERCENT * context.resources.configuration.fontScale).toInt()
                     webChromeClient = object : WebChromeClient() {
                         override fun onProgressChanged(view: WebView?, newProgress: Int) {
                             progress = newProgress / PROGRESS_MAX

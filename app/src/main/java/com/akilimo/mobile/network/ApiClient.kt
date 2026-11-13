@@ -31,7 +31,8 @@ object ApiClient {
         context: Context,
         baseUrl: String,
         timeoutSeconds: Long,
-        sendAkilimoApiKey: Boolean = true
+        sendAkilimoApiKey: Boolean = true,
+        bearerToken: (() -> String?)? = null,
     ): Retrofit {
         val moshi = Moshi.Builder()
             .add(LocalDateAdapter())
@@ -48,6 +49,20 @@ object ApiClient {
                         val request = chain.request().newBuilder()
                             .addHeader("X-Api-Key", BuildConfig.AKILIMO_API_KEY)
                             .build()
+                        chain.proceed(request)
+                    }
+                }
+            }
+            .apply {
+                // A signed-in farmer's token, read on every call so a sign-in or sign-out applies at once
+                if (bearerToken != null) {
+                    addInterceptor { chain ->
+                        val token = bearerToken()
+                        val request = if (token.isNullOrBlank()) {
+                            chain.request()
+                        } else {
+                            chain.request().newBuilder().header("Authorization", "Bearer $token").build()
+                        }
                         chain.proceed(request)
                     }
                 }
@@ -77,9 +92,10 @@ object ApiClient {
         context: Context,
         baseUrl: String,
         timeoutSeconds: Long = 60,
-        sendAkilimoApiKey: Boolean = true
+        sendAkilimoApiKey: Boolean = true,
+        noinline bearerToken: (() -> String?)? = null,
     ): T {
-        return buildRetrofit(context, baseUrl, timeoutSeconds, sendAkilimoApiKey).create(T::class.java)
+        return buildRetrofit(context, baseUrl, timeoutSeconds, sendAkilimoApiKey, bearerToken).create(T::class.java)
     }
 
     private fun getCompatibleOkHttpClient(

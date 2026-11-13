@@ -4,12 +4,18 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.enums.EnumFertilizerFlow
 import com.akilimo.mobile.enums.EnumUseCase
+import com.akilimo.mobile.ui.screens.account.AccountScreen
+import com.akilimo.mobile.ui.screens.account.ForgotPasswordScreen
+import com.akilimo.mobile.ui.screens.account.SavedAdviceDetailScreen
+import com.akilimo.mobile.ui.screens.account.SavedAdviceScreen
 import com.akilimo.mobile.ui.screens.onboarding.LegalWizardScreen
+import com.akilimo.mobile.ui.screens.farm.FarmScreen
+import com.akilimo.mobile.ui.screens.hub.HubScreen
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingScreen
+import com.akilimo.mobile.ui.screens.profile.ProfileScreen
 import com.akilimo.mobile.ui.screens.recommendations.GetRecommendationScreen
 import com.akilimo.mobile.ui.screens.recommendations.RecommendationsScreen
 import com.akilimo.mobile.ui.screens.recommendations.UseCaseScreen
@@ -28,18 +34,21 @@ import com.akilimo.mobile.ui.screens.usecases.SweetPotatoMarketScreen
 import com.akilimo.mobile.ui.screens.usecases.TractorAccessScreen
 import com.akilimo.mobile.ui.screens.usecases.WeedControlCostsScreen
 
-fun NavGraphBuilder.onboardingGraph(
-    navController: NavHostController,
-    appSettings: AppSettingsDataStore,
-) {
+fun NavGraphBuilder.onboardingGraph(navController: NavHostController) {
     composable<LegalWizardRoute> {
         LegalWizardScreen(navController = navController)
     }
     composable<OnboardingRoute> {
-        OnboardingScreen(
-            navController = navController,
-            appSettings = appSettings,
-        )
+        OnboardingScreen(navController = navController)
+    }
+    composable<HubRoute> {
+        HubScreen(navController = navController)
+    }
+    composable<ProfileRoute> {
+        ProfileScreen(navController = navController)
+    }
+    composable<FarmRoute> {
+        FarmScreen(navController = navController)
     }
 }
 
@@ -169,6 +178,21 @@ fun NavGraphBuilder.useCaseGraph(navController: NavHostController) {
     }
     composable<SweetPotatoMarketRoute> {
         SweetPotatoMarketScreen(navController = navController)
+    }
+}
+
+fun NavGraphBuilder.accountGraph(navController: NavHostController) {
+    composable<AccountRoute> { backStackEntry ->
+        AccountScreen(navController = navController, startOnSignUp = backStackEntry.toRoute<AccountRoute>().signUp)
+    }
+    composable<ForgotPasswordRoute> {
+        ForgotPasswordScreen(navController = navController)
+    }
+    composable<SavedAdviceRoute> {
+        SavedAdviceScreen(navController = navController)
+    }
+    composable<SavedAdviceDetailRoute> {
+        SavedAdviceDetailScreen(navController = navController)
     }
 }
 

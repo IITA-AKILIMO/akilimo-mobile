@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
@@ -67,6 +68,11 @@ private object Keys {
     val LOCK_APP_LANGUAGE = booleanPreferencesKey("lockAppLanguage")
     val READING_TEXT_SCALE = floatPreferencesKey("readingTextScale")
     val READING_LANDSCAPE = booleanPreferencesKey("readingLandscape")
+
+    // Sync status (see SyncStatusSource): epoch millis of the last success/failure. The newest
+    // of the two decides whether the app should say it is up to date or a sync failed.
+    val LAST_SYNC_AT = longPreferencesKey("lastSyncAt")
+    val LAST_SYNC_FAILED_AT = longPreferencesKey("lastSyncFailedAt")
 }
 
 /** Reader-chosen text size for long-form advice, on top of the phone's own font scale. */
@@ -93,11 +99,12 @@ fun ThemeMode.toNightMode(): Int = when (this) {
 /**
  * Reads [Keys.THEME_MODE]; before it existed only the on/off "darkMode" flag was stored. That flag
  * defaulted to off and cannot tell "chose light" from "never touched", so on maps to DARK and off
- * (or missing) maps to SYSTEM.
+ * (or missing) maps to LIGHT: the app starts light and only follows the phone or goes dark when
+ * the user picks that in Settings.
  */
 internal fun Preferences.themeMode(): ThemeMode =
     this[Keys.THEME_MODE]?.let { stored -> ThemeMode.entries.firstOrNull { it.name == stored } }
-        ?: if (this[Keys.DARK_MODE] == true) ThemeMode.DARK else ThemeMode.SYSTEM
+        ?: if (this[Keys.DARK_MODE] == true) ThemeMode.DARK else ThemeMode.LIGHT
 
 @Singleton
 class AppSettingsDataStore @Inject constructor(
@@ -155,6 +162,22 @@ class AppSettingsDataStore @Inject constructor(
                 }
             }
         }
+
+        /** Records that a background sync finished successfully; called from the workers. */
+        fun recordSyncSuccess(context: Context) {
+            val now = System.currentTimeMillis()
+            runBlocking {
+                context.appSettingsDataStore.edit { prefs -> prefs[Keys.LAST_SYNC_AT] = now }
+            }
+        }
+
+        /** Records a sync that gave up; a later success supersedes it. Called from the workers. */
+        fun recordSyncFailure(context: Context) {
+            val now = System.currentTimeMillis()
+            runBlocking {
+                context.appSettingsDataStore.edit { prefs -> prefs[Keys.LAST_SYNC_FAILED_AT] = now }
+            }
+        }
     }
 
     private val dataStore = context.appSettingsDataStore
@@ -182,6 +205,17 @@ class AppSettingsDataStore @Inject constructor(
 
     val readingTextScaleFlow: Flow<Float> =
         dataStore.data.map { prefs -> ReadingTextScale.normalize(prefs[Keys.READING_TEXT_SCALE]) }
+
+    val lastSyncAtFlow: Flow<Long?> =
+        dataStore.data.map { prefs -> prefs[Keys.LAST_SYNC_AT] }
+
+    /** True when the last finished sync failed; a success after it clears this. */
+    val lastSyncFailedFlow: Flow<Boolean> =
+        dataStore.data.map { prefs ->
+            val failedAt = prefs[Keys.LAST_SYNC_FAILED_AT] ?: 0L
+            val succeededAt = prefs[Keys.LAST_SYNC_AT] ?: 0L
+            failedAt > succeededAt
+        }
 
     // ── Synchronous property accessors ────────────────────────────────────────
     // After the first DataStore read (done in AkilimoApp.onCreate via getLanguageTagSync /

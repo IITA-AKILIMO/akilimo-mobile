@@ -7,10 +7,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 
 // ── Light palette ────────────────────────────────────────────────────────────
-private val Primary = Color(0xFF2E5900)
+private val Primary = Color(0xFF006F45) // logo deep green
 private val OnPrimary = Color(0xFFFFFFFF)
-private val PrimaryContainer = Color(0xFFD3EABC) // Refined for better vibrancy
-private val OnPrimaryContainer = Color(0xFF0E2400)
+private val PrimaryContainer = Color(0xFFE4F2C6) // tint of the logo lime
+private val OnPrimaryContainer = Color(0xFF1F3300)
 
 private val Secondary = Color(0xFF58624E) // Neutral olive
 private val OnSecondary = Color(0xFFFFFFFF)
@@ -39,10 +39,10 @@ private val OutlineVariant = Color(0xFFC1C9B2)
 private val Scrim = Color(0xFF000000)
 
 // ── Dark palette ─────────────────────────────────────────────────────────────
-private val DarkPrimary = Color(0xFF91C660) // Adjusted (was 0xFF9DD768)
-private val DarkOnPrimary = Color(0xFF132F00) // Adjusted
-private val DarkPrimaryContainer = Color(0xFF244400) // Adjusted
-private val DarkOnPrimaryContainer = Color(0xFF91C660) // Adjusted
+private val DarkPrimary = Color(0xFF9ACA3C) // logo lime
+private val DarkOnPrimary = Color(0xFF1F3300)
+private val DarkPrimaryContainer = Color(0xFF00553A)
+private val DarkOnPrimaryContainer = Color(0xFFC9E88F)
 
 private val DarkSecondary = Color(0xFFAEB95B) // Adjusted
 private val DarkOnSecondary = Color(0xFF232700) // Adjusted
@@ -179,3 +179,34 @@ val AkilimoDarkColorScheme = darkColorScheme(
     outlineVariant = DarkOutlineVariant,
     scrim = Scrim,
 )
+
+// ── Signed-in look: the IITA logo colours ────────────────────────────────────
+// A farmer who is signed in gets a theme that blends with the IITA and CGIAR logo at iita.org. AKILIMO is an IITA
+// product and IITA is a CGIAR centre, so the theme uses the IITA orange and the CGIAR dark green of the network.
+// Both values were sampled from the logo image, not guessed.
+val IitaOrange = Color(0xFFF26422)
+val CgiarGreen = Color(0xFF07362A)
+
+/** Light theme for a signed-in farmer: the CGIAR dark green as the primary colour. Every pair keeps 4.5:1 contrast. */
+val AkilimoIitaLightColorScheme = AkilimoLightColorScheme.copy(
+    primary = CgiarGreen,
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFD3E8DE),
+    onPrimaryContainer = Color(0xFF002117),
+)
+
+/** Dark theme for a signed-in farmer: the IITA orange as the primary colour, with dark text on it. */
+val AkilimoIitaDarkColorScheme = AkilimoDarkColorScheme.copy(
+    primary = IitaOrange,
+    onPrimary = Color(0xFF2B0D00),
+    primaryContainer = CgiarGreen,
+    onPrimaryContainer = Color(0xFFBFE3D2),
+)
+
+/** The IITA orange accent: the line under the top bars and the "signed in" pill. Use it for decoration, not for small text. */
+val ColorScheme.iitaAccent: Color
+    get() = IitaOrange
+val ColorScheme.iitaAccentContainer: Color
+    get() = if (isDarkScheme) Color(0xFF5A2208) else Color(0xFFFFDBC9)
+val ColorScheme.onIitaAccentContainer: Color
+    get() = if (isDarkScheme) Color(0xFFFFDBC9) else Color(0xFF3B1000)

@@ -32,6 +32,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.FormCard
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
@@ -159,28 +160,29 @@ fun ManualTillageCostScreen(
 
             Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
 
-            if (usePlough) {
-                AkilimoTextField(
-                    value = ploughingCost,
-                    onValueChange = { ploughingCost = it },
-                    label = fill(stringResource(R.string.lbl_manual_tillage_cost_hint)),
-                    error = errorFor(ploughingCost),
-                    trailingIcon = currencySuffix(state.currencyCode),
-                    keyboardOptions = amountKeyboard(isLast = !useRidge)
-                )
-                Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
-            }
-
-            if (useRidge) {
-                AkilimoTextField(
-                    value = ridgingCost,
-                    onValueChange = { ridgingCost = it },
-                    label = fill(stringResource(R.string.lbl_manual_ridge_cost_hint)),
-                    error = errorFor(ridgingCost),
-                    trailingIcon = currencySuffix(state.currencyCode),
-                    keyboardOptions = amountKeyboard(isLast = true)
-                )
-                Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
+            if (usePlough || useRidge) {
+                FormCard {
+                    if (usePlough) {
+                        AkilimoTextField(
+                            value = ploughingCost,
+                            onValueChange = { ploughingCost = it },
+                            label = fill(stringResource(R.string.lbl_manual_tillage_cost_hint)),
+                            error = errorFor(ploughingCost),
+                            trailingIcon = currencySuffix(state.currencyCode),
+                            keyboardOptions = amountKeyboard(isLast = !useRidge)
+                        )
+                    }
+                    if (useRidge) {
+                        AkilimoTextField(
+                            value = ridgingCost,
+                            onValueChange = { ridgingCost = it },
+                            label = fill(stringResource(R.string.lbl_manual_ridge_cost_hint)),
+                            error = errorFor(ridgingCost),
+                            trailingIcon = currencySuffix(state.currencyCode),
+                            keyboardOptions = amountKeyboard(isLast = true)
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(AkilimoSpacing.md))

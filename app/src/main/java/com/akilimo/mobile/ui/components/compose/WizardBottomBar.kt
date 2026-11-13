@@ -15,7 +15,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,7 +63,7 @@ fun WizardBottomBar(
             // pushing into the counter.
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
                 if (!isFirstStep) {
-                    TextButton(onClick = onBack) {
+                    OutlinedButton(onClick = onBack, shape = MaterialTheme.shapes.medium) {
                         Text(
                             text = stringResource(R.string.lbl_back),
                             maxLines = 1,
@@ -85,6 +85,7 @@ fun WizardBottomBar(
                 Button(
                     onClick = { if (!isLoading) onNext() },
                     enabled = nextEnabled,
+                    shape = MaterialTheme.shapes.medium,
                     colors = ButtonDefaults.buttonColors(
                         disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,

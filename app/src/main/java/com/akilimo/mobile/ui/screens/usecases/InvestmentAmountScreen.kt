@@ -1,42 +1,33 @@
 package com.akilimo.mobile.ui.screens.usecases
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.RadioButtonRow
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
@@ -107,41 +98,17 @@ fun InvestmentAmountScreen(
                     }
                 }
                 items(state.investments, key = { it.id }) { item ->
-                    val isSelected = state.selectedId == item.id
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xxs)
-                    ) {
-                        // One tap target for the whole row; the RadioButton is display-only
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .selectable(
-                                    selected = isSelected,
-                                    role = Role.RadioButton,
-                                    onClick = { viewModel.select(item) }
-                                )
-                                .padding(AkilimoSpacing.xs)
-                        ) {
-                            RadioButton(selected = isSelected, onClick = null)
-                            Column(modifier = Modifier.padding(start = AkilimoSpacing.xs)) {
-                                Text(
-                                    text = stringResource(
-                                        R.string.lbl_currency_amount,
-                                        item.currencySymbol,
-                                        amountFormat.format(item.investmentAmount)
-                                    ),
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                                Text(
-                                    text = fieldLabel,
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            }
-                        }
-                    }
+                    RadioButtonRow(
+                        label = stringResource(
+                            R.string.lbl_currency_amount,
+                            item.currencySymbol,
+                            amountFormat.format(item.investmentAmount)
+                        ),
+                        supportingText = fieldLabel,
+                        selected = state.selectedId == item.id,
+                        onClick = { viewModel.select(item) },
+                        modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
+                    )
                 }
                 item { Spacer(modifier = Modifier.height(AkilimoSpacing.xs)) }
             }

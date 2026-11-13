@@ -96,4 +96,18 @@ object DatabaseMigrations {
             )
         }
     }
+
+    /**
+     * v8 → v9: the farmer's saved advice (optional accounts). A new table only; nothing existing changes.
+     */
+    val MIGRATION_8_9 = object : Migration(8, 9) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `saved_advice` (`request_id` TEXT NOT NULL, `account_id` INTEGER NOT NULL, " +
+                    "`country_code` TEXT, `use_case` TEXT, `rec_type` TEXT, `recommendation` TEXT, " +
+                    "`created_at` INTEGER NOT NULL, PRIMARY KEY(`request_id`))"
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_saved_advice_account_id` ON `saved_advice` (`account_id`)")
+        }
+    }
 }

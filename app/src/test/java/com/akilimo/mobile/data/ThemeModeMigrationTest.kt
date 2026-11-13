@@ -13,8 +13,8 @@ class ThemeModeMigrationTest {
     private val themeMode = stringPreferencesKey("themeMode")
 
     @Test
-    fun `nothing stored follows the system`() {
-        assertEquals(ThemeMode.SYSTEM, emptyPreferences().themeMode())
+    fun `nothing stored starts in light`() {
+        assertEquals(ThemeMode.LIGHT, emptyPreferences().themeMode())
     }
 
     @Test
@@ -23,8 +23,8 @@ class ThemeModeMigrationTest {
     }
 
     @Test
-    fun `legacy dark mode off becomes SYSTEM`() {
-        assertEquals(ThemeMode.SYSTEM, preferencesOf(darkMode to false).themeMode())
+    fun `legacy dark mode off becomes LIGHT`() {
+        assertEquals(ThemeMode.LIGHT, preferencesOf(darkMode to false).themeMode())
     }
 
     @Test

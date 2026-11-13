@@ -38,6 +38,8 @@ data class ApiErrorResponse(
     @param:Json(name = "status") val status: Int? = null,
     @param:Json(name = "message") val message: String? = null,
     @param:Json(name = "errors") val errors: Map<String, List<String>>? = null,
+    /** Machine-readable reason of the account endpoints, e.g. `consent_required` or `email_unverified`. */
+    @param:Json(name = "code") val code: String? = null,
 ) {
     /** True when the API refused the farm location as outside the supported area. */
     val isOutsideCoverage: Boolean

@@ -32,6 +32,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.enums.EnumAdviceTask
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.FormCard
 import com.akilimo.mobile.ui.components.compose.BinaryToggleChips
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
@@ -196,38 +197,40 @@ fun TractorAccessScreen(
                     )
                 }
 
-                if (usePlough) {
-                    Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
-                    AkilimoTextField(
-                        value = ploughCost,
-                        onValueChange = { ploughCost = it },
-                        label = costLabel(stringResource(R.string.lbl_tractor_plough_cost_hint)),
-                        error = errorFor(ploughCost),
-                        trailingIcon = currencySuffix(state.currencyCode),
-                        keyboardOptions = amountKeyboard(isLast = lastField == "plough")
-                    )
-                }
-                if (useRidge) {
-                    Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
-                    AkilimoTextField(
-                        value = ridgeCost,
-                        onValueChange = { ridgeCost = it },
-                        label = costLabel(stringResource(R.string.lbl_tractor_ridge_cost_hint)),
-                        error = errorFor(ridgeCost),
-                        trailingIcon = currencySuffix(state.currencyCode),
-                        keyboardOptions = amountKeyboard(isLast = lastField == "ridge")
-                    )
-                }
-                if (useHarrow) {
-                    Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
-                    AkilimoTextField(
-                        value = harrowCost,
-                        onValueChange = { harrowCost = it },
-                        label = costLabel(stringResource(R.string.lbl_tractor_harrow_cost_hint)),
-                        error = errorFor(harrowCost),
-                        trailingIcon = currencySuffix(state.currencyCode),
-                        keyboardOptions = amountKeyboard(isLast = lastField == "harrow")
-                    )
+                if (usePlough || useRidge || useHarrow) {
+                    Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
+                    FormCard {
+                        if (usePlough) {
+                            AkilimoTextField(
+                                value = ploughCost,
+                                onValueChange = { ploughCost = it },
+                                label = costLabel(stringResource(R.string.lbl_tractor_plough_cost_hint)),
+                                error = errorFor(ploughCost),
+                                trailingIcon = currencySuffix(state.currencyCode),
+                                keyboardOptions = amountKeyboard(isLast = lastField == "plough")
+                            )
+                        }
+                        if (useRidge) {
+                            AkilimoTextField(
+                                value = ridgeCost,
+                                onValueChange = { ridgeCost = it },
+                                label = costLabel(stringResource(R.string.lbl_tractor_ridge_cost_hint)),
+                                error = errorFor(ridgeCost),
+                                trailingIcon = currencySuffix(state.currencyCode),
+                                keyboardOptions = amountKeyboard(isLast = lastField == "ridge")
+                            )
+                        }
+                        if (useHarrow) {
+                            AkilimoTextField(
+                                value = harrowCost,
+                                onValueChange = { harrowCost = it },
+                                label = costLabel(stringResource(R.string.lbl_tractor_harrow_cost_hint)),
+                                error = errorFor(harrowCost),
+                                trailingIcon = currencySuffix(state.currencyCode),
+                                keyboardOptions = amountKeyboard(isLast = lastField == "harrow")
+                            )
+                        }
+                    }
                 }
             }
 

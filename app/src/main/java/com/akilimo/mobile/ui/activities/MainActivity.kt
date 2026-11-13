@@ -13,11 +13,14 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.data.AppLanguage
+import com.akilimo.mobile.data.ReadingTextScale
+import com.akilimo.mobile.data.account.AccountSessionStore
 import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.navigation.AkilimoNavHost
 import com.akilimo.mobile.navigation.LegalWizardRoute
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.akilimo.mobile.navigation.HubRoute
 import com.akilimo.mobile.navigation.OnboardingRoute
-import com.akilimo.mobile.navigation.RecommendationsRoute
 import com.akilimo.mobile.ui.theme.AkilimoTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -39,6 +42,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var appSettings: AppSettingsDataStore
 
+    @Inject
+    lateinit var accountSession: AccountSessionStore
+
     override fun attachBaseContext(newBase: Context) {
         // Runs before Hilt injection, so read settings directly
         val tag = AppSettingsDataStore.readAppliedLanguageTagSync(newBase)
@@ -46,6 +52,8 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Brand launch screen; must run before super.onCreate and switches to Theme.NewAkilimo after
+        installSplashScreen()
         // Re-applied from Compose below once the theme is known
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
@@ -57,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 OnboardingRoute
             }
         } else {
-            RecommendationsRoute
+            HubRoute
         }
 
         setContent {
@@ -88,7 +96,14 @@ class MainActivity : ComponentActivity() {
                 onDispose { }
             }
 
-            AkilimoTheme(darkTheme = darkTheme) {
+            val textScale by appSettings.readingTextScaleFlow
+                .collectAsStateWithLifecycle(initialValue = ReadingTextScale.DEFAULT)
+
+            // A farmer who is signed in (and has consented) gets the IITA-coloured theme, so it is plain at a glance
+            val session by accountSession.session.collectAsStateWithLifecycle()
+            val signedIn = session?.consentRequired == false
+
+            AkilimoTheme(darkTheme = darkTheme, textScale = textScale, signedIn = signedIn) {
                 AkilimoNavHost(startDestination = startRoute)
             }
         }

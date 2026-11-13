@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import com.akilimo.mobile.ui.components.compose.SegmentedTabRow
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -52,6 +56,9 @@ import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
 import com.akilimo.mobile.ui.components.compose.RadioButtonRow
 import com.akilimo.mobile.ui.components.compose.SectionHeader
+import com.akilimo.mobile.ui.components.compose.StatItem
+import com.akilimo.mobile.ui.components.compose.StatSummaryCard
+import com.akilimo.mobile.ui.components.compose.StatusTone
 import com.akilimo.mobile.ui.components.compose.SelectionCard
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
@@ -59,6 +66,9 @@ import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.FertilizerViewModel
 import com.akilimo.mobile.utils.AmountInput
 import kotlinx.coroutines.launch
+
+/** The list needs more than this many fertilizers before the search box and category bar appear. */
+private const val FILTER_MIN_ITEMS = 10
 
 /**
  * Fertilizer picker. Tapping any card opens the price sheet (pre-filled when the fertilizer
@@ -85,6 +95,10 @@ fun FertilizerScreen(
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
+    // Search and the category bar only earn their space on a long list; a short one stays plain
+    val showFilters = state.fertilizers.size > FILTER_MIN_ITEMS
+    val shownFertilizers = if (showFilters) state.visibleFertilizers else state.fertilizers
+
     @Composable
     fun FertilizerCard(fertilizer: Fertilizer, grid: Boolean, modifier: Modifier = Modifier) {
         val isSelected = state.selectedIds.contains(fertilizer.id)
@@ -95,6 +109,7 @@ fun FertilizerScreen(
                 fertilizer.displayPrice
             else
                 stringResource(R.string.under_score),
+            description = categoryLabelRes(fertilizer.category)?.let { stringResource(it) },
             isSelected = isSelected,
             isGridLayout = grid,
             onClick = { sheetFertilizerId = fertilizer.id },
@@ -131,10 +146,34 @@ fun FertilizerScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
+            if (state.fertilizers.isNotEmpty()) {
+                StatSummaryCard(
+                    stats = listOf(
+                        StatItem(stringResource(R.string.lbl_available), state.fertilizers.size.toString()),
+                        StatItem(
+                            stringResource(R.string.lbl_selected),
+                            state.selectedIds.size.toString(),
+                            if (state.selectedIds.isEmpty()) StatusTone.Neutral else StatusTone.Success,
+                        ),
+                    ),
+                    modifier = Modifier.padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xs),
+                )
+            }
             SectionHeader(
                 title = stringResource(R.string.lbl_select_fertilizers),
                 modifier = Modifier.padding(horizontal = AkilimoSpacing.md)
             )
+
+            if (showFilters) {
+                FertilizerFilters(
+                    query = state.query,
+                    onQueryChange = viewModel::onQueryChange,
+                    categories = state.categories,
+                    selectedCategory = state.category,
+                    onCategoryChange = viewModel::onCategoryChange,
+                    modifier = Modifier.padding(horizontal = AkilimoSpacing.md, vertical = AkilimoSpacing.xs),
+                )
+            }
 
             RefreshableList(isRefreshing = state.isRefreshing, onRefresh = viewModel::refresh) {
                 when {
@@ -142,6 +181,13 @@ fun FertilizerScreen(
                     state.fertilizers.isEmpty() -> PullableState {
                         ListEmpty(
                             message = stringResource(R.string.msg_no_fertilizers),
+                            modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
+                        )
+                    }
+
+                    shownFertilizers.isEmpty() -> PullableState {
+                        ListEmpty(
+                            message = stringResource(R.string.msg_no_matching_fertilizers),
                             modifier = Modifier.padding(horizontal = AkilimoSpacing.md),
                         )
                     }
@@ -154,7 +200,7 @@ fun FertilizerScreen(
                             .fillMaxSize()
                             .padding(horizontal = AkilimoSpacing.xs)
                     ) {
-                        items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
+                        items(shownFertilizers, key = { it.id ?: 0 }) { fertilizer ->
                             FertilizerCard(fertilizer, grid = true)
                         }
                     }
@@ -163,7 +209,7 @@ fun FertilizerScreen(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xxs)
                     ) {
-                        items(state.fertilizers, key = { it.id ?: 0 }) { fertilizer ->
+                        items(shownFertilizers, key = { it.id ?: 0 }) { fertilizer ->
                             FertilizerCard(
                                 fertilizer,
                                 grid = false,
@@ -200,6 +246,44 @@ fun FertilizerScreen(
     }
 }
 
+/** Label for a fertilizer category, or null when the API sent none we know. */
+private fun categoryLabelRes(category: String?): Int? = when (category) {
+    "STRAIGHT" -> R.string.lbl_category_straight
+    "COMPOUND" -> R.string.lbl_category_compound
+    "OTHER" -> R.string.lbl_category_other
+    else -> null
+}
+
+/** Search box and category bar above the fertilizer list. */
+@Composable
+private fun FertilizerFilters(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    categories: List<String>,
+    selectedCategory: String?,
+    onCategoryChange: (String?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xs)) {
+        AkilimoTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            label = "",
+            accessibilityLabel = stringResource(R.string.lbl_search_fertilizers),
+            placeholder = stringResource(R.string.lbl_search_fertilizers),
+            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+        )
+        // A bar with only "All" would be pointless: show it once the list has real categories
+        if (categories.isNotEmpty()) {
+            SegmentedTabRow(
+                options = listOf(stringResource(R.string.lbl_all)) +
+                    categories.map { stringResource(categoryLabelRes(it) ?: R.string.lbl_category_other) },
+                selectedIndex = selectedCategory?.let { categories.indexOf(it) + 1 } ?: 0,
+                onSelect = { index -> onCategoryChange(if (index == 0) null else categories[index - 1]) },
+            )
+        }
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FertilizerPriceSheet(
@@ -258,7 +342,7 @@ private fun FertilizerPriceSheet(
 
             when {
                 loaded == null -> ListLoading()
-                loaded.isEmpty() -> ListEmpty(stringResource(R.string.msg_no_prices_available))
+                loaded.isEmpty() -> ListEmpty(stringResource(R.string.msg_no_prices_available), showRefreshHint = false)
                 else -> Column(modifier = Modifier.selectableGroup()) {
                     loaded.forEach { price ->
                         val label = when {

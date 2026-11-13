@@ -28,6 +28,8 @@ import com.akilimo.mobile.enums.EnumWeedControlMethod
 import com.akilimo.mobile.ui.components.compose.AkilimoDropdown
 import com.akilimo.mobile.ui.components.compose.AkilimoTextField
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.FormCard
+import com.akilimo.mobile.ui.components.compose.ResultCard
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.components.compose.completeTask
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
@@ -113,37 +115,47 @@ fun WeedControlCostsScreen(
         ScrollableFormColumn(padding = padding) {
             Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
 
-            AkilimoDropdown(
-                label = stringResource(R.string.lbl_weed_control_method),
-                options = weedMethods,
-                selectedOption = selectedMethod,
-                onOptionSelected = { selectedMethod = it },
-                displayText = { it.label(context) }
-            )
+            FormCard {
+                AkilimoDropdown(
+                    label = stringResource(R.string.lbl_weed_control_method),
+                    options = weedMethods,
+                    selectedOption = selectedMethod,
+                    onOptionSelected = { selectedMethod = it },
+                    displayText = { it.label(context) }
+                )
 
-            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
+                AkilimoTextField(
+                    value = firstCost,
+                    onValueChange = { firstCost = it },
+                    label = stringResource(R.string.lbl_first_weeding_costs_prompt),
+                    helperText = stringResource(R.string.lbl_optional),
+                    error = firstError,
+                    trailingIcon = currencySuffix(state.currencyCode),
+                    keyboardOptions = amountKeyboard()
+                )
 
-            AkilimoTextField(
-                value = firstCost,
-                onValueChange = { firstCost = it },
-                label = stringResource(R.string.lbl_first_weeding_costs_prompt),
-                helperText = stringResource(R.string.lbl_optional),
-                error = firstError,
-                trailingIcon = currencySuffix(state.currencyCode),
-                keyboardOptions = amountKeyboard()
-            )
+                AkilimoTextField(
+                    value = secondCost,
+                    onValueChange = { secondCost = it },
+                    label = stringResource(R.string.lbl_second_weeding_cost_prompt),
+                    helperText = stringResource(R.string.lbl_optional),
+                    error = secondError,
+                    trailingIcon = currencySuffix(state.currencyCode),
+                    keyboardOptions = amountKeyboard(isLast = true)
+                )
+            }
 
-            Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
-
-            AkilimoTextField(
-                value = secondCost,
-                onValueChange = { secondCost = it },
-                label = stringResource(R.string.lbl_second_weeding_cost_prompt),
-                helperText = stringResource(R.string.lbl_optional),
-                error = secondError,
-                trailingIcon = currencySuffix(state.currencyCode),
-                keyboardOptions = amountKeyboard(isLast = true)
-            )
+            // Sum of the weeding costs typed so far; blank or invalid entries count as zero
+            val totalCost = (AmountInput.parse(firstCost) ?: 0.0) + (AmountInput.parse(secondCost) ?: 0.0)
+            if (totalCost > 0.0) {
+                Spacer(modifier = Modifier.height(AkilimoSpacing.sm))
+                ResultCard(
+                    title = stringResource(R.string.lbl_total_weeding_cost),
+                    value = rememberNumberFormat(maxFractionDigits = 0).format(totalCost),
+                    unit = state.currencyCode.takeIf { it.isNotBlank() },
+                    highlight = true,
+                )
+            }
 
             Spacer(modifier = Modifier.height(AkilimoSpacing.md))
         }

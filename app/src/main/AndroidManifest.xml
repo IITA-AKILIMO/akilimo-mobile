@@ -54,6 +54,7 @@
         <activity
             android:name=".ui.activities.MainActivity"
             android:exported="true"
+            android:theme="@style/Theme.NewAkilimo.Splash"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

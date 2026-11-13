@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,6 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.akilimo.mobile.R
+import com.akilimo.mobile.ui.theme.LocalSignedIn
+import com.akilimo.mobile.ui.theme.bottomAccentLine
+import com.akilimo.mobile.ui.theme.iitaAccent
 
 /** What the leading icon of [BackTopAppBar] shows. */
 enum class TopBarNavigation {
@@ -59,6 +62,12 @@ fun BackTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigation: TopBarNavigation = TopBarNavigation.BACK,
 ) {
+    // Signed in: an IITA-orange line under the bar, on every screen that uses it
+    val accentModifier = if (LocalSignedIn.current) {
+        Modifier.bottomAccentLine(MaterialTheme.colorScheme.iitaAccent)
+    } else {
+        Modifier
+    }
     val navIcon: @Composable () -> Unit = {
         if (navigation != TopBarNavigation.NONE) {
             val isClose = navigation == TopBarNavigation.CLOSE
@@ -66,10 +75,12 @@ fun BackTopAppBar(
                 onClick = onBack,
                 modifier = Modifier.size(48.dp),
             ) {
+                // Light outlined icon at 22dp: quieter than the filled arrow, tap area stays 48dp
                 Icon(
-                    imageVector = if (isClose) Icons.Filled.Close else Icons.AutoMirrored.Filled.ArrowBack,
+                    imageVector = if (isClose) Icons.Filled.Close else Icons.AutoMirrored.Outlined.ArrowBack,
                     contentDescription = stringResource(if (isClose) R.string.cmp_close else R.string.lbl_back),
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f),
+                    modifier = Modifier.size(22.dp),
                 )
             }
         }
@@ -130,7 +141,7 @@ fun BackTopAppBar(
             },
             navigationIcon = navIcon,
             actions = actions,
-            modifier = modifier,
+            modifier = modifier.then(accentModifier),
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -165,7 +176,7 @@ fun BackTopAppBar(
             },
             navigationIcon = navIcon,
             actions = actions,
-            modifier = modifier,
+            modifier = modifier.then(accentModifier),
             scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,

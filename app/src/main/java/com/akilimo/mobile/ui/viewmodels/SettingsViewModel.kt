@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.data.ReadingTextScale
 import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.data.toNightMode
 import com.akilimo.mobile.entities.AkilimoUser
@@ -33,11 +34,12 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     data class UiState(
-        val themeMode: ThemeMode = ThemeMode.SYSTEM,
+        val themeMode: ThemeMode = ThemeMode.LIGHT,
         val languageTag: String = Locales.english.toLanguageTag(),
         val rememberAreaUnit: Boolean = false,
         val fertilizerGrid: Boolean = false,
         val lockAppLanguage: Boolean = false,
+        val textScale: Float = ReadingTextScale.DEFAULT,
     )
 
     sealed interface Effect {
@@ -78,6 +80,11 @@ class SettingsViewModel @Inject constructor(
                 _uiState.update { it.copy(lockAppLanguage = value) }
             }
         }
+        viewModelScope.launch {
+            appSettings.readingTextScaleFlow.collect { value ->
+                _uiState.update { it.copy(textScale = value) }
+            }
+        }
     }
 
     fun setThemeMode(mode: ThemeMode) {
@@ -105,6 +112,10 @@ class SettingsViewModel @Inject constructor(
 
     fun setFertilizerGrid(value: Boolean) {
         viewModelScope.launch { appSettings.setFertilizerGrid(value) }
+    }
+
+    fun setTextScale(value: Float) {
+        viewModelScope.launch { appSettings.setReadingTextScale(value) }
     }
 
     fun setLockAppLanguage(locked: Boolean) {
