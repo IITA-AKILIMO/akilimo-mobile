@@ -81,4 +81,6 @@ jobs:
         uses: hmarr/auto-approve-action@v4.0.0
         with:
           review-message: "Auto approved — CI checks passed"
+          # This runs after another workflow, not on a pull_request event, so the action must be told which pull request to approve
+          pull-request-number: ${{ steps.pr.outputs.number }}
           github-token: ${{ steps.generate-token.outputs.token }}
