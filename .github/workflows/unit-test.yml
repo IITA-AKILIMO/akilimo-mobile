@@ -2,7 +2,6 @@ name: CI Checks
 
 on:
   push:
-    branches: [develop]
     paths:
       - 'app/src/**'
       - '.github/**'
@@ -10,6 +9,7 @@ on:
       - 'gradle.properties'
       - 'gradle/libs.versions.toml'
   pull_request:
+    branches: [develop]
     paths:
       - 'app/src/**'
       - '.github/**'
