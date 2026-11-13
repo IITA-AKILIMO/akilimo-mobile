@@ -9,10 +9,11 @@ concurrency:
   group: auto-approve-${{ github.event.workflow_run.id }}
   cancel-in-progress: true
 
-# Logins whose pull requests may be auto-approved, separated by spaces. GitHub CLI spells a bot as `name[bot]` or `app/name`,
-# so both forms are listed. To change the list without editing this file, set a repository variable called ALLOWED_BOTS.
+# Bots whose pull requests may be auto-approved, separated by spaces. Write the bare name: `github-actions[bot]`,
+# `app/github-actions` and `GitHub-Actions` are all matched by `github-actions` (see the check below). To change the list
+# without editing this file, set a repository variable called ALLOWED_BOTS.
 env:
-  ALLOWED_BOTS: ${{ vars.ALLOWED_BOTS || 'github-actions[bot] dependabot[bot] app/dependabot munywele-bot[bot] app/munywele-bot' }}
+  ALLOWED_BOTS: ${{ vars.ALLOWED_BOTS || 'github-actions dependabot munywele-bot' }}
 
 jobs:
   pr-auto-approve:
@@ -55,21 +56,44 @@ jobs:
           echo "skip=false" >> "$GITHUB_OUTPUT"
           echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
           echo "author=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json author --jq '.author.login')" >> "$GITHUB_OUTPUT"
+          echo "author_is_bot=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json author --jq '.author.is_bot')" >> "$GITHUB_OUTPUT"
 
       - name: Check author is an allowed bot
         if: steps.pr.outputs.skip != 'true'
         id: gate
         env:
           PR_AUTHOR: ${{ steps.pr.outputs.author }}
+          AUTHOR_IS_BOT: ${{ steps.pr.outputs.author_is_bot }}
         run: |
+          # The same bot is spelled `name[bot]` in some places and `app/name` in others, in any letter case. Compare the bare
+          # name on both sides, so no spelling is skipped by mistake.
+          bare() {
+            local s="${1,,}"
+            s="${s#app/}"
+            s="${s%\[bot\]}"
+            printf '%s' "$s"
+          }
+
+          author="$(bare "$PR_AUTHOR")"
           read -ra bots <<< "$ALLOWED_BOTS"
-          
-          if [[ " ${bots[*]} " == *" $PR_AUTHOR "* ]]; then
-            echo "allowed=true" >> "$GITHUB_OUTPUT"
+          allowed=false
+
+          # GitHub must also say the author is a bot, so a person who shares a bot's name can never match
+          if [ "$AUTHOR_IS_BOT" = "true" ]; then
+            for bot in "${bots[@]}"; do
+              if [ "$author" = "$(bare "$bot")" ]; then
+                allowed=true
+                break
+              fi
+            done
+          fi
+
+          echo "allowed=$allowed" >> "$GITHUB_OUTPUT"
+
+          if [ "$allowed" = "true" ]; then
             echo "Author '$PR_AUTHOR' is allowed."
           else
-            echo "allowed=false" >> "$GITHUB_OUTPUT"
-            echo "Author '$PR_AUTHOR' is not an allowed bot — skipping."
+            echo "Author '$PR_AUTHOR' (bot: $AUTHOR_IS_BOT) is not an allowed bot, skipping."
           fi
 
       - name: Generate GitHub App Token
