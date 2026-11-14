@@ -78,6 +78,8 @@ Check `ui/components/compose/` first.
 - [ ] Every user-facing string is in `strings*.xml`; none is built in code.
 - [ ] No crop name in generic text (say "farm", not "cassava farm").
 - [ ] New strings added in English, with a note if sw/rw/ha translations are still pending.
+      Missing translations do **not** fail lint: `app/build.gradle.kts` disables the
+      `MissingTranslation` check. Never use `tools:ignore` on string resources.
 - [ ] Numbers and currency are formatted for the current locale.
 - [ ] Layout checked with the longest translation, not only English.
 - [ ] Language tags are BCP-47 and written to `AppSettingsDataStore` before applying locales.
