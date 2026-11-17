@@ -76,7 +76,7 @@ Package guardrails:
 4. Add the route to `navigation/Route.kt` and wire it in `AkilimoNavHost.kt`.
 5. Do not add new `Activity` or `Fragment` classes — Compose + NavHost is the active path.
 
-See `docs/COMPOSE_MIGRATION.md` for full conventions.
+See `AGENTS.md` for the Compose and ViewModel conventions.
 
 
 **Language/locale changes:**
@@ -231,4 +231,3 @@ private fun UserSettingsScreenPreview() {
 | — | Dark mode setting saved but never applied — fixed: `AppSettingsDataStore.darkMode` drives night mode in `AkilimoApp` |
 | — | `allowMainThreadQueries()` removed — all DB calls in coroutines |
 
-See `docs/ROADMAP.md` for open items (R8 minification, unit test coverage, deep links, offline cache).

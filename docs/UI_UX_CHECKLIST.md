@@ -3,7 +3,7 @@
 IITA Internal Use
 
 A working reference for building and reviewing screens in the AKILIMO Android app. It complements
-`AGENTS.md` (conventions) and `docs/COMPOSE_MIGRATION.md`. Tick the boxes in a PR description; do
+`AGENTS.md` (conventions). Tick the boxes in a PR description; do
 not edit the ticks here.
 
 ## 1. Who we design for

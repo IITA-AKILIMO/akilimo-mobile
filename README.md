@@ -264,8 +264,6 @@ For script details, see `scripts/README.md`.
 - [Developer Guide](docs/DEVELOPMENT.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Product Requirements](docs/PRD.md)
-- [Implementation Roadmap](docs/ROADMAP.md)
-- [Compose Migration Guide](docs/COMPOSE_MIGRATION.md)
 - [User Guide](docs/USER_GUIDE.md)
 - [Release Script Notes](scripts/README.md)
 - [Changelog](CHANGELOG.md)
