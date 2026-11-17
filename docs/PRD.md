@@ -87,7 +87,7 @@ None recorded here. Open problems are tracked in GitHub issues and the error-rep
 - **Accessibility audit** — TalkBack, font scaling and content descriptions have not had a full pass
 
 ### Technical Gaps
-- **Map SDK** — the map picker still uses Mapbox (a secret download token is needed to build); a MapLibre migration is planned (`docs/MAPLIBRE_MIGRATION.md`)
+- **Map SDK** — the map picker uses Mapbox, which needs a secret download token to build
 - **Test coverage** — unit tests cover the ViewModels and several repositories, but not the whole feature surface
 
 ---

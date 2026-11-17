@@ -7,7 +7,7 @@ This guide covers day-to-day engineering work: local setup, common commands, cod
 1. Install Android Studio (latest stable).
 2. Install/configure JDK 17.
 3. Ensure Android SDK 36 and build tools are installed.
-4. Configure `MAPBOX_DOWNLOADS_TOKEN` in `~/.gradle/gradle.properties` (the map still uses Mapbox; see `docs/MAPLIBRE_MIGRATION.md`).
+4. Configure `MAPBOX_DOWNLOADS_TOKEN` in `~/.gradle/gradle.properties` (the map picker uses Mapbox).
 5. Open project in Android Studio and run Gradle sync.
 
 ## 2. Common Gradle commands
