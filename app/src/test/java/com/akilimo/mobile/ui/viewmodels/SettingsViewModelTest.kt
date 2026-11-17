@@ -156,10 +156,10 @@ class SettingsViewModelTest {
         coEvery { prefsRepo.getOrDefault() } returns UserPreferences()
 
         val viewModel = buildViewModel()
-        viewModel.setLanguage("ha")
+        viewModel.setLanguage("rw")
         advanceUntilIdle()
 
-        coVerify { userRepo.saveOrUpdateUser(match { it.userName == "user1" && it.languageCode == "ha" }, "user1") }
+        coVerify { userRepo.saveOrUpdateUser(match { it.userName == "user1" && it.languageCode == "rw" }, "user1") }
     }
 
     // ── Lock language ─────────────────────────────────────────────────────────
