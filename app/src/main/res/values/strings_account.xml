@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Optional farmer accounts. English only until the translation pass (sw, rw, ha), like the other new strings. -->
+<!-- Optional farmer accounts. English only until the translation pass (sw, rw), like the other new strings. -->
 <resources>
     <!-- Hub and settings entry points -->
     <string name="account_title">Account</string>
