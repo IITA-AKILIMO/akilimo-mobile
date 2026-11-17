@@ -118,7 +118,7 @@ Always include `every { appSettings.akilimoUser } returns "<username>"` before b
 
 ## Language / Locale
 
-Language tags must be BCP-47 (`"en"`, `"sw"`, `"ha"`, not display names). Always write to `AppSettingsDataStore` before calling `AppCompatDelegate.setApplicationLocales()`.
+Language tags must be BCP-47 (`"en"`, `"sw"`, `"rw"`, not display names). Always write to `AppSettingsDataStore` before calling `AppCompatDelegate.setApplicationLocales()`.
 
 ## Navigation
 

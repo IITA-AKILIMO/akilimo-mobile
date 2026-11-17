@@ -10,7 +10,7 @@ not edit the ticks here.
 
 - [ ] Smallholder farmers and extension workers, often outdoors, in bright light, on mid-range phones.
 - [ ] Limited or no connectivity: the app must stay usable and say what is saved.
-- [ ] Mixed literacy and several languages (en, sw, rw, ha): words stay short, icons support them.
+- [ ] Mixed literacy and several languages (en, sw, rw): words stay short, icons support them.
 - [ ] One clear primary action per screen.
 
 ## 2. Look and feel
@@ -129,7 +129,7 @@ Open decisions and known gaps:
       is already on `feat/ui-design-system` (a `textScale` in `AkilimoTheme`, the Settings selector,
       and the recommendation result screen no longer scaling its own text). If it stays deferred,
       keep the result screen's own size control as in #559 and do not add a second scale.
-- [ ] Translations (sw, rw, ha) for the new hub, profile, text-size and progress strings (to be done later).
+- [ ] Translations (sw, rw) for the new hub, profile, text-size and progress strings (to be done later).
 - [x] "Total weeding cost" summary row on the weed control form.
 
 ## 11. Backlog ideas
