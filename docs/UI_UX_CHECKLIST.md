@@ -143,7 +143,8 @@ Quick wins:
 
 Medium:
 - [x] Sync and offline status strip (sync-state source: `SyncStatusSource`).
-- [ ] Save, share and print a recommendation; list of past recommendations, readable offline.
+- [x] Save and share a recommendation, and a list of past recommendations that opens offline (saved advice with an account).
+      Printing is not built.
 - [x] Location picker opens on the chosen country (not Nairobi) in the manual flow and no longer jumps to the phone's GPS. (The Location step already had "Use current location".)
 - [x] Location step: plain one-line reason, a "Where is your farm?" title, and an inside/outside status chip.
 - [x] Skeleton loaders and one shared look for empty and error states (StateMessage, SkeletonList;
