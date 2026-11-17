@@ -129,3 +129,5 @@ You do not need an account to get advice. With an account you can keep your advi
 | Saved advice needs an account | Create an account if you want your advice kept; without one, note the results before leaving the screen |
 | The harvest date must be 235 to 452 days after planting | Pick a planting date that fits your harvest plan |
 | Notifications by email or SMS are not available | — |
+
+#### --
