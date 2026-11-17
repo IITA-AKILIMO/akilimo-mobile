@@ -7,7 +7,7 @@ This guide covers day-to-day engineering work: local setup, common commands, cod
 1. Install Android Studio (latest stable).
 2. Install/configure JDK 17.
 3. Ensure Android SDK 36 and build tools are installed.
-4. Configure `MAPBOX_DOWNLOADS_TOKEN` in `~/.gradle/gradle.properties`.
+4. Configure `MAPBOX_DOWNLOADS_TOKEN` in `~/.gradle/gradle.properties` (the map still uses Mapbox; see `docs/MAPLIBRE_MIGRATION.md`).
 5. Open project in Android Studio and run Gradle sync.
 
 ## 2. Common Gradle commands
@@ -38,10 +38,11 @@ This guide covers day-to-day engineering work: local setup, common commands, cod
 
 Build-time defaults can be overridden through environment variables:
 
-- `AKILIMO_BASE_URL`
+- `AKILIMO_BASE_URL` and `AKILIMO_API_KEY`
 - `FUELROD_BASE_URL`
+- `MAPBOX_RUNTIME_TOKEN`, `LOCATION_IQ_TOKEN`, `WEATHER_API_KEY`
 
-These become `BuildConfig` fields and are then resolved through `AppConfig` (session value first, then build fallback).
+These become `BuildConfig` fields. The API base URLs are resolved through `AppConfig` (saved value first, then build default). Never commit a key or token; use environment variables, `local.properties` or `~/.gradle/gradle.properties`.
 
 ## 4. Code organization conventions
 
@@ -49,23 +50,23 @@ Main package: `com.akilimo.mobile`
 
 | Package | Purpose |
 |---------|---------|
-| `ui/activities/` | `MainActivity` — single-Activity host with `AkilimoNavHost` |
-| `ui/screens/` | Compose screens grouped by feature (`usecases/`, `settings/`, `recommendations/`, `onboarding/`) |
-| `ui/components/compose/` | Shared Compose primitives: `BackTopAppBar`, `SaveBottomBar`, `ScrollableFormColumn`, `NavExtensions`, `AkilimoTextField`, `SelectionCard`, `BinaryToggleChips`, `RadioButtonRow`, `SwitchRow` |
-| `ui/viewmodels/` | One `@HiltViewModel` per screen; `StateFlow<UiState>` + `Channel<Effect>` pattern |
-| `repos/` | Repository classes wrapping Room DAOs — all DB access goes through here |
-| `dao/` + `entities/` | Room `@Dao` interfaces (16) and `@Entity` data classes (17) |
-| `workers/` | WorkManager `CoroutineWorker` subclasses + `WorkerScheduler` |
-| `network/` + `rest/` | Retrofit service interfaces (`AkilimoApi`, `LocationIqApi`, `WeatherApi`), `ApiClient`, request/response models |
-| `data/` | `AppSettingsDataStore.kt` — Preferences DataStore for all 17 settings keys |
-| `enums/` | Domain enums: `EnumCountry`, `EnumAreaUnit`, `EnumAdvice`, `EnumAdviceTask`, `EnumStepStatus`, etc. |
-| `navigation/` | `Route.kt` (@Serializable routes) + `AkilimoNavHost.kt` (modular feature graphs) |
-| `di/` | `AppModule.kt` — 15 @Singleton repository providers |
-| `helper/` | Cross-cutting helpers (`LocaleHelper`, `WorkStateMapper`); do not add new files here |
-
+| `ui/activities/` | `MainActivity`: the single Activity, hosting `AkilimoNavHost` |
+| `ui/screens/` | Compose screens by feature: `hub/`, `profile/`, `farm/`, `onboarding/`, `recommendations/`, `usecases/`, `account/`, `settings/` |
+| `ui/components/compose/` | Shared Compose components (see `AGENTS.md`, "Design conventions") |
+| `ui/viewmodels/` | One `@HiltViewModel` per screen; `StateFlow<UiState>` (plus an `Effect` flow where a screen needs one-shot events) |
+| `ui/theme/` | `AkilimoTheme`, colours, shapes, spacing, typography |
+| `repos/` | Repositories wrapping Room DAOs and Retrofit; `repos/account/` holds the account and saved-advice repos |
+| `dao/` + `entities/` | Room `@Dao` interfaces and `@Entity` classes |
+| `workers/` | WorkManager workers, `WorkerScheduler`, `DataRefresher` (pull-to-refresh) |
+| `network/` | Retrofit services (`AkilimoApi`, `AccountApi`, `LocationIqApi`, `WeatherApi`), `ApiClient`, interceptors, `NetworkMonitor` |
+| `data/` | `AppSettingsDataStore` (settings), `AppLanguage`, and `data/account/` (session store, token encryption) |
+| `enums/` | Domain enums: `EnumCountry`, `EnumAreaUnit`, `EnumAdviceTask`, `EnumStepStatus`, etc. |
+| `navigation/` | `Route.kt` (serializable routes), `FeatureGraphs.kt`, `AkilimoNavHost.kt` |
+| `di/` | Hilt modules (`AppModule`, `AccountModule`) |
+| `utils/` | Small helpers (`AmountInput`, `DateHelper`, `PlantingSchedule`, `CoverageArea`, ...) |
 Package guardrails:
 
-- Do not add new files to `rest/`, `helper/`, `utils/`, or `interfaces/` unless there is a strong cross-cutting reason and no better specific package exists.
+- Do not add new files to `utils/` unless there is a strong cross-cutting reason and no better specific package exists.
 - Prefer moving code into a feature package, `data/`, `navigation/`, `workers/`, or `ui/components/` instead of extending generic buckets.
 - New remote code should converge toward one remote-data package path rather than growing parallel structures.
 
@@ -82,21 +83,14 @@ See `AGENTS.md` for the Compose and ViewModel conventions.
 **Language/locale changes:**
 - Always save language as a full BCP-47 tag (e.g., `"sw-TZ"`, not `"sw"`).
 - Use `Locales.supportedLocales` as the single source of supported locales.
-- Write to DataStore **before** calling `setApplicationLocales()` to prevent a stale locale read during activity recreation (race condition fix):
-  ```kotlin
-  safeScope.launch {
-      appSettings.setLanguageTag(tag)
-      AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
-      AppLocale.desiredLocale = …   // secondary step for Reword string-replacement library
-  }
-  ```
-- See `docs/ARCHITECTURE.md §5` for the full locale system.
+- Write to DataStore **before** applying the locale, so a recreated Activity does not read a stale value. The settings screen does this in the ViewModel (`setLanguageTagAndOverride(tag)`, then a `LanguageChanged` effect), and the screen then calls `AppLanguage.apply(tag)`, which wraps `AppCompatDelegate.setApplicationLocales()` and recreates the Activity on Android versions that need it.
+- The `lock app language` setting keeps the chosen language regardless of the phone's language.- See `docs/ARCHITECTURE.md` §6 for the full locale system.
 
 ## 5. Database and threading
 
-All repository methods are `suspend` functions called from `safeScope.launch { }` or a background dispatcher. Do not add main-thread DB calls — `allowMainThreadQueries()` has been removed.
+All repository methods are `suspend` functions called from `viewModelScope.launch { }` or a background dispatcher. Do not add main-thread DB calls — `allowMainThreadQueries()` has been removed.
 
-Room DB version: **8** — `fallbackToDestructiveMigration()` is disabled. When changing entity schema, write a proper `Migration` object in `database/DatabaseMigrations.kt` to avoid wiping user data.
+Room DB version: **9** — the destructive fallback is used only on a downgrade. When changing entity schema, write a proper `Migration` object in `database/DatabaseMigrations.kt` to avoid wiping user data.
 
 ## 6. Coroutines conventions
 
@@ -114,7 +108,7 @@ Room DB version: **8** — `fallbackToDestructiveMigration()` is disabled. When 
 
 ## 8. Release-related references
 
-- Main pipeline: `.github/workflows/android.yml`
+- Workflows: `.github/workflows/` (`unit-test.yml`, `build-apk.yml`, `sonar-analysis.yml`, `next-release-pr.yml`, `github-release.yml`, `publish.yml`)
 - Changelog: `CHANGELOG.md`
 - Release note assets: `release/distribution/whatsnew/`
 - Script docs: `scripts/README.md`
@@ -128,27 +122,14 @@ These apply to all new screens. The Compose migration is **100% complete** — a
 ```
 ui/
 ├── screens/
-│   └── settings/
-│       ├── UserSettingsScreen.kt        @Composable screen root
-│       ├── UserSettingsViewModel.kt     @HiltViewModel
-│       └── UserSettingsUiState.kt       data class + sealed NavEvent
-├── components/
-│   └── compose/
-│       ├── BackTopAppBar.kt      TopAppBar with back arrow (carries its own @OptIn)
-│       ├── SaveBottomBar.kt      Full-width save/confirm button bar
-│       ├── ScrollableFormColumn.kt  fillMaxSize + horizontalPadding + verticalScroll
-│       ├── NavExtensions.kt      completeTask(EnumAdviceTask) extension
-│       ├── AkilimoButton.kt
-│       ├── AkilimoCard.kt
-│       ├── AkilimoTextField.kt
-│       └── NetworkBanner.kt
-└── theme/
-    ├── AkilimoTheme.kt
-    ├── AkilimoColors.kt
-    ├── AkilimoTypography.kt
-    └── AkilimoShapes.kt
+│   └── usecases/
+│       └── FertilizerScreen.kt          @Composable screen root (stateless content + screen wrapper)
+├── viewmodels/
+│   └── FertilizerViewModel.kt           @HiltViewModel with a nested UiState
+├── components/compose/                  Shared components: BackTopAppBar, SaveBottomBar, ScrollableFormColumn,
+│                                        NavExtensions (completeTask), FormCard, RadioButtonRow, ... (see AGENTS.md)
+└── theme/                               AkilimoTheme, AkilimoColors, AkilimoShapes, AkilimoSpacing, AkilimoTypography
 ```
-
 ### Required shared components
 
 Every screen with a back-navigation top bar uses `BackTopAppBar`:
@@ -196,7 +177,7 @@ onClick = {
 
 - Always wrap screen content in `AkilimoTheme { }`.
 - Use `MaterialTheme.colorScheme.*`, `MaterialTheme.typography.*`, `MaterialTheme.shapes.*` — never hardcode colours or sizes.
-- Dark mode is driven by `isSystemInDarkTheme()` passed from the host activity.
+- The theme is chosen by the user in Settings (ThemeMode: system, light or dark); MainActivity resolves it and passes darkTheme to AkilimoTheme.
 
 ### Previews
 
@@ -206,11 +187,10 @@ Every composable must have a `@Preview` with both light and dark variants:
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun UserSettingsScreenPreview() {
-    AkilimoTheme { UserSettingsScreen(uiState = UserSettingsUiState(), onEvent = {}) }
+private fun MyScreenPreview() {
+    AkilimoTheme { MyScreenContent(state = MyViewModel.UiState(), onEvent = {}) }
 }
 ```
-
 ### No-go list
 
 - ❌ Do not use `LiveData` — use `StateFlow`.

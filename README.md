@@ -30,12 +30,14 @@ AKILIMO Mobile is an Android application for delivering site-specific agronomic 
 
 AKILIMO Mobile supports agronomy decision workflows such as:
 
-- Fertilizer recommendation flows (including intercropping variants)
+- Fertilizer recommendation flows (including intercropping variants), scheduled planting and best planting practices
 - Produce market and yield-related flows (cassava, maize, sweet potato)
 - Tillage and weed-management related cost flows
 - Location-aware recommendations via on-device location + map-assisted picking
 - Multi-language UX support (English, Swahili/sw-TZ, Kinyarwanda/rw-RW)
-- Background synchronization of reference datasets (e.g., fertilizer catalog/prices, market data)
+- Optional farmer accounts with saved advice that opens offline
+- Pull-to-refresh of downloaded prices and options
+- Background synchronization of reference datasets (fertilizers and prices, cassava prices and units, maize units, starch factories, investment amounts)
 
 From current source configuration, the app includes country support for:
 
@@ -86,7 +88,7 @@ From current source configuration, the app includes country support for:
 │   │   ├── database/            # Room AppDatabase and TypeConverters
 │   │   ├── entities/            # Room @Entity data classes
 │   │   ├── dao/                 # Room @Dao interfaces
-│   │   ├── data/                # AppSettingsDataStore (Preferences)
+│   │   ├── data/                # AppSettingsDataStore (Preferences), language, account session
 │   │   ├── network/             # Retrofit clients and Moshi DTOs
 │   │   └── workers/             # WorkManager workers and scheduling
 │   └── src/main/res/            # Standard Android resources (no XML layouts)
@@ -143,6 +145,8 @@ MAPBOX_DOWNLOADS_TOKEN=<your-mapbox-download-token>
 
 - `AKILIMO_BASE_URL`
 - `FUELROD_BASE_URL`
+
+(Other keys, such as `AKILIMO_API_KEY`, `MAPBOX_RUNTIME_TOKEN`, `LOCATION_IQ_TOKEN` and `WEATHER_API_KEY`, are read the same way; see `docs/DEVELOPMENT.md`.)
 
 If unset, default values are used.
 
@@ -217,7 +221,7 @@ CI handles release signing via GitHub secrets. For local release signing, config
 
 ## Release workflow
 
-The GitHub Actions workflow in `.github/workflows/android.yml` covers:
+The GitHub Actions workflows in `.github/workflows/` (`unit-test.yml`, `build-apk.yml`, `sonar-analysis.yml`, `next-release-pr.yml`, `github-release.yml`, `publish.yml`) cover:
 
 1. Version/tag derivation
 2. Build APK/AAB
@@ -252,10 +256,6 @@ For script details, see `scripts/README.md`.
 
 - Verify environment variables for `AKILIMO_BASE_URL` and `FUELROD_BASE_URL`.
 - Check runtime configuration behavior in `AppConfig` and session overrides.
-
-### Slow UI operations involving DB
-
-- The current Room setup still allows main-thread queries for compatibility during migration phases. Prefer refactoring data access paths toward background/coroutine execution where possible.
 
 ---
 
