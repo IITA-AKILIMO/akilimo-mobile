@@ -40,7 +40,7 @@ The app is a **single-Activity Compose app**: `MainActivity` hosts one Compose `
 
 **Theme:** the app starts in the light theme; `ThemeMode` (System / Light / Dark) is chosen in Settings and stored in `AppSettingsDataStore`.
 
-**Database:** Room v8 with explicit `Migration` objects (`DatabaseMigrations.kt`); the destructive fallback is only used on downgrade. Always write a proper `Migration` for schema changes, bump the version and update the exported schema.
+**Database:** Room v9 with explicit `Migration` objects (`DatabaseMigrations.kt`); the destructive fallback is only used on downgrade. Always write a proper `Migration` for schema changes, bump the version and update the exported schema.
 
 ## Compose Screen Conventions
 
