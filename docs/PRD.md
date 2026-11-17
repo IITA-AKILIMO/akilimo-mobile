@@ -58,11 +58,7 @@ AKILIMO Mobile delivers site-specific agronomic recommendations to smallholder f
 
 ## 4. Known Bugs
 
-| ID | Description | Impact |
-|----|-------------|--------|
-| MUN-16 | Language selection does not persist across app restarts | Critical — app reverts to English after restart |
-| — | Dark mode toggle saved but never applied | Medium — setting silently ignored |
-| — | `allowMainThreadQueries()` active | Medium — ANR risk on slow devices |
+None recorded here. Open problems are tracked in GitHub issues and GlitchTip.
 
 ---
 
@@ -73,24 +69,12 @@ AKILIMO Mobile delivers site-specific agronomic recommendations to smallholder f
 - **No recommendation history** — users cannot review past recommendations without re-entering data
 - **Push notification delivery** — email/SMS preference flags exist but no notification delivery is wired
 - **No deep links** — recommendations cannot be shared or bookmarked by URL
-- **No input validation feedback on some fields** — stepper allows advancing with incomplete optional data silently
-
-### UX Issues
-- **Language change requires full app restart** — disruptive; no in-place locale swap
-- **No explicit offline mode indicators per screen** — `NetworkNotificationView` exists but is not wired in all activities
-- **WelcomeFragment language dropdown** — does not animate/confirm selection visually before restart prompt
-- **Stepper back navigation** — pressing back in early steps loses all subsequent step data
-- **Dark mode broken** — toggle in settings has no visible effect
+- **Accessibility audit** — TalkBack, font scaling and content descriptions have not had a full pass
 
 ### Non-Functional Gaps
-- **No code obfuscation** — `isMinifyEnabled = false` in release build
-- **API keys in source** — Mapbox and LocationIQ tokens hardcoded in `SessionManager.kt`
-- **No ViewModel** — configuration changes (rotation) cause data reload from scratch
-- **No migration strategy** — `fallbackToDestructiveMigration()` deletes user data on DB schema change
-- **Test coverage** — minimal unit tests relative to feature surface
+- **Test coverage** — unit tests cover the ViewModels and several repositories, but not the whole feature surface
 
 ---
-
 ## 6. Functional Requirements
 
 ### FR-1: Language Persistence (MUN-16 fix)
