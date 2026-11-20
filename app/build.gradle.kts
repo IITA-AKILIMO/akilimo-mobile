@@ -88,7 +88,7 @@ android {
     val appVersionCode = computeVersionCode()
 
     namespace = "com.akilimo.mobile"
-    compileSdk = 36
+    compileSdk = 37
 
     // Exported Room schemas are packaged into instrumented tests for MigrationTestHelper
     sourceSets {
@@ -98,7 +98,7 @@ android {
     defaultConfig {
         applicationId = "com.akilimo.mobile"
         minSdk = 21
-        targetSdk = 36
+        targetSdk = 37
         versionCode = appVersionCode
         versionName = releaseVersionName
 
@@ -240,6 +240,11 @@ fun computeVersionCode(): Int {
 // credentials exist (SENTRY_AUTH_TOKEN, plus SENTRY_ORG / SENTRY_PROJECT read by sentry-cli),
 // so local and CI builds without them still succeed.
 sentry {
+    // The plugin auto-installs sentry-android; pin it to the catalog version so every Sentry module
+    // (incl. sentry-okhttp) matches. Mixed versions make Sentry.init throw at startup.
+    autoInstallation {
+        sentryVersion.set(libs.versions.sentry.asProvider().get())
+    }
     includeProguardMapping.set(true)
     autoUploadProguardMapping.set(providers.environmentVariable("SENTRY_AUTH_TOKEN").isPresent)
 }
