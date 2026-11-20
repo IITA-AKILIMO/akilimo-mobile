@@ -55,6 +55,9 @@
     <string name="lbl_dark_green_leaves">Kupita kimo cha mtu (200 sm) lakini majani ni kijani iliyokolea</string>
     <string name="lbl_maize_performance_poor">Hizi ni dalili za udongo usio na rutuba lakini sio za kawaida</string>
     <string name="lbl_maize_performance_rich">Hizi ni dalili za udongo wenye rutuba lakini sio za kawaida</string>
+    <string name="lbl_maize_perf_yellow">manjano</string>
+    <string name="lbl_maize_perf_green">kijani</string>
+    <string name="lbl_maize_perf_dark_green">kijani iliyokolea</string>
     <string name="lbl_tillage">Ukatuaji</string>
     <string name="lbl_tillage_operations">Shughuli za ukatuaji na bei zake</string>
     <string name="lbl_tillage_operation">Shughuli za kulima</string>

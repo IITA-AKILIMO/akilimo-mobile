@@ -140,6 +140,11 @@
     <string name="lbl_dark_green_leaves">Taller than a person with dark green leaves</string>
     <string name="lbl_maize_performance_poor">These are very poor soil conditions and not very common</string>
     <string name="lbl_maize_performance_rich">These are very rich soil conditions and not very common</string>
+    <string name="lbl_maize_perf_50" translatable="false">50</string>
+    <string name="lbl_maize_perf_150" translatable="false">150</string>
+    <string name="lbl_maize_perf_yellow">yellow</string>
+    <string name="lbl_maize_perf_green">green</string>
+    <string name="lbl_maize_perf_dark_green">dark green</string>
     <!-- FARM OPERATIONS -->
     <string name="lbl_tillage">Tillage</string>
     <string name="lbl_tillage_operations">Tillage operations and related cost</string>

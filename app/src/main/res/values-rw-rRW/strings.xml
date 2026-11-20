@@ -15,9 +15,6 @@
     <string name="lbl_confirm_app_exit">Ese wizeye ko ushaka kuvamo?</string>
     <string name="lbl_exit_application">Porogaramu yo gusohoka</string>
     <string name="lbl_selected">Byahiswemo</string>
-    <string name="lbl_maize_perf_yellow">umuhondo</string>
-    <string name="lbl_maize_perf_green">icyatsi</string>
-    <string name="lbl_maize_perf_dark_green">icyatsi cyijimye</string>
     <string name="cd_show_as_list">Erekana nk\'urutonde</string>
     <string name="cd_show_as_grid">Erekana nk\'imbonerahamwe</string>
 </resources>

@@ -15,7 +15,4 @@
     <string name="lbl_confirm_app_exit">Una uhakika unataka kutoka?</string>
     <string name="lbl_exit_application">Toka Kwenye Programu</string>
     <string name="lbl_selected">Imechaguliwa</string>
-    <string name="lbl_maize_perf_yellow">manjano</string>
-    <string name="lbl_maize_perf_green">kijani</string>
-    <string name="lbl_maize_perf_dark_green">kijani iliyokolea</string>
 </resources>

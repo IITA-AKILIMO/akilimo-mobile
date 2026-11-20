@@ -55,6 +55,9 @@
     <string name="lbl_dark_green_leaves">Uburebure kuruta umuntu hamwe n\'amababi y\'icyatsi cyijimye</string>
     <string name="lbl_maize_performance_poor">Ubu butaka ni bubi kandi ntibisanzwe</string>
     <string name="lbl_maize_performance_rich">Ubu butaka ni bwiza kandi ntibisanzwe</string>
+    <string name="lbl_maize_perf_yellow">umuhondo</string>
+    <string name="lbl_maize_perf_green">icyatsi</string>
+    <string name="lbl_maize_perf_dark_green">icyatsi cyijimye</string>
     <string name="lbl_tillage">Guhinga</string>
     <string name="lbl_tillage_operations">Ibikorwa byo guhinga hamwe n\'igiciro cyabyo</string>
     <string name="lbl_tillage_operation">Ibikorwa byo guhinga</string>
