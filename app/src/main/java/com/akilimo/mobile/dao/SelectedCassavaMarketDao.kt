@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
 import com.akilimo.mobile.entities.SelectedCassavaMarket
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SelectedCassavaMarketDao {
 
+    @Transaction
     @Query("SELECT * FROM selected_cassava_markets")
     fun observeAll(): Flow<List<SelectedCassavaMarketWithDetails>>
 
@@ -26,6 +28,7 @@ interface SelectedCassavaMarketDao {
     suspend fun upsert(selectedMarket: SelectedCassavaMarket)
 
 
+    @Transaction
     @Query("SELECT * FROM selected_cassava_markets WHERE user_id = :userId LIMIT 1")
     suspend fun getSelectedByUser(userId: Int): SelectedCassavaMarketWithDetails?
 
@@ -38,15 +41,18 @@ interface SelectedCassavaMarketDao {
     @Query("DELETE FROM selected_cassava_markets WHERE user_id = :userId")
     suspend fun deleteSelected(userId: Int)
 
+    @Transaction
     @Query("SELECT * FROM selected_cassava_markets WHERE user_id = :userId")
     fun observeByUser(userId: Int): Flow<SelectedCassavaMarketWithDetails?>
 
+    @Transaction
     @Query("SELECT * FROM selected_cassava_markets WHERE user_id = :userId and market_price_id=:marketPriceId")
     fun observeByUserAndMarket(
         userId: Int,
         marketPriceId: Int
     ): Flow<SelectedCassavaMarketWithDetails?>
 
+    @Transaction
     @Query("SELECT * FROM selected_cassava_markets WHERE user_id = :userId and starch_factory_id=:factoryId")
     fun observeByUserAndFactory(
         userId: Int,
