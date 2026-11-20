@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_location">Aho uherereye</string>
+    <string name="lbl_country">Igihugu</string>
+    <string name="lbl_pick_your_country">Hitamo igihugu</string>
+    <string name="lbl_country_location_sub">NI hehe umurima wawe w\'imyumbati uherereye?</string>
+    <string name="lbl_current_location">Koresha ahantu uri</string>
+    <string name="lbl_manual_location">Hitamo ahantu uherereye</string>
+    <string name="lbl_location_error">Ntushobora kwerekana aho uri, ongera ugerageza</string>
+    <string name="lbl_farm_location">NI hehe murima wawe w\'imyumbati uherereye?</string>
+    <string name="lbl_field">Umurima</string>
+    <string name="lbl_farm_size">Ubuso bw\'umurima</string>
+    <string name="exact_field_area">Garagaza neza ubuso bw\'umurima wanjye.</string>
+    <string name="lbl_area_unit">Ni ikihe gipimo cy\'ubuso bw\'umurima ukunda gukoresha?</string>
+    <string name="lbl_cassava_field_size">Ni ubuhe buso bw\'umurima wawe w\'imyumbati (muri %1$s)?</string>
+    <string name="lbl_acre">are</string>
+    <string name="lbl_ha">ha</string>
+    <string name="lbl_are">are</string>
+</resources>
