@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- LOCATION & FIELD -->
+    <string name="lbl_location">Location</string>
+    <string name="lbl_country">Country</string>
+    <string name="lbl_pick_your_country">Select country</string>
+    <string name="lbl_country_location_sub">In which country is your farm located?</string>
+    <string name="lbl_current_location">Use current location</string>
+    <string name="lbl_manual_location">Select location manually</string>
+    <string name="lbl_location_error">Unable to fetch your current location, please try again</string>
+    <string name="lbl_farm_location">Where is your farm?</string>
+    <string name="lbl_field">Field</string>
+    <string name="lbl_farm_size">Field size</string>
+    <string name="exact_field_area">Specify the exact area of your field.</string>
+    <!-- AREA UNITS -->
+    <string name="lbl_area_unit">What is your preferred field area unit?</string>
+    <string name="lbl_cassava_field_size">What is the size of your field (in %1$s)?</string>
+    <string name="lbl_acre">acre</string>
+    <string name="lbl_ha">ha</string>
+    <string name="lbl_m2" translatable="false">m\u00B2</string>
+    <string name="lbl_are">are</string>
+</resources>

@@ -1,14 +1,11 @@
-import org.gradle.kotlin.dsl.androidTestImplementation
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.LocalDateTime
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.sentry.gradle)
@@ -75,7 +72,7 @@ sonar {
 
         property(
             "sonar.androidLint.reportPaths",
-            layout.buildDirectory.file("reports/custom-lint-results.xml").get().asFile.path
+            layout.buildDirectory.file("reports/lint-results-debug.xml").get().asFile.path
         )
         property(
             "sonar.kotlin.detekt.reportPaths",
@@ -88,17 +85,17 @@ android {
     val appVersionCode = computeVersionCode()
 
     namespace = "com.akilimo.mobile"
-    compileSdk = 36
+    compileSdk = 37
 
     // Exported Room schemas are packaged into instrumented tests for MigrationTestHelper
     sourceSets {
-        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        getByName("androidTest").assets.directories.add("schemas")
     }
 
     defaultConfig {
         applicationId = "com.akilimo.mobile"
         minSdk = 21
-        targetSdk = 36
+        targetSdk = 37
         versionCode = appVersionCode
         versionName = releaseVersionName
 
@@ -131,18 +128,15 @@ android {
     }
 
     lint {
-        xmlReport = true
-        htmlReport = false
         // Errors fail the build; issues that already existed are recorded in
         // lint-baseline.xml so only NEW errors break CI. Warnings are reported, not fatal.
         ignoreWarnings = false
         abortOnError = true
         checkReleaseBuilds = false
         baseline = file("lint-baseline.xml")
-        xmlOutput = layout.buildDirectory.file("reports/custom-lint-results.xml").get().asFile
-        // New English strings land before the sw/rw translation pass; the checklist tracks
-        // the gap, so incomplete translations must not fail the build.
-        disable += "MissingTranslation"
+        // sw/rw files hold only translated strings, never English copies. A string without a translation is
+        // reported (MissingTranslation) so it can be sent to translators, but it must not fail the build.
+        warning += "MissingTranslation"
     }
 
     bundle {
@@ -164,7 +158,7 @@ android {
             if (project.hasProperty("signReleaseWithDebugKey")) {
                 signingConfig = signingConfigs.getByName("debug")
             }
-            isShrinkResources = false // country_data loads flag drawables by name; enable only with keep rules
+            isShrinkResources = true // country_data loads flag drawables by name; enable only with keep rules
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -219,16 +213,21 @@ fun computeVersionName(): String {
     return "%d.%d.%d".format(major, minor, build)
 }
 
-fun computeBuildNumber(): String {
-    val file = File("nextrelease.txt").apply { createNewFile() }
+fun computeBuildNumber(): String = System.getenv("RELEASE_VERSION") ?: computeVersionName()
 
-    val tag = System.getenv("RELEASE_VERSION") ?: computeVersionName()
-
-    println("Current build tag is: $tag")
-
-    file.writeText(tag)
-    return tag
+// Records the release tag in the tracked nextrelease.txt. A task, so it runs on real builds
+// instead of on every Gradle configuration (IDE syncs included).
+val writeNextRelease = tasks.register("writeNextRelease") {
+    val tag = computeBuildNumber()
+    val out = rootProject.layout.projectDirectory.file("nextrelease.txt")
+    inputs.property("tag", tag)
+    outputs.file(out)
+    doLast {
+        out.asFile.writeText(tag)
+        logger.lifecycle("Current build tag is: $tag")
+    }
 }
+tasks.named("preBuild") { dependsOn(writeNextRelease) }
 
 fun computeVersionCode(): Int {
     val code = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
@@ -236,17 +235,32 @@ fun computeVersionCode(): Int {
     return code
 }
 
+// A release without a Mapbox token ships with no map (the app degrades gracefully, but the farmer
+// loses map picking). Fail in CI so it is never released by accident; warn on local builds.
+gradle.taskGraph.whenReady {
+    val buildsRelease = allTasks.any { it.project == project && it.name.matches(Regex("(assemble|bundle|package)Release")) }
+    if (buildsRelease && env.MAPBOX_RUNTIME_TOKEN.orElse("").isBlank()) {
+        val message = "MAPBOX_RUNTIME_TOKEN is not set: this release will have no map."
+        if (System.getenv("CI") == "true") throw GradleException(message) else logger.warn("WARNING: $message")
+    }
+}
+
 // With R8 on, Sentry needs the mapping file to de-obfuscate stack traces. Upload only when
 // credentials exist (SENTRY_AUTH_TOKEN, plus SENTRY_ORG / SENTRY_PROJECT read by sentry-cli),
 // so local and CI builds without them still succeed.
 sentry {
+    // The plugin auto-installs sentry-android; pin it to the catalog version so every Sentry module
+    // (incl. sentry-okhttp) matches. Mixed versions make Sentry.init throw at startup.
+    autoInstallation {
+        sentryVersion.set(libs.versions.sentry.asProvider().get())
+    }
     includeProguardMapping.set(true)
     autoUploadProguardMapping.set(providers.environmentVariable("SENTRY_AUTH_TOKEN").isPresent)
 }
 
 dependencies {
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     // Region: Compose
     implementation(platform(libs.androidx.compose.bom))
@@ -264,7 +278,6 @@ dependencies {
 
     // Region: Compose
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
@@ -287,9 +300,6 @@ dependencies {
     // Region: Non-Compose UI
     implementation(libs.material)
 
-    // Region: Navigation
-    implementation(libs.bundles.androidx.navigation)
-
     // Region: DataStore
     implementation(libs.datastore.preferences)
 
@@ -300,14 +310,15 @@ dependencies {
 
     // Region: Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Region: Networking
     implementation(libs.okhttp)
     implementation(libs.okhttp.inteceptor)
+    implementation(libs.okhttp.dnsoverhttps)
+    implementation(libs.sentry.okhttp)
     implementation(libs.retrofit)
     implementation(libs.moshi.converter)
-    implementation(libs.moshi.kotlin)
     ksp(libs.moshi.kotlin.codegen)
 
     // Region: Mapbox
@@ -327,6 +338,7 @@ dependencies {
 
     // Region: Testing
     testImplementation(libs.junit)
+    @Suppress("AvoidDuplicateDependencies")
     testImplementation(libs.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(libs.mockk)
@@ -335,6 +347,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
 
+    @Suppress("AvoidDuplicateDependencies")
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -342,9 +355,9 @@ dependencies {
     androidTestImplementation(libs.navigation.testing)
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.room.testing)
+    @Suppress("AvoidDuplicateDependencies")
     androidTestImplementation(libs.coroutines.test)
 
-    kaptAndroidTest(libs.hilt.compiler)
 
     // Region: Debug Tools
     debugImplementation(libs.androidx.compose.ui.tooling)

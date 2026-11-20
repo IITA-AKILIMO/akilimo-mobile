@@ -68,6 +68,7 @@ import com.akilimo.mobile.enums.EnumUseCase
 import com.akilimo.mobile.navigation.AccountRoute
 import com.akilimo.mobile.ui.screens.account.ResultAccountNote
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.ReportDownloads
 import com.akilimo.mobile.ui.components.compose.StateMessage
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
@@ -329,6 +330,10 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                         title = title,
                         paragraphs = remember(s.description) { splitRecommendationParagraphs(s.description) },
                         accountNote = {
+                            if (s.reportLinks.isNotEmpty()) {
+                                ReportDownloads(links = s.reportLinks)
+                                Spacer(Modifier.height(AkilimoSpacing.md))
+                            }
                             ResultAccountNote(
                                 saved = s.savedToAccount,
                                 signedIn = signedIn,

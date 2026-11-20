@@ -5,6 +5,7 @@ import com.akilimo.mobile.data.account.AccountSessionStore
 import com.akilimo.mobile.entities.SavedAdvice
 import com.akilimo.mobile.network.dto.DeleteItemsRequest
 import com.akilimo.mobile.network.dto.HistoryItemDto
+import com.akilimo.mobile.network.dto.ReportDto
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -140,6 +141,15 @@ class SavedAdviceRepo(
                 dao.upsert(result.value.data.toEntity(account, existing))
                 AccountResult.Success(Unit)
             }
+        }
+    }
+
+    /** Fresh PDF download links of one saved advice; the old ones expire after a week, so they are never stored. */
+    suspend fun loadReport(requestId: String): AccountResult<ReportDto> {
+        activeAccount() ?: return AccountResult.Failure(AccountError.SESSION_EXPIRED)
+        return when (val result = calls.execute(authenticated = true) { it.historyReport(requestId) }) {
+            is AccountResult.Failure -> result
+            is AccountResult.Success -> AccountResult.Success(result.value.data)
         }
     }
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_title">Je, unalima muhogo? Na unatafuta kuwa mtaalamu? AKILIMO inaweza kukusaidia!</string>
+    <string name="welcome_subtitle">AKILIMO inakusaidia kuongeza mavuno na kuongeza faida katika shamba lako la muhogo. Hebu tuanze!</string>
+    <string name="lbl_terms">Vigezo na Masharti</string>
+    <string name="lbl_agree_to_terms">Bonyeza hapa kuashiria kuwa umesoma na unakubali vigezo na masharti </string>
+    <string name="lbl_terms_agreement_required">Tafadhali soma na ukubali vigezo na masharti</string>
+    <string name="lbl_accept_terms_prompt">Tafadhali kubali vigezo na masharti kabla ya kuendelea</string>
+    <string name="lbl_disclaimer">Kanusho</string>
+    <string name="important_instructions_title">TAARIFA MUHIMU</string>
+    <string name="important_instructions">Mapendekezo AKILIMO itakupatia yanategemea usahihi wa taarifa utakazo zitoa yaani eneo lilipo shamba lako, ukubwa wa shamba, bei ya mazao, mbolea, n.k. Kwa mfano, ukubwa wa shamba ukitajwa kuwa mkubwa kuliko ulivyo, utaongeza gharama zisizo za lazima, yaani  kuongezeka uwekezaji na kusababisha hasara; na ikiwa ukubwa wa shamba unaotajwa utakuwa ni chini ya ukweli,  itapunguza fursa ya kupata faida kutoka kwenye shamba lako.</string>
+    <string name="lbl_agree_to_disclaimer">Tafadhali thibitisha kuwa umeisoma na kuelewa taarifa hii ya maelezo ya kisheria.</string>
+    <string name="lbl_disclaimer_agreement_required">Tafadhali soma na ukubali kanusho</string>
+    <string name="lbl_initial_onboarding">Usajili wa awali</string>
+    <string name="lbl_complete_onboarding">Kamilisha usajili</string>
+    <string name="lbl_self_intro">Tafadhali tuambie wewe ni nani</string>
+    <string name="lbl_first_name">Jina lako la kwanza</string>
+    <string name="lbl_last_name">Jina la ukoo</string>
+    <string name="lbl_email_address">Barua pepe</string>
+    <string name="lbl_phone_number">Nambari ya simu</string>
+    <string name="lbl_gender">Chagua jinsia</string>
+    <string name="lbl_male">Mwanaume</string>
+    <string name="lbl_female">Mwanamke</string>
+    <string name="lbl_prefer_not_to_say">Pendelea kutosema</string>
+    <string name="lbl_akilimo_interest">Maslahi makuu katika AKILIMO</string>
+    <string name="lbl_recommendation_language">Chagua lugha yako ya mapendekezo</string>
+    <string name="lbl_interest_farmer">Mimi ni mkulima</string>
+    <string name="lbl_interest_agronomist">Mimi ni mtaalamu wa kilimo</string>
+    <string name="lbl_interest_extension_agent">Mimi ni wakala wa ugani</string>
+    <string name="lbl_interest_curious">Nina hamu tu ya kujua</string>
+</resources>

@@ -22,7 +22,8 @@ class GeocodingService(
         ApiClient.createService(
             context = context.applicationContext,
             baseUrl = BASE_URL,
-            sendAkilimoApiKey = false
+            sendAkilimoApiKey = false,
+            cacheMaxAgeSeconds = 24 * 60 * 60L
         )
 
     data class AddressData(
@@ -54,7 +55,7 @@ class GeocodingService(
                 )
             )
         } catch (e: Exception) {
-            Sentry.captureException(e)
+            reportError(e)
             emit(
                 GeocodingResult.Error(
                     exception = e,

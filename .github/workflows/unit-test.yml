@@ -162,7 +162,7 @@ jobs:
         uses: actions/upload-artifact@v7.0.2
         with:
           name: lint-results
-          path: app/build/reports/custom-lint-results.xml
+          path: app/build/reports/lint-results-debug.xml
           retention-days: 7
 
       - name: Upload detekt report

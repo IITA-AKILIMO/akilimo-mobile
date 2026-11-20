@@ -46,7 +46,8 @@ object NetworkUtils {
             conn.connect()
             conn.responseCode == 200
         } catch (e: Exception) {
-            Sentry.captureException(e)
+            // Offline / DNS failures are the expected "no" answer here
+            reportError(e)
             false
         }
     }

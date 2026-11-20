@@ -19,6 +19,7 @@ import com.akilimo.mobile.workers.MaizeUnitWorker
 import com.akilimo.mobile.workers.FertilizerPriceWorker
 import com.akilimo.mobile.workers.FertilizerWorker
 import com.akilimo.mobile.workers.InvestmentAmountWorker
+import com.akilimo.mobile.workers.LegalPagesWorker
 import com.akilimo.mobile.workers.StarchFactoryWorker
 import com.akilimo.mobile.workers.WorkConstants
 import com.akilimo.mobile.workers.WorkerScheduler
@@ -99,6 +100,18 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
             inputData = workDataOf("perPage" to 100)
         )
 
+
+        // Privacy policy and terms: saved on first start, then refreshed about monthly
+        WorkerScheduler.scheduleOneTimeWorker<LegalPagesWorker>(
+            context = this,
+            workName = WorkConstants.LEGAL_PAGES_WORK_NAME
+        )
+        WorkerScheduler.schedulePeriodicWorker<LegalPagesWorker>(
+            context = this,
+            workName = WorkConstants.LEGAL_PAGES_PERIODIC_WORK_NAME,
+            repeatInterval = 30L,
+            timeUnit = java.util.concurrent.TimeUnit.DAYS
+        )
 
         // Older versions enqueued a new, non-unique chain tagged with these names on every
         // start; clear any that piled up before scheduling the unique chain.

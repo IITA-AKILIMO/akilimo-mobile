@@ -152,6 +152,8 @@ fun LocationPickerScreen(
     // Bumped on every successful style load so the overlay and marker are redrawn on a fresh style
     var styleGeneration by remember { mutableIntStateOf(0) }
     var mapLoadFailed by remember { mutableStateOf(false) }
+    // Creating a MapView without an access token crashes the app, so the map is skipped when it is missing
+    val hasMapToken = remember { BuildConfig.MAPBOX_RUNTIME_TOKEN.isNotBlank() }
     // Survives rotation so the permission prompt / GPS fetch is not repeated
     var autoLocateDone by rememberSaveable { mutableStateOf(false) }
 
@@ -297,49 +299,51 @@ fun LocationPickerScreen(
                 .consumeWindowInsets(padding)
         ) {
             // Mapbox map via AndroidView
-            AndroidView(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .semantics { contentDescription = mapDescription },
-                factory = { ctx ->
-                    MapboxOptions.accessToken = BuildConfig.MAPBOX_RUNTIME_TOKEN
-                    MapView(ctx).also { mv ->
-                        // A saved farm wins; otherwise open on the country the farmer chose, so the
-                        // map is right even before (or without) the coverage overlay loading
-                        val countryView = COUNTRY_VIEWS[route.countryCode.uppercase()]
-                        val initial = when {
-                            hasSavedLocation -> Point.fromLngLat(route.lon, route.lat)
-                            countryView != null -> Point.fromLngLat(countryView.lon, countryView.lat)
-                            else -> Point.fromLngLat(NAIROBI_LON, NAIROBI_LAT) // no country chosen: Nairobi
-                        }
-                        val initialZoom = when {
-                            hasSavedLocation && route.zoom > 0 -> route.zoom
-                            !hasSavedLocation && countryView != null -> countryView.zoom
-                            route.zoom > 0 -> route.zoom
-                            else -> DEFAULT_INITIAL_ZOOM
-                        }
-                        mv.mapboxMap.setCamera(
-                            CameraOptions.Builder()
-                                .center(initial)
-                                .zoom(initialZoom)
-                                .build()
-                        )
-                        annotationManager = mv.annotations.createPointAnnotationManager()
-
-                        // Taps work even when the style or tiles failed to load
-                        mv.mapboxMap.addOnMapClickListener { point ->
-                            mv.mapboxMap.flyTo(
-                                CameraOptions.Builder().center(point).build(),
-                                MapAnimationOptions.mapAnimationOptions { duration(MAP_CLICK_FLY_DURATION_MS) }
+            if (hasMapToken) {
+                AndroidView(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .semantics { contentDescription = mapDescription },
+                    factory = { ctx ->
+                        MapboxOptions.accessToken = BuildConfig.MAPBOX_RUNTIME_TOKEN
+                        MapView(ctx).also { mv ->
+                            // A saved farm wins; otherwise open on the country the farmer chose, so the
+                            // map is right even before (or without) the coverage overlay loading
+                            val countryView = COUNTRY_VIEWS[route.countryCode.uppercase()]
+                            val initial = when {
+                                hasSavedLocation -> Point.fromLngLat(route.lon, route.lat)
+                                countryView != null -> Point.fromLngLat(countryView.lon, countryView.lat)
+                                else -> Point.fromLngLat(NAIROBI_LON, NAIROBI_LAT) // no country chosen: Nairobi
+                            }
+                            val initialZoom = when {
+                                hasSavedLocation && route.zoom > 0 -> route.zoom
+                                !hasSavedLocation && countryView != null -> countryView.zoom
+                                route.zoom > 0 -> route.zoom
+                                else -> DEFAULT_INITIAL_ZOOM
+                            }
+                            mv.mapboxMap.setCamera(
+                                CameraOptions.Builder()
+                                    .center(initial)
+                                    .zoom(initialZoom)
+                                    .build()
                             )
-                            viewModel.selectPoint(point.latitude(), point.longitude())
-                            true
+                            annotationManager = mv.annotations.createPointAnnotationManager()
+
+                            // Taps work even when the style or tiles failed to load
+                            mv.mapboxMap.addOnMapClickListener { point ->
+                                mv.mapboxMap.flyTo(
+                                    CameraOptions.Builder().center(point).build(),
+                                    MapAnimationOptions.mapAnimationOptions { duration(MAP_CLICK_FLY_DURATION_MS) }
+                                )
+                                viewModel.selectPoint(point.latitude(), point.longitude())
+                                true
+                            }
+                            mapView = mv
+                            loadMapStyle(mv)
                         }
-                        mapView = mv
-                        loadMapStyle(mv)
-                    }
-                },
-            )
+                    },
+                )
+            }
 
             // Status and place information, stacked so they never overlap at large font sizes
             Column(
@@ -376,6 +380,15 @@ fun LocationPickerScreen(
                         onRetry = { locateMe() },
                         onTapMapInstead = { viewModel.dismissLocationProblem() },
                     )
+                }
+
+                if (!hasMapToken) {
+                    StatusCard(error = true) {
+                        Text(
+                            text = stringResource(R.string.lbl_map_key_missing),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
                 }
 
                 if (mapLoadFailed) {

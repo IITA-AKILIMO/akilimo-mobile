@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_settings">Igenamiterere</string>
+    <string name="lbl_profile_settings">Umwirondoro n\'ibyo ukunda</string>
+    <string name="lbl_edit_profile">Hindura umwirondoro</string>
+    <string name="lbl_appearance">Imigaragarire</string>
+    <string name="lbl_dark_mode">Uburyo bwijimye</string>
+    <string name="lbl_display_section">Iyerekanwa</string>
+    <string name="lbl_fertilizer_grid">Erekana ifumbire mu dusanduku</string>
+    <string name="lbl_language">Ururimi</string>
+    <string name="lbl_select_language">Hitamo ururimi</string>
+    <string name="lbl_lock_app_language">Kurenga ururimi rwa sisitemu</string>
+    <string name="lbl_select_area_unit">Hitamo igipimo cy\'ubuso</string>
+    <string name="lbl_remember_area_unit">Ibuka igipimo cy\'ubuso</string>
+    <string name="lbl_data_storage">Amakuru n\'ububiko</string>
+    <string name="lbl_clear_recommendations">Hanagura amateka y\'inama</string>
+    <string name="lbl_clear_recommendations_desc">Siba ibimenyetso byose by\'imirimo yarangiye</string>
+    <string name="lbl_reset_notification_badge">Subizaho akarango k\'imenyesha</string>
+    <string name="lbl_reset_notification_badge_desc">Garura umubare usanzwe w\'imenyesha</string>
+    <string name="lbl_about_section">Ibyerekeye</string>
+    <string name="lbl_app_version">Verisiyo</string>
+    <string name="lbl_privacy_policy">Politiki y\'ubuzima bwite</string>
+    <string name="msg_badge_reset">Akarango k\'imenyesha kasubijweho</string>
+    <string name="msg_clear_recommendations_confirm">Ibi bizasubizaho imirimo yose y\'inama yarangiye. Icyo gikorwa ntigishobora gusubirwaho.</string>
+    <string name="msg_recommendations_cleared">Amateka y\'inama yasibwe</string>
+    <string name="msg_reset_badge_confirm">Subizaho umubare usanzwe w\'akamenyetso k\'imenyesha?</string>
+    <string name="msg_feedback_submit_success">Urakoze ku bitekerezo byawe!</string>
+    <string name="msg_feedback_submit_failure">Kohereza ibitekerezo byanze</string>
+</resources>
