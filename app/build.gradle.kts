@@ -73,7 +73,7 @@ sonar {
 
         property(
             "sonar.androidLint.reportPaths",
-            layout.buildDirectory.file("reports/custom-lint-results.xml").get().asFile.path
+            layout.buildDirectory.file("reports/lint-results-debug.xml").get().asFile.path
         )
         property(
             "sonar.kotlin.detekt.reportPaths",
@@ -129,15 +129,12 @@ android {
     }
 
     lint {
-        xmlReport = true
-        htmlReport = false
         // Errors fail the build; issues that already existed are recorded in
         // lint-baseline.xml so only NEW errors break CI. Warnings are reported, not fatal.
         ignoreWarnings = false
         abortOnError = true
         checkReleaseBuilds = false
         baseline = file("lint-baseline.xml")
-        xmlOutput = layout.buildDirectory.file("reports/custom-lint-results.xml").get().asFile
         // New English strings land before the sw/rw translation pass; the checklist tracks
         // the gap, so incomplete translations must not fail the build.
         disable += "MissingTranslation"
