@@ -47,4 +47,6 @@
         <item quantity="one">Updated %d day ago</item>
         <item quantity="other">Updated %d days ago</item>
     </plurals>
+    <string name="cd_show_as_list">Show as list</string>
+    <string name="cd_show_as_grid">Show as grid</string>
 </resources>
