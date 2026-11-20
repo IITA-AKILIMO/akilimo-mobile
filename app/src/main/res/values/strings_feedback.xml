@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- FEEDBACK -->
+    <string name="feedback_very_poor">Very poor</string>
+    <string name="feedback_poor">Poor</string>
+    <string name="feedback_okay">Okay</string>
+    <string name="feedback_good">Good</string>
+    <string name="feedback_excellent">Excellent</string>
+    <string name="feedback_nps_low">Thanks for being honest with us</string>
+    <string name="feedback_nps_medium">Thanks for your feedback</string>
+    <string name="feedback_nps_high">Awesome! Thanks for the love</string>
+    <!-- FEEDBACK & RATINGS -->
+    <string name="lbl_feedback">Feedback</string>
+    <string name="lbl_text_size">Text size</string>
+    <string name="lbl_landscape_view">Landscape view</string>
+    <string name="lbl_portrait_view">Portrait view</string>
+    <string name="lbl_text_size_normal">Normal text size</string>
+    <string name="lbl_text_size_large">Large text size</string>
+    <string name="lbl_text_size_largest">Largest text size</string>
+    <string name="lbl_how_satisfied">How satisfied are you?</string>
+    <string name="lbl_nps_prompt">How likely are you to recommend us? (0-10)</string>
+    <string name="lbl_submit_feedback">Submit Feedback</string>
+    <string name="lbl_retry">Retry</string>
+    <string name="msg_items_processed">%1$d items processed</string>
+    <string name="msg_operation_failed">Operation failed</string>
+    <string name="msg_operation_failed_with_code">Operation failed (Code: %1$s)</string>
+</resources>
