@@ -90,7 +90,7 @@ android {
 
     // Exported Room schemas are packaged into instrumented tests for MigrationTestHelper
     sourceSets {
-        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        getByName("androidTest").assets.directories.add("schemas")
     }
 
     defaultConfig {
@@ -218,7 +218,7 @@ fun computeBuildNumber(): String = System.getenv("RELEASE_VERSION") ?: computeVe
 
 // Records the release tag in the tracked nextrelease.txt. A task, so it runs on real builds
 // instead of on every Gradle configuration (IDE syncs included).
-val writeNextRelease by tasks.registering {
+val writeNextRelease = tasks.register("writeNextRelease") {
     val tag = computeBuildNumber()
     val out = rootProject.layout.projectDirectory.file("nextrelease.txt")
     inputs.property("tag", tag)
@@ -356,7 +356,6 @@ dependencies {
     androidTestImplementation(libs.room.testing)
     androidTestImplementation(libs.coroutines.test)
 
-    kspAndroidTest(libs.hilt.compiler)
 
     // Region: Debug Tools
     debugImplementation(libs.androidx.compose.ui.tooling)
