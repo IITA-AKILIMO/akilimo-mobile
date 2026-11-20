@@ -55,7 +55,7 @@ class GeocodingService(
                 )
             )
         } catch (e: Exception) {
-            Sentry.captureException(e)
+            reportError(e)
             emit(
                 GeocodingResult.Error(
                     exception = e,

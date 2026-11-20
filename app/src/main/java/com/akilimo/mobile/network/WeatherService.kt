@@ -59,7 +59,7 @@ class WeatherService(
                 )
             )
         } catch (e: Exception) {
-            Sentry.captureException(e)
+            reportError(e)
             emit(WeatherResult.Error(e))
         }
     }.flowOn(Dispatchers.IO) // network call runs on IO, collector can be Main

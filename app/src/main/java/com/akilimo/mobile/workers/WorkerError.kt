@@ -3,7 +3,7 @@ package com.akilimo.mobile.workers
 import android.content.Context
 import android.widget.Toast
 import androidx.work.WorkInfo
-import io.sentry.Sentry
+import com.akilimo.mobile.network.reportError
 import kotlinx.coroutines.CoroutineExceptionHandler
 
 object WorkerError {
@@ -14,5 +14,5 @@ object WorkerError {
 }
 
 val handler = CoroutineExceptionHandler { _, throwable ->
-    Sentry.captureException(throwable)
+    reportError(throwable)
 }
