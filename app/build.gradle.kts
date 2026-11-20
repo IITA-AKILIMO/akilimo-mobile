@@ -134,9 +134,9 @@ android {
         abortOnError = true
         checkReleaseBuilds = false
         baseline = file("lint-baseline.xml")
-        // New English strings land before the sw/rw translation pass; the checklist tracks
-        // the gap, so incomplete translations must not fail the build.
-        disable += "MissingTranslation"
+        // sw/rw files hold only translated strings, never English copies. A string without a translation is
+        // reported (MissingTranslation) so it can be sent to translators, but it must not fail the build.
+        warning += "MissingTranslation"
     }
 
     bundle {
