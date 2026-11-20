@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.androidTestImplementation
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.LocalDateTime
 
@@ -8,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.sentry.gradle)
@@ -219,21 +217,36 @@ fun computeVersionName(): String {
     return "%d.%d.%d".format(major, minor, build)
 }
 
-fun computeBuildNumber(): String {
-    val file = File("nextrelease.txt").apply { createNewFile() }
+fun computeBuildNumber(): String = System.getenv("RELEASE_VERSION") ?: computeVersionName()
 
-    val tag = System.getenv("RELEASE_VERSION") ?: computeVersionName()
-
-    println("Current build tag is: $tag")
-
-    file.writeText(tag)
-    return tag
+// Records the release tag in the tracked nextrelease.txt. A task, so it runs on real builds
+// instead of on every Gradle configuration (IDE syncs included).
+val writeNextRelease by tasks.registering {
+    val tag = computeBuildNumber()
+    val out = rootProject.layout.projectDirectory.file("nextrelease.txt")
+    inputs.property("tag", tag)
+    outputs.file(out)
+    doLast {
+        out.asFile.writeText(tag)
+        logger.lifecycle("Current build tag is: $tag")
+    }
 }
+tasks.named("preBuild") { dependsOn(writeNextRelease) }
 
 fun computeVersionCode(): Int {
     val code = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
     println("Version code is $code")
     return code
+}
+
+// A release without a Mapbox token ships with no map (the app degrades gracefully, but the farmer
+// loses map picking). Fail in CI so it is never released by accident; warn on local builds.
+gradle.taskGraph.whenReady {
+    val buildsRelease = allTasks.any { it.project == project && it.name.matches(Regex("(assemble|bundle|package)Release")) }
+    if (buildsRelease && env.MAPBOX_RUNTIME_TOKEN.orElse("").isBlank()) {
+        val message = "MAPBOX_RUNTIME_TOKEN is not set: this release will have no map."
+        if (System.getenv("CI") == "true") throw GradleException(message) else logger.warn("WARNING: $message")
+    }
 }
 
 // With R8 on, Sentry needs the mapping file to de-obfuscate stack traces. Upload only when
@@ -269,7 +282,6 @@ dependencies {
 
     // Region: Compose
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
@@ -292,9 +304,6 @@ dependencies {
     // Region: Non-Compose UI
     implementation(libs.material)
 
-    // Region: Navigation
-    implementation(libs.bundles.androidx.navigation)
-
     // Region: DataStore
     implementation(libs.datastore.preferences)
 
@@ -305,7 +314,7 @@ dependencies {
 
     // Region: Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Region: Networking
     implementation(libs.okhttp)
@@ -314,7 +323,6 @@ dependencies {
     implementation(libs.sentry.okhttp)
     implementation(libs.retrofit)
     implementation(libs.moshi.converter)
-    implementation(libs.moshi.kotlin)
     ksp(libs.moshi.kotlin.codegen)
 
     // Region: Mapbox
@@ -351,7 +359,7 @@ dependencies {
     androidTestImplementation(libs.room.testing)
     androidTestImplementation(libs.coroutines.test)
 
-    kaptAndroidTest(libs.hilt.compiler)
+    kspAndroidTest(libs.hilt.compiler)
 
     // Region: Debug Tools
     debugImplementation(libs.androidx.compose.ui.tooling)
