@@ -53,6 +53,8 @@ import androidx.navigation.NavHostController
 import com.akilimo.mobile.BuildConfig
 import com.akilimo.mobile.Locales
 import com.akilimo.mobile.R
+import com.akilimo.mobile.legal.LegalPage
+import com.akilimo.mobile.legal.LegalPages
 import com.akilimo.mobile.data.ThemeMode
 import com.akilimo.mobile.ui.components.compose.SegmentedTabRow
 import com.akilimo.mobile.data.ReadingTextScale
@@ -353,7 +355,7 @@ fun SettingsScreen(
                 modifier = Modifier.clickable(role = Role.Button) {
                     navController.navigate(
                         WebViewRoute(
-                            url = "file:///android_asset/privacy_policy.html",
+                            url = LegalPages.urlFor(context, LegalPage.PRIVACY),
                             title = context.getString(R.string.lbl_privacy_policy),
                         )
                     )
@@ -371,7 +373,7 @@ fun SettingsScreen(
                 modifier = Modifier.clickable(role = Role.Button) {
                     navController.navigate(
                         WebViewRoute(
-                            url = "file:///android_asset/terms.html",
+                            url = LegalPages.urlFor(context, LegalPage.TERMS),
                             title = context.getString(R.string.lbl_terms),
                         )
                     )
