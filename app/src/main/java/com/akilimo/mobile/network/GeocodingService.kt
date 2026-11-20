@@ -22,7 +22,8 @@ class GeocodingService(
         ApiClient.createService(
             context = context.applicationContext,
             baseUrl = BASE_URL,
-            sendAkilimoApiKey = false
+            sendAkilimoApiKey = false,
+            cacheMaxAgeSeconds = 24 * 60 * 60L
         )
 
     data class AddressData(

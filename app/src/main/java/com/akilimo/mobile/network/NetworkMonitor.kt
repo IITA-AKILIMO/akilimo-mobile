@@ -19,6 +19,8 @@ class NetworkMonitor(context: Context) {
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
+            // A new network invalidates pooled sockets from the previous one
+            ApiClient.resetConnections()
             _isConnected.value = true
         }
 

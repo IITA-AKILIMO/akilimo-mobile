@@ -22,7 +22,8 @@ class WeatherService(
         ApiClient.createService(
             context = context.applicationContext,
             baseUrl = BASE_URL,
-            sendAkilimoApiKey = false
+            sendAkilimoApiKey = false,
+            cacheMaxAgeSeconds = 10 * 60L
         )
 
     data class WeatherData(
