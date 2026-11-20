@@ -162,7 +162,7 @@ android {
             if (project.hasProperty("signReleaseWithDebugKey")) {
                 signingConfig = signingConfigs.getByName("debug")
             }
-            isShrinkResources = false // country_data loads flag drawables by name; enable only with keep rules
+            isShrinkResources = true // country_data loads flag drawables by name; enable only with keep rules
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
