@@ -16,6 +16,7 @@
     <string name="lbl_allow_location">Allow location</string>
     <string name="lbl_tap_map_instead">Tap the map instead</string>
     <string name="lbl_map_load_failed">The map could not load. Check your internet connection. You can still use your current location.</string>
+    <string name="lbl_map_key_missing">The map is unavailable because this version of the app has no map key. You can still use your current location.</string>
     <string name="lbl_coverage_loading">Loading the area AKILIMO supports…</string>
     <string name="lbl_coverage_unavailable">The supported area could not be loaded. You can still choose your farm.</string>
 
