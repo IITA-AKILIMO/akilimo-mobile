@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_title">Wibagiwe icyihuse n\'ubwoba bwo gufata inama mu gihugu cyacu, AKILIMO ikubisobanura!</string>
+    <string name="welcome_subtitle">AKILIMO igufasha kongera umusaruro no kunguka byinshi mu murima wawe w\'imyumbati. Reka dutangire!</string>
+    <string name="lbl_terms">Amategeko n\'amabwiriza</string>
+    <string name="lbl_agree_to_terms">Nemeye amategeko n\'amabwiriza ngenderwaho</string>
+    <string name="lbl_terms_agreement_required">Nyamuneka soma kandi wemere amategeko n\'amabwiriza</string>
+    <string name="lbl_accept_terms_prompt">Emera amategeko n\'amabwiriza mbere yo gukomeza</string>
+    <string name="lbl_disclaimer">Icyitonderwa</string>
+    <string name="important_instructions_title">AMAKURU Y\'INGENZI</string>
+    <string name="important_instructions">Inama ugirwa na AKILIMO zose zishingiye ku hantu uherereye, ingano y\'umurima wawe n\'ibiciro. Urugero, iyo ubuso bw\'umurima wawe wibeshye ukabugira bunini, bituma utanga igishoro kinini bityo ugahomba.  Ku rundi ruhande, niba ubuso bw\'umurima wawe ugereranije ari butoya ugereranije nukuri, ibi biganisha ku kudaha agaciro umusaruro wawe kandi ukaba watakaza amahirwe yo kubona inyungu mu murima wawe.</string>
+    <string name="lbl_agree_to_disclaimer">Nyamuneka wemeze ko wasomye kandi wasobanukiwe iri tangazo ry\'ikurwaho ry\'uburyozwe.</string>
+    <string name="lbl_disclaimer_agreement_required">Nyamuneka soma kandi wemere iki cyitonderwa</string>
+    <string name="lbl_initial_onboarding">Iyandikwa rya mbere</string>
+    <string name="lbl_complete_onboarding">Soza iyandikwa</string>
+    <string name="lbl_self_intro">Nyamuneka tubwire uwo uriwe</string>
+    <string name="lbl_first_name">Izina rya mbere</string>
+    <string name="lbl_last_name">Izina ry\'umuryango</string>
+    <string name="lbl_email_address">Aderesi imeri</string>
+    <string name="lbl_phone_number">Inomero ya terefone</string>
+    <string name="lbl_gender">Hitamo igitsina</string>
+    <string name="lbl_male">Umugabo</string>
+    <string name="lbl_female">Umugore</string>
+    <string name="lbl_prefer_not_to_say">Hitamo kudasubiza</string>
+    <string name="lbl_akilimo_interest">Inyungu nyamukuru kuri AKILIMO</string>
+    <string name="lbl_recommendation_language">Ururimi rw\'inama rwitonderwa</string>
+    <string name="lbl_interest_farmer">Ndi umuhinzi</string>
+    <string name="lbl_interest_agronomist">Ndi umuhanga mu by\'ubuhinzi</string>
+    <string name="lbl_interest_extension_agent">Ndi umukozi ushinzwe ikoranabuhanga</string>
+    <string name="lbl_interest_curious">Mfite amatsiko gusa</string>
+</resources>
