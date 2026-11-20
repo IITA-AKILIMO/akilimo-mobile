@@ -260,7 +260,7 @@ sentry {
 
 dependencies {
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     // Region: Compose
     implementation(platform(libs.androidx.compose.bom))
@@ -338,6 +338,7 @@ dependencies {
 
     // Region: Testing
     testImplementation(libs.junit)
+    @Suppress("AvoidDuplicateDependencies")
     testImplementation(libs.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(libs.mockk)
@@ -346,6 +347,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
 
+    @Suppress("AvoidDuplicateDependencies")
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -353,6 +355,7 @@ dependencies {
     androidTestImplementation(libs.navigation.testing)
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.room.testing)
+    @Suppress("AvoidDuplicateDependencies")
     androidTestImplementation(libs.coroutines.test)
 
 

@@ -1,5 +1,6 @@
 [versions]
 agp = "9.5.1"
+desugar_jdk_libs = "2.1.5"
 ksp = "2.3.6"
 kotlin = "2.2.20"
 coreKtx = "1.17.0"
@@ -76,6 +77,7 @@ debug-db = "v1.0.7"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
