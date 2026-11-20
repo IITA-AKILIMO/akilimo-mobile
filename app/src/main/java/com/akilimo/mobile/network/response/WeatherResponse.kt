@@ -1,7 +1,9 @@
 package com.akilimo.mobile.network.response
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class WeatherResponse(
     @param:Json(name = "location")
     val location: Location = Location(),
@@ -10,6 +12,7 @@ data class WeatherResponse(
     val current: Current = Current()
 )
 
+@JsonClass(generateAdapter = true)
 data class Location(
     @param:Json(name = "name")
     val name: String = "",
@@ -30,6 +33,7 @@ data class Location(
     val localtime: String = ""
 )
 
+@JsonClass(generateAdapter = true)
 data class Current(
     @param:Json(name = "temp_c")
     val tempCelsius: Double = 0.0,
@@ -47,6 +51,7 @@ data class Current(
     val condition: Condition = Condition()
 )
 
+@JsonClass(generateAdapter = true)
 data class Condition(
 
     @param:Json(name = "text")
