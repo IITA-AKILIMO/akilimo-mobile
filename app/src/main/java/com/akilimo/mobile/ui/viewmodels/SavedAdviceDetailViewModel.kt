@@ -5,11 +5,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import android.content.Context
+import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.entities.SavedAdvice
+import com.akilimo.mobile.enums.EnumServiceType
+import com.akilimo.mobile.network.dto.ReportKind
+import com.akilimo.mobile.network.dto.downloadLinks
 import com.akilimo.mobile.navigation.SavedAdviceDetailRoute
 import com.akilimo.mobile.repos.account.AccountResult
 import com.akilimo.mobile.repos.account.SavedAdviceRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +30,7 @@ import javax.inject.Inject
 class SavedAdviceDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repo: SavedAdviceRepo,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val requestId: String = savedStateHandle.toRoute<SavedAdviceDetailRoute>().requestId
@@ -31,6 +38,9 @@ class SavedAdviceDetailViewModel @Inject constructor(
     data class UiState(
         val loadingText: Boolean = false,
         val deleting: Boolean = false,
+        val loadingReport: Boolean = false,
+        /** Fresh absolute PDF links by kind; empty until fetched, or when there is no report / no connection. */
+        val reportLinks: Map<ReportKind, String> = emptyMap(),
         /** Set once the item is gone (deleted here, or no longer on the server); the screen goes back. */
         val gone: Boolean = false,
         @param:StringRes val messageRes: Int? = null,
@@ -44,6 +54,22 @@ class SavedAdviceDetailViewModel @Inject constructor(
 
     init {
         loadText()
+        loadReport()
+    }
+
+    /** Asks for fresh links every time: the ones from the first answer expire after a week. */
+    fun loadReport() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(loadingReport = true) }
+            val links = when (val result = repo.loadReport(requestId)) {
+                is AccountResult.Success -> {
+                    val base = AppConfig.resolveBaseUrlFor(context, EnumServiceType.AKILIMO)
+                    result.value.downloadLinks(base)
+                }
+                is AccountResult.Failure -> emptyMap()
+            }
+            _uiState.update { it.copy(loadingReport = false, reportLinks = links) }
+        }
     }
 
     fun loadText() {

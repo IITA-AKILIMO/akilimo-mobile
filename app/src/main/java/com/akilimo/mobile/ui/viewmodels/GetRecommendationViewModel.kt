@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.R
 import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
+import com.akilimo.mobile.network.dto.ReportKind
+import com.akilimo.mobile.network.dto.downloadLinks
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.network.dto.UserFeedBackRequest
 import com.akilimo.mobile.enums.EnumServiceType
@@ -55,6 +57,8 @@ class GetRecommendationViewModel @Inject constructor(
             val description: String,
             /** True when the advice was kept in the farmer's account (signed in, consent given). */
             val savedToAccount: Boolean = false,
+            /** Absolute download links of the PDF report, by kind; empty when the API made none. */
+            val reportLinks: Map<ReportKind, String> = emptyMap(),
         ) : UiState
 
         /** [messageRes] is resolved by the screen so it follows the in-app locale. */
@@ -118,6 +122,7 @@ class GetRecommendationViewModel @Inject constructor(
                             title = resp.data.recType,
                             description = resp.data.recommendation,
                             savedToAccount = keepInAccount(useCase, payload, resp),
+                            reportLinks = resp.report.downloadLinks(base),
                         )
                     } else {
                         UiState.Error(R.string.lbl_no_recommendations_prompt)
