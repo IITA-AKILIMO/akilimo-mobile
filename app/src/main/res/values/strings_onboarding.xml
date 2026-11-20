@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Onboarding, location picker and settings strings. English only for now: sw-TZ and rw-RW need translations. -->
+<!-- Onboarding, profile, location picker and settings strings. Entries without a sw-TZ / rw-RW translation fall back to English. -->
 <resources>
     <!-- Coordinates -->
     <string name="msg_location_reason">We use your farm\'s location to give advice for your area.</string>
     <string name="lbl_location_inside">Inside the supported area</string>
     <string name="lbl_location_outside">Outside the supported area</string>
     <string name="lbl_lat_lng_format">Lat: %1$.5f, Lng: %2$.5f</string>
-
     <!-- Location picker / location step -->
     <string name="cd_location_map">Map. Tap to mark your farm location.</string>
     <string name="lbl_locating">Finding your location…</string>
@@ -19,11 +18,9 @@
     <string name="lbl_map_key_missing">The map is unavailable because this version of the app has no map key. You can still use your current location.</string>
     <string name="lbl_coverage_loading">Loading the area AKILIMO supports…</string>
     <string name="lbl_coverage_unavailable">The supported area could not be loaded. You can still choose your farm.</string>
-
     <!-- Onboarding form -->
     <string name="lbl_optional_field">%1$s (optional)</string>
     <string name="error_farm_size_number">Enter a number, for example 1.5</string>
-
     <!-- Phone number country code picker -->
     <string name="error_phone_invalid">This doesn\'t look like a phone number from %1$s. Check the number or the country code.</string>
     <string name="lbl_choose_country_code">Choose country code</string>
@@ -41,20 +38,47 @@
     <string name="lbl_change_country_title">Change country?</string>
     <string name="msg_change_country_clears_choices">Changing the country will remove your choices and completed steps when you save. You will need to do them again.</string>
     <string name="lbl_change_country">Change country</string>
-
     <!-- Onboarding steps (first run) -->
     <string name="lbl_step_about_you">About you</string>
     <string name="lbl_step_farm_location">Where is your farm?</string>
     <string name="lbl_step_your_field">Your field</string>
     <string name="lbl_step_practices">How you farm</string>
     <string name="lbl_step_review">Check your answers</string>
-
     <!-- Web pages (terms, privacy policy) -->
     <string name="lbl_page_load_failed">This page could not load.</string>
-
     <!-- Theme -->
     <string name="lbl_theme">Theme</string>
     <string name="lbl_theme_system">System default</string>
     <string name="lbl_theme_light">Light</string>
     <string name="lbl_theme_dark">Dark</string>
+    <!-- ONBOARDING -->
+    <string name="welcome_title">Are you growing cassava? And looking to become a pro? AKILIMO can help you!</string>
+    <string name="welcome_subtitle">AKILIMO helps you increase yield and maximise profit in your cassava farm. Let\'s get started!</string>
+    <string name="lbl_terms">Terms &amp; Conditions</string>
+    <string name="lbl_agree_to_terms">I accept the terms and conditions of the application</string>
+    <string name="lbl_terms_agreement_required">Please read and accept the terms and conditions</string>
+    <string name="lbl_accept_terms_prompt">Accept the terms and conditions before proceeding</string>
+    <string name="lbl_disclaimer">Disclaimer</string>
+    <string name="important_instructions_title">IMPORTANT INFORMATION</string>
+    <string name="important_instructions">Please note that the advice provided by AKILIMO is intended to provide helpful guidance only, and does not offer any guarantees. Success in any endeavour depends on a range of factors outside of our control, including user behaviour, how the advice is implemented and external circumstances. Therefore, we encourage you to use our app as a tool to inform your decisions, but always to exercise your best judgment and seek additional advice as needed.</string>
+    <string name="lbl_agree_to_disclaimer">Please confirm you have read and understood this disclaimer.</string>
+    <string name="lbl_disclaimer_agreement_required">Please read and agree to the disclaimer</string>
+    <string name="lbl_initial_onboarding">Initial Onboarding</string>
+    <string name="lbl_complete_onboarding">Complete Onboarding</string>
+    <!-- USER PROFILE -->
+    <string name="lbl_self_intro">We want to know you better!</string>
+    <string name="lbl_first_name">First name</string>
+    <string name="lbl_last_name">Last name</string>
+    <string name="lbl_email_address">Email address</string>
+    <string name="lbl_phone_number">Phone number</string>
+    <string name="lbl_gender">Choose gender</string>
+    <string name="lbl_male">Male</string>
+    <string name="lbl_female">Female</string>
+    <string name="lbl_prefer_not_to_say">Prefer not to answer</string>
+    <string name="lbl_akilimo_interest">Main interest in AKILIMO</string>
+    <string name="lbl_recommendation_language">Preferred recommendation language</string>
+    <string name="lbl_interest_farmer">I\'m a farmer</string>
+    <string name="lbl_interest_agronomist">I\'m an agronomist</string>
+    <string name="lbl_interest_extension_agent">I\'m an extension agent</string>
+    <string name="lbl_interest_curious">I\'m  just curious</string>
 </resources>
