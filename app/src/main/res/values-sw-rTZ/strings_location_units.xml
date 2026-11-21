@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_location">Mahali</string>
+    <string name="lbl_country">Nchi</string>
+    <string name="lbl_pick_your_country">Chagua nchi</string>
+    <string name="lbl_country_location_sub">Shamba lako liko katika nchi gani?</string>
+    <string name="lbl_current_location">Tumia eneo la sasa</string>
+    <string name="lbl_manual_location">Chagua eneo nilipo</string>
+    <string name="lbl_location_error">Haikuwezekana kupata sehemu lilipo shamba lako, tafadhali jaribu tena</string>
+    <string name="lbl_farm_location">Shamba lako la muhogo lipo eneo gani?</string>
+    <string name="lbl_field">Shamba</string>
+    <string name="lbl_farm_size">Ukubwa wa shamba</string>
+    <string name="exact_field_area">Taja eneo halisi la shamba lako</string>
+    <string name="lbl_area_unit">Je, unapendelea kutumia kipimo kipi cha eneo la shamba?</string>
+    <string name="lbl_cassava_field_size">Je? Shamba lako la muhogo lina ukubwa gani (katika `%1$s`)?</string>
+    <string name="lbl_acre">ekari</string>
+    <string name="lbl_ha">hekta</string>
+    <string name="lbl_are">are</string>
+</resources>

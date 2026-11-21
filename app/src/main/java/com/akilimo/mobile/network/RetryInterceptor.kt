@@ -1,6 +1,5 @@
 package com.akilimo.mobile.network
 
-import io.sentry.Sentry
 import okhttp3.Interceptor
 import okhttp3.Response
 import timber.log.Timber
@@ -55,8 +54,13 @@ class SafeNetworkInterceptor : Interceptor {
         return try {
             chain.proceed(chain.request())
         } catch (e: Exception) {
-            Timber.e(e, "SafeNetworkInterceptor: Network error")
-            Sentry.captureException(e)
+            if (chain.call().isCanceled()) {
+                // The caller gave up; not an error worth reporting
+                Timber.d(e, "SafeNetworkInterceptor: call cancelled")
+            } else {
+                Timber.e(e, "SafeNetworkInterceptor: Network error")
+                reportError(e)
+            }
             throw IOException("Network error", e)
         }
     }

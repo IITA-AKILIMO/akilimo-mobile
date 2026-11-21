@@ -11,8 +11,8 @@
 -keepattributes Signature,InnerClasses,EnclosingMethod,*Annotation*
 
 # --- Moshi -------------------------------------------------------------------------------
-# ApiClient uses KotlinJsonAdapterFactory (reflection), which reads Kotlin metadata and
-# constructor/property names of every JSON model. Keep the metadata and the models.
+# JSON models use generated adapters (@JsonClass), looked up by class name; there is no
+# reflective Kotlin adapter. Kotlin metadata and the models are kept as a safety net.
 -keep class kotlin.Metadata { *; }
 -keepclassmembers class kotlin.Metadata { public <methods>; }
 

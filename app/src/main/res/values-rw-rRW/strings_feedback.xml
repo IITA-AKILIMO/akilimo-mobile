@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_very_poor">Bike cyane</string>
+    <string name="feedback_poor">Bibi</string>
+    <string name="feedback_okay">Biringaniye</string>
+    <string name="feedback_good">Byiza</string>
+    <string name="feedback_excellent">Byiza cyane</string>
+    <string name="feedback_nps_low">Urakoze kutuvugisha ukuri</string>
+    <string name="feedback_nps_medium">Urakoze ku bitekerezo byawe</string>
+    <string name="feedback_nps_high">Ni byiza cyane! Urakoze ku bw\'urukundo</string>
+    <string name="lbl_feedback">Ibitekerezo</string>
+    <string name="lbl_how_satisfied">Wishimiye bingana iki?</string>
+    <string name="lbl_nps_prompt">Ni kangahe washishikariza abandi kudukoresha? (0-10)</string>
+    <string name="lbl_submit_feedback">Ohereza ibitekerezo</string>
+    <string name="lbl_retry">Ongera ugerageze</string>
+    <string name="msg_items_processed">Ibyinjijwe %1$d byatunganijwe</string>
+    <string name="msg_operation_failed">Igikorwa cyanze</string>
+    <string name="msg_operation_failed_with_code">Igikorwa cyanze (Kode: %1$s)</string>
+</resources>

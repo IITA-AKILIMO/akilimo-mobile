@@ -3,14 +3,14 @@
 IITA Internal Use
 
 A working reference for building and reviewing screens in the AKILIMO Android app. It complements
-`AGENTS.md` (conventions) and `docs/COMPOSE_MIGRATION.md`. Tick the boxes in a PR description; do
+`AGENTS.md` (conventions). Tick the boxes in a PR description; do
 not edit the ticks here.
 
 ## 1. Who we design for
 
 - [ ] Smallholder farmers and extension workers, often outdoors, in bright light, on mid-range phones.
 - [ ] Limited or no connectivity: the app must stay usable and say what is saved.
-- [ ] Mixed literacy and several languages (en, sw, rw, ha): words stay short, icons support them.
+- [ ] Mixed literacy and several languages (en, sw, rw): words stay short, icons support them.
 - [ ] One clear primary action per screen.
 
 ## 2. Look and feel
@@ -78,6 +78,8 @@ Check `ui/components/compose/` first.
 - [ ] Every user-facing string is in `strings*.xml`; none is built in code.
 - [ ] No crop name in generic text (say "farm", not "cassava farm").
 - [ ] New strings added in English, with a note if sw/rw/ha translations are still pending.
+      Missing translations do **not** fail lint: `app/build.gradle.kts` disables the
+      `MissingTranslation` check. Never use `tools:ignore` on string resources.
 - [ ] Numbers and currency are formatted for the current locale.
 - [ ] Layout checked with the longest translation, not only English.
 - [ ] Language tags are BCP-47 and written to `AppSettingsDataStore` before applying locales.
@@ -127,7 +129,7 @@ Open decisions and known gaps:
       is already on `feat/ui-design-system` (a `textScale` in `AkilimoTheme`, the Settings selector,
       and the recommendation result screen no longer scaling its own text). If it stays deferred,
       keep the result screen's own size control as in #559 and do not add a second scale.
-- [ ] Translations (sw, rw, ha) for the new hub, profile, text-size and progress strings (to be done later).
+- [ ] Translations (sw, rw) for the new hub, profile, text-size and progress strings (to be done later).
 - [x] "Total weeding cost" summary row on the weed control form.
 
 ## 11. Backlog ideas
@@ -141,7 +143,8 @@ Quick wins:
 
 Medium:
 - [x] Sync and offline status strip (sync-state source: `SyncStatusSource`).
-- [ ] Save, share and print a recommendation; list of past recommendations, readable offline.
+- [x] Save and share a recommendation, and a list of past recommendations that opens offline (saved advice with an account).
+      Printing is not built.
 - [x] Location picker opens on the chosen country (not Nairobi) in the manual flow and no longer jumps to the phone's GPS. (The Location step already had "Use current location".)
 - [x] Location step: plain one-line reason, a "Where is your farm?" title, and an inside/outside status chip.
 - [x] Skeleton loaders and one shared look for empty and error states (StateMessage, SkeletonList;

@@ -120,6 +120,8 @@ fun AkilimoWebView(
                             if (request?.isForMainFrame == true) loadFailed = true
                         }
                     }
+                    // The saved legal pages are local files; file access is off by default on current Android
+                    settings.allowFileAccess = url.startsWith("file:")
                     if (darkTheme && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         settings.isAlgorithmicDarkeningAllowed = true
                     }

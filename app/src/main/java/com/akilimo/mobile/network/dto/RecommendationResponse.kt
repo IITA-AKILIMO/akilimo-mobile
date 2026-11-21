@@ -15,7 +15,11 @@ data class RecommendationResponse(
     val version: String,
 
     @param:Json(name = "data")
-    val data: RecommendationData
+    val data: RecommendationData,
+
+    /** Signed PDF download links, or null when the API made no report for this request. */
+    @param:Json(name = "report")
+    val report: ReportDto? = null,
 )
 
 @JsonClass(generateAdapter = true)

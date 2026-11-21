@@ -2,7 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.sentry.Sentry
+import com.akilimo.mobile.network.reportError
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
@@ -15,7 +15,7 @@ internal fun ViewModel.launchRefresh(setRefreshing: (Boolean) -> Unit, block: su
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            Sentry.captureException(e)
+            reportError(e)
         } finally {
             setRefreshing(false)
         }

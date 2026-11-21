@@ -1,5 +1,7 @@
 package com.akilimo.mobile.data
 
+import com.akilimo.mobile.legal.LegalPage
+import com.akilimo.mobile.legal.LegalPages
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.datastore.core.DataStore
@@ -112,9 +114,10 @@ class AppSettingsDataStore @Inject constructor(
 ) {
     companion object {
         private const val DEFAULT_USER = "akilimo_user"
-        // Same bundled page Settings opens under Terms (works offline)
-        private const val DEFAULT_TERMS_URL = "file:///android_asset/terms.html"
+        // Same published page Settings opens under Terms
+        private const val DEFAULT_TERMS_URL = "https://akilimo.org/akilimo-terms.html"
         private const val LEGACY_TERMS_URL = "file:///android_asset/privacy_policy.html"
+        private const val BUNDLED_TERMS_URL = "file:///android_asset/terms.html"
 
         /** Language tag — synchronous read for use in [android.app.Activity.attachBaseContext]. */
         fun readLanguageTagSync(context: Context): String = runBlocking {
@@ -305,8 +308,12 @@ class AppSettingsDataStore @Inject constructor(
 
     var termsLink: String
         // The old default pointed at the privacy policy: treat a stored copy of it as unset
-        get() = syncGet(Keys.TERMS_LINK, DEFAULT_TERMS_URL)
-            .takeUnless { it.isBlank() || it == LEGACY_TERMS_URL } ?: DEFAULT_TERMS_URL
+        get() {
+            val stored = syncGet(Keys.TERMS_LINK, DEFAULT_TERMS_URL)
+                .takeUnless { it.isBlank() || it == LEGACY_TERMS_URL || it == BUNDLED_TERMS_URL }
+            // The default is the saved copy of the published page when there is one (it opens offline)
+            return if (stored == null || stored == DEFAULT_TERMS_URL) LegalPages.urlFor(context, LegalPage.TERMS) else stored
+        }
         set(value) = asyncSet(Keys.TERMS_LINK, value)
 
     // Device token — auto-generates a UUID on first access and persists it

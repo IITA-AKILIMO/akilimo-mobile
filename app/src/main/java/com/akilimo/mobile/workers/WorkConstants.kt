@@ -10,4 +10,8 @@ object WorkConstants {
     const val CASSAVA_MARKET_PRICES_WORK_NAME = "CassavaMarketPrices"
     const val CASSAVA_UNITS_WORK_NAME = "CassavaUnit"
     const val MAIZE_UNITS_WORK_NAME = "MaizeUnits"
+    /** Start-up download of the privacy policy and terms (retried until it works). */
+    const val LEGAL_PAGES_WORK_NAME = "LegalPages"
+    /** The refresh of the saved legal pages, about every 30 days. */
+    const val LEGAL_PAGES_PERIODIC_WORK_NAME = "LegalPagesRefresh"
 }

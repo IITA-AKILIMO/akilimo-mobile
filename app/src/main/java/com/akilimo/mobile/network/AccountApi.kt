@@ -9,6 +9,7 @@ import com.akilimo.mobile.network.dto.HistoryDetailResponse
 import com.akilimo.mobile.network.dto.HistoryIdsResponse
 import com.akilimo.mobile.network.dto.HistoryItemDto
 import com.akilimo.mobile.network.dto.MessageResponse
+import com.akilimo.mobile.network.dto.ReportLinksResponse
 import com.akilimo.mobile.network.dto.PagedResponse
 import com.akilimo.mobile.network.dto.RegisterRequest
 import com.akilimo.mobile.network.dto.ResetPasswordRequest
@@ -79,6 +80,10 @@ interface AccountApi {
     suspend fun historyIds(): Response<HistoryIdsResponse>
 
     @Headers(CLIENT_ID_HEADER)
+    /** Fresh PDF download links of one saved advice (the links in the first answer expire after a week). */
+    @GET("v1/account/history/{requestId}/report")
+    suspend fun historyReport(@Path("requestId") requestId: String): Response<ReportLinksResponse>
+
     @GET("v1/account/history/{requestId}")
     suspend fun historyItem(@Path("requestId") requestId: String): Response<HistoryDetailResponse>
 

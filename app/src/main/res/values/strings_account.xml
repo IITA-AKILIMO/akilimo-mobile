@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Optional farmer accounts. English only until the translation pass (sw, rw, ha), like the other new strings. -->
+<!-- Optional farmer accounts. English only until the translation pass (sw, rw), like the other new strings. -->
 <resources>
     <!-- Hub and settings entry points -->
     <string name="account_title">Account</string>
@@ -139,4 +139,7 @@
     </plurals>
     <string name="saved_advice_undo">Undo</string>
     <string name="saved_advice_select_all">Select all</string>
+    <string name="lbl_report_title">PDF reports</string>
+    <string name="msg_report_unavailable">PDF reports are not available for this advice right now. Connect to the internet and try again.</string>
+    <string name="msg_report_open_failed">No app on this phone can open the PDF.</string>
 </resources>

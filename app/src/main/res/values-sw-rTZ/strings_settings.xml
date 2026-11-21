@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_settings">Mipangilio</string>
+    <string name="lbl_profile_settings">Wasifu na Mapendeleo</string>
+    <string name="lbl_edit_profile">Hariri wasifu</string>
+    <string name="lbl_appearance">Mwonekano</string>
+    <string name="lbl_dark_mode">Hali ya giza</string>
+    <string name="lbl_display_section">Mwonekano wa skrini</string>
+    <string name="lbl_fertilizer_grid">Onyesha mbolea kwa mpangilio wa gridi</string>
+    <string name="lbl_language">Lugha</string>
+    <string name="lbl_select_language">Chagua lugha</string>
+    <string name="lbl_lock_app_language">Tumia lugha ya programu badala ya ya mfumo</string>
+    <string name="lbl_select_area_unit">Chagua kipimo cha eneo</string>
+    <string name="lbl_remember_area_unit">Kumbuka kipimo cha eneo</string>
+    <string name="lbl_data_storage">Data na Hifadhi</string>
+    <string name="lbl_clear_recommendations">Futa historia ya mapendekezo</string>
+    <string name="lbl_clear_recommendations_desc">Weka upya alama zote za kazi zilizokamilika</string>
+    <string name="lbl_reset_notification_badge">Weka upya beji ya arifa</string>
+    <string name="lbl_reset_notification_badge_desc">Rudisha idadi chaguomsingi ya arifa</string>
+    <string name="lbl_about_section">Kuhusu</string>
+    <string name="lbl_app_version">Toleo</string>
+    <string name="lbl_privacy_policy">Sera ya faragha</string>
+    <string name="msg_badge_reset">Beji ya arifa imewekwa upya</string>
+    <string name="msg_clear_recommendations_confirm">Hii itaweka upya kazi zote za mapendekezo zilizokamilika. Kitendo hiki hakiwezi kutenduliwa.</string>
+    <string name="msg_recommendations_cleared">Historia ya mapendekezo imefutwa</string>
+    <string name="msg_reset_badge_confirm">Unataka kuweka upya idadi ya beji ya arifa kwa thamani yake ya chaguomsingi?</string>
+    <string name="msg_feedback_submit_success">Asante kwa maoni yako!</string>
+    <string name="msg_feedback_submit_failure">Imeshindwa kutuma maoni</string>
+</resources>

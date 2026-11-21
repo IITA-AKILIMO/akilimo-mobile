@@ -21,12 +21,12 @@ jobs:
 
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v4.4.0
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
       - name: Set up JDK
-        uses: actions/setup-java@v4.9.1
+        uses: actions/setup-java@v6.2.0
         with:
           distribution: temurin
           java-version: 21
@@ -54,7 +54,7 @@ jobs:
 
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+        uses: sonarsource/sonarqube-quality-gate-action@v1.2.1
         with:
           pollingTimeoutSec: 600
           scanMetadataReportFile: app/build/sonar/report-task.txt

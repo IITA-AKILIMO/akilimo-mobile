@@ -40,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
 import com.akilimo.mobile.ui.components.compose.BackTopAppBar
+import com.akilimo.mobile.ui.components.compose.ReportDownloads
 import com.akilimo.mobile.ui.components.compose.StateMessage
 import com.akilimo.mobile.ui.components.compose.cardSurface
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
@@ -106,6 +107,8 @@ fun SavedAdviceDetailScreen(
                             Text(text = paragraph, style = MaterialTheme.typography.bodyLarge)
                         }
                     }
+                    Spacer(Modifier.height(AkilimoSpacing.md))
+                    ReportDownloads(links = state.reportLinks, loading = state.loadingReport)
                     state.messageRes?.let {
                         Spacer(Modifier.height(AkilimoSpacing.md))
                         Text(stringResource(it), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium)
