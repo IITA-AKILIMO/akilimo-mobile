@@ -110,4 +110,18 @@ object DatabaseMigrations {
             db.execSQL("CREATE INDEX IF NOT EXISTS `index_saved_advice_account_id` ON `saved_advice` (`account_id`)")
         }
     }
+
+    /**
+     * v9 → v10: the farmer's message history (push messages from AKILIMO). A new table only; nothing existing changes.
+     */
+    val MIGRATION_9_10 = object : Migration(9, 10) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `inbox_messages` (`id` TEXT NOT NULL, `type` TEXT NOT NULL, " +
+                    "`title` TEXT NOT NULL, `body` TEXT NOT NULL, `target` TEXT, `received_at` INTEGER NOT NULL, " +
+                    "`is_read` INTEGER NOT NULL, PRIMARY KEY(`id`))"
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_inbox_messages_received_at` ON `inbox_messages` (`received_at`)")
+        }
+    }
 }

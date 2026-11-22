@@ -7,6 +7,7 @@ import com.akilimo.mobile.network.dto.FertilizerDto
 import com.akilimo.mobile.network.dto.FertilizerPriceDto
 import com.akilimo.mobile.network.dto.InvestmentAmounts
 import com.akilimo.mobile.network.dto.MaizeUnitDto
+import com.akilimo.mobile.network.dto.MessagesResponse
 import com.akilimo.mobile.network.dto.PagedResponse
 import com.akilimo.mobile.network.dto.StarchFactoryDto
 import com.akilimo.mobile.network.dto.UserFeedBackRequest
@@ -28,7 +29,18 @@ interface AkilimoApi {
         private const val CLIENT_ID_HEADER = "Client-Id: akilimo-mobile"
         private const val DEFAULT_PAGE = 1
         private const val DEFAULT_PER_PAGE = 50
+        const val MESSAGES_PAGE_SIZE = 100
     }
+
+    /** Messages for the inbox (what push did not deliver), for a country and language, from [since] on. */
+    @Headers(CLIENT_ID_HEADER)
+    @GET("v1/messages")
+    suspend fun getMessages(
+        @Query("country") country: String? = null,
+        @Query("language") language: String? = null,
+        @Query("since") since: String? = null,
+        @Query("limit") limit: Int = MESSAGES_PAGE_SIZE,
+    ): MessagesResponse
 
     @Headers(CLIENT_ID_HEADER)
     @GET("v1/fertilizers")

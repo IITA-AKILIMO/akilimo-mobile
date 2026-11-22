@@ -93,6 +93,7 @@ androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "s
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 #firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-installations = { group = "com.google.firebase", name = "firebase-installations", version.ref = "firebase-installations" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }

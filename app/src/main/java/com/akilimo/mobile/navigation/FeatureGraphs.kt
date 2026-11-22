@@ -21,6 +21,7 @@ import com.akilimo.mobile.ui.screens.recommendations.RecommendationsScreen
 import com.akilimo.mobile.ui.screens.recommendations.UseCaseScreen
 import com.akilimo.mobile.ui.screens.settings.LocationPickerScreen
 import com.akilimo.mobile.ui.screens.settings.SettingsScreen
+import com.akilimo.mobile.ui.screens.inbox.InboxScreen
 import com.akilimo.mobile.ui.screens.settings.WebViewScreen
 import com.akilimo.mobile.ui.screens.usecases.CassavaMarketScreen
 import com.akilimo.mobile.ui.screens.usecases.CassavaYieldScreen
@@ -199,6 +200,9 @@ fun NavGraphBuilder.accountGraph(navController: NavHostController) {
 fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
     composable<SettingsRoute> {
         SettingsScreen(navController = navController)
+    }
+    composable<InboxRoute> {
+        InboxScreen(navController = navController)
     }
     composable<WebViewRoute> { backStackEntry ->
         val route = backStackEntry.toRoute<WebViewRoute>()

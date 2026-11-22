@@ -296,6 +296,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.installations)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
 
     // Region: Non-Compose UI
     implementation(libs.material)

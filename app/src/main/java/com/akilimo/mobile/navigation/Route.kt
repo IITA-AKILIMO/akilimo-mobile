@@ -23,6 +23,10 @@ object FarmRoute
 @Serializable
 object RecommendationsRoute
 
+/** The farmer's message history */
+@Serializable
+object InboxRoute
+
 // ── Recommendation sub-routes ────────────────────────────────────────────────
 
 @Serializable

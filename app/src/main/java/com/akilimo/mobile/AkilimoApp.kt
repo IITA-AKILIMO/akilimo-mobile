@@ -26,6 +26,13 @@ import com.akilimo.mobile.workers.WorkerScheduler
 import com.akilimo.mobile.data.AppSettingsDataStore
 import dagger.hilt.android.HiltAndroidApp
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.akilimo.mobile.notifications.NotificationChannels
+import com.akilimo.mobile.notifications.PushTopicSync
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -37,6 +44,10 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
 
     /** Injected so the hub's sync status sees the same connectivity callbacks. */
     @Inject lateinit var networkMonitor: NetworkMonitor
+
+    @Inject lateinit var pushTopicSync: PushTopicSync
+
+    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
@@ -69,6 +80,7 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
         initDarkMode()
         initVectorSupport()
         runStartupTasks()
+        initPushNotifications()
 
         WorkerScheduler.scheduleOneTimeWorker<InvestmentAmountWorker>(
             context = this,
@@ -158,6 +170,18 @@ class AkilimoApp : MultiDexApplication(), Configuration.Provider {
 
     private fun initDarkMode() {
         AppCompatDelegate.setDefaultNightMode(appSettings.getThemeModeSync().toNightMode())
+    }
+
+    /**
+     * Channels must exist before any message arrives. Topics follow the switch, country and
+     * language: synced at start (picks up a country change made in the profile) and whenever the
+     * app language changes.
+     */
+    private fun initPushNotifications() {
+        NotificationChannels.ensure(this)
+        appScope.launch {
+            appSettings.languageTagFlow.distinctUntilChanged().collect { pushTopicSync.sync() }
+        }
     }
 
     private fun initVectorSupport() {
