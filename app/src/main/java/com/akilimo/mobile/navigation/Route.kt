@@ -35,6 +35,9 @@ object BppRoute         // Best Planting Practices
 object SphRoute         // Scheduled Planting High-Starch
 
 @Serializable
+object PdcRoute         // Planting Date and Cultivar (maize, Nigeria)
+
+@Serializable
 object IcMaizeRoute     // Intercropping with Maize
 
 @Serializable

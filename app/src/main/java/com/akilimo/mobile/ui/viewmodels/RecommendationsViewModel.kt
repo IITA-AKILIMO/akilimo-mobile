@@ -41,7 +41,11 @@ class RecommendationsViewModel @Inject constructor(
         )
 
         when (user.enumCountry) {
-            EnumCountry.NG -> options.add(AdviceOption(EnumAdvice.INTERCROPPING_MAIZE))
+            EnumCountry.NG -> {
+                options.add(AdviceOption(EnumAdvice.INTERCROPPING_MAIZE))
+                // The planting date and cultivar advice exists for maize in Nigeria only
+                options.add(AdviceOption(EnumAdvice.PLANTING_DATE_CULTIVAR))
+            }
             EnumCountry.TZ -> options.add(AdviceOption(EnumAdvice.INTERCROPPING_SWEET_POTATO))
             else -> Unit
         }

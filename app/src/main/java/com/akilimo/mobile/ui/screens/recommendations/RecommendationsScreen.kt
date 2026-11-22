@@ -66,6 +66,7 @@ import com.akilimo.mobile.navigation.BppRoute
 import com.akilimo.mobile.navigation.FrRoute
 import com.akilimo.mobile.navigation.IcMaizeRoute
 import com.akilimo.mobile.navigation.IcSweetPotatoRoute
+import com.akilimo.mobile.navigation.PdcRoute
 import com.akilimo.mobile.navigation.SphRoute
 import com.akilimo.mobile.ui.components.compose.popBackStackSafely
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
@@ -81,6 +82,7 @@ private fun EnumAdvice.icon(): ImageVector = when (this) {
     EnumAdvice.INTERCROPPING_MAIZE -> Icons.Outlined.Grass
     EnumAdvice.INTERCROPPING_SWEET_POTATO -> Icons.Outlined.Spa
     EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> Icons.Outlined.CalendarMonth
+    EnumAdvice.PLANTING_DATE_CULTIVAR -> Icons.Outlined.CalendarMonth
 }
 
 @Composable
@@ -95,6 +97,7 @@ fun RecommendationsScreen(navController: NavHostController) {
                 EnumAdvice.FERTILIZER_RECOMMENDATIONS -> FrRoute
                 EnumAdvice.BEST_PLANTING_PRACTICES -> BppRoute
                 EnumAdvice.SCHEDULED_PLANTING_HIGH_STARCH -> SphRoute
+                EnumAdvice.PLANTING_DATE_CULTIVAR -> PdcRoute
                 EnumAdvice.INTERCROPPING_MAIZE -> IcMaizeRoute
                 EnumAdvice.INTERCROPPING_SWEET_POTATO -> IcSweetPotatoRoute
             }
