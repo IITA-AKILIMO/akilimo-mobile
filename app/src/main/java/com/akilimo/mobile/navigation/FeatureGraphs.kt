@@ -94,6 +94,14 @@ fun NavGraphBuilder.recommendationsGraph(navController: NavHostController) {
             navController = navController,
         )
     }
+    composable<PdcRoute> {
+        UseCaseScreen(
+            useCase = EnumUseCase.PDC,
+            // The API needs planting and harvest dates; the advice itself needs only the location
+            tasks = listOf(EnumAdviceTask.PLANTING_AND_HARVEST),
+            navController = navController,
+        )
+    }
     composable<IcMaizeRoute> {
         UseCaseScreen(
             useCase = EnumUseCase.CIM,

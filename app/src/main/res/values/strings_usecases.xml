@@ -234,6 +234,7 @@
     <string name="lbl_intercrop_rec">Inter-cropping Recommendation</string>
     <string name="lbl_planting_practices_rec">Planting Practices</string>
     <string name="lbl_scheduled_planting_rec">Scheduled Planting</string>
+    <string name="lbl_planting_date_cultivar">Planting date and cultivar</string>
     <string name="lbl_no_recommendations_prompt">No recommendations, provide more information to help us get better predictions</string>
     <string name="error_fetch_recommendation">Failed to fetch recommendation</string>
     <string name="error_worker_stopped">Worker was stopped</string>

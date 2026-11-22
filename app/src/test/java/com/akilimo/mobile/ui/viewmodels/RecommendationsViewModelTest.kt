@@ -50,6 +50,18 @@ class RecommendationsViewModelTest {
     }
 
     @Test
+    fun `offers planting date and cultivar only in NG`() = runTest {
+        for (country in listOf(EnumCountry.NG, EnumCountry.TZ)) {
+            coEvery { userRepo.getUser("user1") } returns userFor(country)
+            val viewModel = buildViewModel()
+            advanceUntilIdle()
+
+            val options = viewModel.uiState.value.adviceOptions.map { it.valueOption }
+            assertEquals(country == EnumCountry.NG, EnumAdvice.PLANTING_DATE_CULTIVAR in options)
+        }
+    }
+
+    @Test
     fun `loads intercropping sweet potato for TZ country`() = runTest {
         coEvery { userRepo.getUser("user1") } returns userFor(EnumCountry.TZ)
         val viewModel = buildViewModel()

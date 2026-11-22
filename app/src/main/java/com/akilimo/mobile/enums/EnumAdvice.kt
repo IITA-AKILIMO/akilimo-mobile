@@ -11,7 +11,8 @@ enum class EnumAdvice(private val stringResId: Int, private val titleResId: Int)
     INTERCROPPING_SWEET_POTATO(R.string.lbl_intercropping_sweet_potato, R.string.lbl_intercropping_sweet_potato_title),
     SCHEDULED_PLANTING_HIGH_STARCH(
         R.string.lbl_scheduled_planting_and_high_starch, R.string.lbl_scheduled_planting_rec
-    );
+    ),
+    PLANTING_DATE_CULTIVAR(R.string.lbl_planting_date_cultivar, R.string.lbl_planting_date_cultivar);
 //    WEED_MANAGEMENT(R.string.lbl_weed_management, R.string.lbl_weed_management);
 
     override fun label(context: Context): String = context.getString(stringResId)
