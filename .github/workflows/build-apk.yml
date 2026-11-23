@@ -81,7 +81,7 @@ jobs:
           echo "Using RELEASE_VERSION: ${{ github.ref_name }}"
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3.2.2
+        uses: android-actions/setup-android@v4.0.4
         with:
           # The action's default is "tools platform-tools", but the legacy "tools" package
           # no longer exists in cmdline-tools 16+, so sdkmanager fails. Gradle downloads
