@@ -12,6 +12,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
 import com.akilimo.mobile.BuildConfig
@@ -74,6 +75,16 @@ private object Keys {
     // Sync status (see SyncStatusSource): epoch millis of the last success/failure. The newest
     // of the two decides whether the app should say it is up to date or a sync failed.
     val LAST_SYNC_AT = longPreferencesKey("lastSyncAt")
+
+    // Push notifications (opt-in): the switch, whether the start-up prompt was answered, and the
+    // FCM topics this install is subscribed to so stale ones can be dropped when country/language change.
+    val PUSH_ENABLED = booleanPreferencesKey("pushNotificationsEnabled")
+    val PUSH_PROMPT_ANSWERED = booleanPreferencesKey("pushPromptAnswered")
+    val PUSH_TOPICS = stringSetPreferencesKey("pushTopics")
+
+    // Message sync: server time of the newest message fetched, and the "TZ|sw" audience it was fetched for
+    val MESSAGE_CURSOR = stringPreferencesKey("messageSyncCursor")
+    val MESSAGE_AUDIENCE = stringPreferencesKey("messageSyncAudience")
     val LAST_SYNC_FAILED_AT = longPreferencesKey("lastSyncFailedAt")
 }
 
@@ -208,6 +219,14 @@ class AppSettingsDataStore @Inject constructor(
 
     val readingTextScaleFlow: Flow<Float> =
         dataStore.data.map { prefs -> ReadingTextScale.normalize(prefs[Keys.READING_TEXT_SCALE]) }
+
+    /** Push notifications switch; off until the farmer opts in. */
+    val pushEnabledFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.PUSH_ENABLED] ?: false }
+
+    /** True once the farmer has answered the one-time "get updates?" prompt (either way). */
+    val pushPromptAnsweredFlow: Flow<Boolean> =
+        dataStore.data.map { prefs -> prefs[Keys.PUSH_PROMPT_ANSWERED] ?: false }
 
     val lastSyncAtFlow: Flow<Long?> =
         dataStore.data.map { prefs -> prefs[Keys.LAST_SYNC_AT] }
@@ -375,5 +394,32 @@ class AppSettingsDataStore @Inject constructor(
 
     suspend fun setFertilizerGrid(value: Boolean) {
         dataStore.edit { it[Keys.FERTILIZER_GRID] = value }
+    }
+
+    suspend fun setPushEnabled(value: Boolean) {
+        dataStore.edit { it[Keys.PUSH_ENABLED] = value }
+    }
+
+    suspend fun setPushPromptAnswered(value: Boolean) {
+        dataStore.edit { it[Keys.PUSH_PROMPT_ANSWERED] = value }
+    }
+
+    suspend fun pushEnabled(): Boolean = dataStore.data.first()[Keys.PUSH_ENABLED] ?: false
+
+    suspend fun subscribedPushTopics(): Set<String> = dataStore.data.first()[Keys.PUSH_TOPICS] ?: emptySet()
+
+    suspend fun setSubscribedPushTopics(topics: Set<String>) {
+        dataStore.edit { it[Keys.PUSH_TOPICS] = topics }
+    }
+
+    suspend fun messageSyncCursor(): String? = dataStore.data.first()[Keys.MESSAGE_CURSOR]
+
+    suspend fun messageSyncAudience(): String? = dataStore.data.first()[Keys.MESSAGE_AUDIENCE]
+
+    suspend fun setMessageSync(audience: String, cursor: String?) {
+        dataStore.edit { prefs ->
+            prefs[Keys.MESSAGE_AUDIENCE] = audience
+            if (cursor != null) prefs[Keys.MESSAGE_CURSOR] = cursor else prefs.remove(Keys.MESSAGE_CURSOR)
+        }
     }
 }

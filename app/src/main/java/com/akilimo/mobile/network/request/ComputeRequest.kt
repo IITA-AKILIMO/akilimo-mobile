@@ -65,7 +65,12 @@ data class ComputeRequest(
         @param:Json(name = "scheduled_planting_rec")
         val scheduledPlantingRec: Boolean,
         @param:Json(name = "scheduled_harvest_rec")
-        val scheduledHarvestRec: Boolean
+        val scheduledHarvestRec: Boolean,
+        /** Planting date and cultivar advice: maize in Nigeria only */
+        @param:Json(name = "planting_date_cultivar_rec")
+        val plantingDateCultivarRec: Boolean = false,
+        @param:Json(name = "crop")
+        val crop: String = "maize"
     )
 
     @JsonClass(generateAdapter = true)

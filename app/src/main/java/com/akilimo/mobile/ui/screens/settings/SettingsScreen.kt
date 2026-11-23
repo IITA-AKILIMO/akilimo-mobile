@@ -14,6 +14,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.AspectRatio
@@ -69,6 +70,12 @@ import com.akilimo.mobile.ui.components.compose.PartnerLockup
 import com.akilimo.mobile.ui.components.compose.ScrollableFormColumn
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.SettingsViewModel
+import com.akilimo.mobile.ui.viewmodels.NotificationSettingsViewModel
+import com.akilimo.mobile.ui.components.compose.NotificationPermissionEffect
+import com.akilimo.mobile.notifications.AkilimoMessagingService
+import com.akilimo.mobile.ui.components.compose.openAppNotificationSettings
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.akilimo.mobile.data.AppLanguage
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -80,10 +87,16 @@ fun SettingsScreen(
     navController: NavHostController,
     viewModel: SettingsViewModel = hiltViewModel(),
     accountEntry: AccountEntryViewModel = hiltViewModel(),
+    notifications: NotificationSettingsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val notificationState by notifications.uiState.collectAsStateWithLifecycle()
+    NotificationPermissionEffect(notifications)
     val signedInAs by accountEntry.signedInAs.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        notifications.onSystemAllowedChanged(AkilimoMessagingService.hasPostPermission(context))
+    }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var showClearRecsDialog by remember { mutableStateOf(false) }
@@ -282,6 +295,41 @@ fun SettingsScreen(
                 ),
             )
 
+            }
+
+            // ── Notifications ─────────────────────────────────────────────
+            SettingsSection(stringResource(R.string.notif_settings_section)) {
+                ListItem(
+                    headlineContent = { Text(stringResource(R.string.notif_settings_switch)) },
+                    supportingContent = {
+                        Text(
+                            stringResource(
+                                if (notificationState.showAllowInSettings) {
+                                    R.string.notif_blocked_hint
+                                } else {
+                                    R.string.notif_settings_switch_desc
+                                }
+                            )
+                        )
+                    },
+                    leadingContent = { IconTile(Icons.Outlined.NotificationsNone) },
+                    trailingContent = {
+                        Switch(checked = notificationState.enabled, onCheckedChange = null)
+                    },
+                    modifier = Modifier.toggleable(
+                        value = notificationState.enabled,
+                        role = Role.Switch,
+                        onValueChange = { notifications.setEnabled(it) },
+                    ),
+                )
+                if (notificationState.showAllowInSettings) {
+                    ListItem(
+                        headlineContent = { Text(stringResource(R.string.notif_allow_in_settings)) },
+                        supportingContent = { Text(stringResource(R.string.notif_allow_in_settings_desc)) },
+                        leadingContent = { IconTile(Icons.Outlined.Settings) },
+                        modifier = Modifier.clickable(role = Role.Button) { openAppNotificationSettings(context) },
+                    )
+                }
             }
 
             // ── Language ──────────────────────────────────────────────────

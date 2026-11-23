@@ -21,6 +21,7 @@ import com.akilimo.mobile.ui.screens.recommendations.RecommendationsScreen
 import com.akilimo.mobile.ui.screens.recommendations.UseCaseScreen
 import com.akilimo.mobile.ui.screens.settings.LocationPickerScreen
 import com.akilimo.mobile.ui.screens.settings.SettingsScreen
+import com.akilimo.mobile.ui.screens.inbox.InboxScreen
 import com.akilimo.mobile.ui.screens.settings.WebViewScreen
 import com.akilimo.mobile.ui.screens.usecases.CassavaMarketScreen
 import com.akilimo.mobile.ui.screens.usecases.CassavaYieldScreen
@@ -90,6 +91,14 @@ fun NavGraphBuilder.recommendationsGraph(navController: NavHostController) {
                 EnumAdviceTask.CASSAVA_MARKET_OUTLET,
                 EnumAdviceTask.CURRENT_CASSAVA_YIELD,
             ),
+            navController = navController,
+        )
+    }
+    composable<PdcRoute> {
+        UseCaseScreen(
+            useCase = EnumUseCase.PDC,
+            // The API needs planting and harvest dates; the advice itself needs only the location
+            tasks = listOf(EnumAdviceTask.PLANTING_AND_HARVEST),
             navController = navController,
         )
     }
@@ -199,6 +208,9 @@ fun NavGraphBuilder.accountGraph(navController: NavHostController) {
 fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
     composable<SettingsRoute> {
         SettingsScreen(navController = navController)
+    }
+    composable<InboxRoute> {
+        InboxScreen(navController = navController)
     }
     composable<WebViewRoute> { backStackEntry ->
         val route = backStackEntry.toRoute<WebViewRoute>()

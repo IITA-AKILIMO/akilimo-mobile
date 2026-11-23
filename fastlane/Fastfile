@@ -1,0 +1,74 @@
+default_platform(:android)
+
+PACKAGE = "com.akilimo.mobile"
+
+# Runs adb (honours ANDROID_SERIAL for a specific device) and returns the raw bytes it printed.
+# Binary mode matters: a text-mode pipe on Windows rewrites newlines and corrupts PNG files.
+def adb_bytes(*args)
+  out = IO.popen(["adb", *args], "rb", err: [:child, :out], &:read)
+  UI.user_error!("adb #{args.join(' ')} failed:\n#{out}") unless $?.success?
+  out
+end
+
+platform :android do
+  desc "Capture Play Store screenshots on the connected device in one language: fastlane screenshots locale:sw"
+  lane :screenshots do |options|
+    locale = options[:locale] || "en-GB"
+    # fastlane runs lanes from the fastlane/ folder, so project paths go through the repo root
+    root = File.expand_path("..", Dir.pwd)
+    # One folder per locale, named as passed on the command line (en-GB, sw, rw)
+    screenshot_dir = File.join(root, "fastlane", "screenshots", locale)
+
+    gradle(task: "assembleDebug assembleDebugAndroidTest")
+    adb_bytes("install", "-r", File.join(root, "app/build/outputs/apk/debug/app-debug.apk"))
+    adb_bytes("install", "-r", File.join(root, "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"))
+    adb_bytes("shell", "run-as", PACKAGE, "rm", "-rf", "app_screengrab")
+
+    # The device locale is not changed; the test applies the language through the app's own setting
+    result = adb_bytes(
+      "shell", "am", "instrument", "-w",
+      "-e", "class", "#{PACKAGE}.screenshots.StoreScreenshotsTest",
+      "-e", "testLocale", locale,
+      "#{PACKAGE}.test/#{PACKAGE}.HiltTestRunner"
+    )
+    UI.user_error!("Screenshot test failed:\n#{result}") unless result.include?("OK (1 test)")
+
+    # Screengrab names the folder after the full device locale (sw becomes sw-TZ), so search for the files
+    paths = adb_bytes("shell", "run-as", PACKAGE, "find", "app_screengrab", "-name", "*.png").split(/\s+/).grep(/\.png\z/)
+    UI.user_error!("No screenshots found in the app's app_screengrab folder") if paths.empty?
+
+    # Start clean so images from an older run never get uploaded alongside the new ones
+    FileUtils.rm_rf(screenshot_dir)
+    FileUtils.mkdir_p(screenshot_dir)
+    paths.each do |path|
+      File.binwrite(File.join(screenshot_dir, File.basename(path)), adb_bytes("exec-out", "run-as", PACKAGE, "cat", path))
+    end
+    UI.success("Saved #{paths.size} screenshots to #{screenshot_dir}")
+  end
+
+  desc "Upload fastlane/screenshots/<locale>/*.png to the Play Store listing (no AAB, metadata or changelogs)"
+  lane :upload_screenshots do
+    source = File.join(File.expand_path("..", Dir.pwd), "fastlane", "screenshots")
+    UI.user_error!("No screenshots in #{source}; run the screenshots lane first") unless Dir.exist?(source)
+
+    # supply only reads <metadata>/<locale>/images/phoneScreenshots, so stage the simple folders there
+    Dir.mktmpdir("play-screenshots") do |staging|
+      Dir.children(source).select { |l| File.directory?(File.join(source, l)) }.each do |locale|
+        target = File.join(staging, locale, "images", "phoneScreenshots")
+        FileUtils.mkdir_p(target)
+        FileUtils.cp(Dir.glob(File.join(source, locale, "*.png")), target)
+      end
+
+      upload_to_play_store(
+        track: "production",
+        metadata_path: staging,
+        skip_upload_apk: true,
+        skip_upload_aab: true,
+        skip_upload_metadata: true,
+        skip_upload_changelogs: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: false,
+      )
+    end
+  end
+end

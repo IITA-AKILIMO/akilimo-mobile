@@ -129,10 +129,10 @@ class GetRecommendationViewModel @Inject constructor(
                     }
                 } else {
                     // Never show the raw server message: it is English-only and technical
-                    val outsideCoverage = result.parseError()?.isOutsideCoverage == true
+                    val error = result.parseError()
                     _uiState.value = UiState.Error(
-                        if (outsideCoverage) R.string.error_recommendation_outside_coverage
-                        else errorMessageForHttpCode(result.code())
+                        if (error?.isOutsideCoverage == true) R.string.error_recommendation_outside_coverage
+                        else errorMessageForCode(error?.code) ?: errorMessageForHttpCode(result.code())
                     )
                 }
             } catch (e: CancellationException) {
@@ -202,6 +202,18 @@ class GetRecommendationViewModel @Inject constructor(
         private const val HTTP_TIMEOUT = 408
         private const val HTTP_TOO_MANY = 429
         private const val HTTP_SERVER_MIN = 500
+
+        /**
+         * The farmer-facing message for a machine-readable reason the API passes on from the compute
+         * service, or null for a reason this app does not know (the HTTP status then decides).
+         */
+        @StringRes
+        fun errorMessageForCode(code: String?): Int? = when (code) {
+            "outside_coverage" -> R.string.error_recommendation_outside_coverage
+            "rec_type_unavailable" -> R.string.error_rec_type_unavailable
+            "no_fertilizer" -> R.string.error_rec_no_fertilizer
+            else -> null
+        }
 
         /** Maps an unsuccessful HTTP status to a farmer-friendly, translatable message. */
         @StringRes

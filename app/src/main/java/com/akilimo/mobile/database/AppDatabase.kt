@@ -15,6 +15,7 @@ import com.akilimo.mobile.dao.CurrentPracticeDao
 import com.akilimo.mobile.dao.FertilizerDao
 import com.akilimo.mobile.dao.FertilizerPriceDao
 import com.akilimo.mobile.dao.FieldOperationCostDao
+import com.akilimo.mobile.dao.InboxMessageDao
 import com.akilimo.mobile.dao.InvestmentAmountDao
 import com.akilimo.mobile.dao.MaizePerformanceDao
 import com.akilimo.mobile.dao.ProduceMarketDao
@@ -34,6 +35,7 @@ import com.akilimo.mobile.entities.CurrentPractice
 import com.akilimo.mobile.entities.Fertilizer
 import com.akilimo.mobile.entities.FertilizerPrice
 import com.akilimo.mobile.entities.FieldOperationCost
+import com.akilimo.mobile.entities.InboxMessage
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.MaizePerformance
 import com.akilimo.mobile.entities.ProduceMarket
@@ -77,9 +79,10 @@ import com.akilimo.mobile.database.EnumWeedControlConverter
         CurrentPractice::class,
         MaizePerformance::class,
         UserPreferences::class,
-        SavedAdvice::class
+        SavedAdvice::class,
+        InboxMessage::class
     ],
-    version = 9,
+    version = 10,
     exportSchema = true
 )
 @TypeConverters(
@@ -130,6 +133,8 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun savedAdviceDao(): SavedAdviceDao
 
+    abstract fun inboxMessageDao(): InboxMessageDao
+
 
     companion object {
         private const val DATABASE_NAME = "AKILIMO_MOBILE"
@@ -156,6 +161,7 @@ abstract class AppDatabase : RoomDatabase() {
                     DatabaseMigrations.MIGRATION_5_6,
                     DatabaseMigrations.MIGRATION_6_8,
                     DatabaseMigrations.MIGRATION_8_9,
+                    DatabaseMigrations.MIGRATION_9_10,
                 )
                 .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
                 .build()

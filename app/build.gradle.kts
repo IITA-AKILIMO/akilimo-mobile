@@ -177,6 +177,13 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
 
+    packaging {
+        resources {
+            // Several JUnit 5 jars pulled in by the instrumented-test dependencies ship the same notice files
+            excludes += setOf("META-INF/LICENSE*.md", "META-INF/NOTICE*.md")
+        }
+    }
+
     buildFeatures {
         viewBinding = false
         buildConfig = true
@@ -296,6 +303,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.installations)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
 
     // Region: Non-Compose UI
     implementation(libs.material)
@@ -350,6 +358,8 @@ dependencies {
     @Suppress("AvoidDuplicateDependencies")
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.screengrab)
+    androidTestImplementation(libs.androidx.uiautomator)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.hilt.testing)
     androidTestImplementation(libs.navigation.testing)

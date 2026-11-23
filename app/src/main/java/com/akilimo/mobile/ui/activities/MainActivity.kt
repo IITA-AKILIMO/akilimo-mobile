@@ -1,6 +1,13 @@
 package com.akilimo.mobile.ui.activities
 
 import android.content.Context
+import android.content.Intent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.akilimo.mobile.notifications.NotificationKeys
+import com.akilimo.mobile.notifications.NotificationRouting
+import com.akilimo.mobile.notifications.NotificationTarget
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -45,6 +52,27 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var accountSession: AccountSessionStore
 
+    /** Screen requested by a tapped push notification, until the nav host has opened it. */
+    private var notificationTarget by mutableStateOf<NotificationTarget?>(null)
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        readNotificationTarget(intent)
+    }
+
+    // Only farmers who finished onboarding have a home screen to go to; extras are consumed so
+    // rotation or a later relaunch from history does not navigate again.
+    private fun readNotificationTarget(intent: Intent) {
+        val target = NotificationRouting.fromExtras(
+            intent.getStringExtra(NotificationKeys.TYPE),
+            intent.getStringExtra(NotificationKeys.TARGET),
+        ) ?: return
+        intent.removeExtra(NotificationKeys.TYPE)
+        intent.removeExtra(NotificationKeys.TARGET)
+        if (!appSettings.isFirstRun) notificationTarget = target
+    }
+
     override fun attachBaseContext(newBase: Context) {
         // Runs before Hilt injection, so read settings directly
         val tag = AppSettingsDataStore.readAppliedLanguageTagSync(newBase)
@@ -67,6 +95,8 @@ class MainActivity : ComponentActivity() {
         } else {
             HubRoute
         }
+
+        if (savedInstanceState == null) readNotificationTarget(intent)
 
         setContent {
             val themeMode by appSettings.themeModeFlow
@@ -104,7 +134,11 @@ class MainActivity : ComponentActivity() {
             val signedIn = session?.consentRequired == false
 
             AkilimoTheme(darkTheme = darkTheme, textScale = textScale, signedIn = signedIn) {
-                AkilimoNavHost(startDestination = startRoute)
+                AkilimoNavHost(
+                    startDestination = startRoute,
+                    notificationTarget = notificationTarget,
+                    onTargetHandled = { notificationTarget = null },
+                )
             }
         }
     }

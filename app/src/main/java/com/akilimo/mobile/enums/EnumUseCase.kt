@@ -10,6 +10,7 @@ enum class EnumUseCase : Parcelable {
     PP,
     CIS,
     CIM,
+    PDC,
     NA;
 
     companion object {
