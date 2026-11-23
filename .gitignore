@@ -17,3 +17,10 @@ translations.xls*
 .claude
 .junie
 .output.txt
+
+# fastlane: captured screenshots and run reports are generated
+fastlane/screenshots/
+fastlane/report.xml
+fastlane/test_output/
+.bundle/
+vendor/bundle/
