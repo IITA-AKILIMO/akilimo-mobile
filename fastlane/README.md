@@ -23,13 +23,21 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Capture Play Store screenshots on the connected device in one language: fastlane screenshots locale:sw
 
+### android update_release_notes
+
+```sh
+[bundle exec] fastlane android update_release_notes
+```
+
+Correct the release notes of a published release: fastlane update_release_notes version_code:123 [track:production] [dry_run:true]
+
 ### android upload_screenshots
 
 ```sh
 [bundle exec] fastlane android upload_screenshots
 ```
 
-Upload fastlane/screenshots/<locale>/*.png to the Play Store listing (no AAB, metadata or changelogs)
+Upload the store_shots (max 8) from fastlane/screenshots/<locale>/ to the Play listing; dry_run:true only lists them
 
 ----
 

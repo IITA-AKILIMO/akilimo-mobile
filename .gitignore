@@ -24,3 +24,5 @@ fastlane/report.xml
 fastlane/test_output/
 .bundle/
 vendor/bundle/
+
+akilimo-dst-tools-825f76f13f36-fastlane.json

@@ -5,6 +5,7 @@ import com.akilimo.mobile.entities.AkilimoUser
 import com.akilimo.mobile.entities.CassavaMarketPrice
 import com.akilimo.mobile.entities.CassavaUnit
 import com.akilimo.mobile.entities.Fertilizer
+import com.akilimo.mobile.entities.InboxMessage
 import com.akilimo.mobile.entities.InvestmentAmount
 import com.akilimo.mobile.entities.StarchFactory
 import com.akilimo.mobile.enums.EnumCountry
@@ -128,5 +129,40 @@ object DemoData {
                 ),
             )
         }
+    }
+
+    /** A few inbox messages so the Messages screen is not empty. English in every language. */
+    suspend fun seedMessages(db: AppDatabase) {
+        val now = System.currentTimeMillis()
+        val hour = 60 * 60 * 1000L
+        listOf(
+            InboxMessage(
+                id = "demo-1",
+                type = "advice",
+                title = "Planting season is near",
+                body = "Prepare your field now. Open Recommendations for advice on planting dates for your farm.",
+                target = "recommendations",
+                receivedAt = now - 2 * hour,
+                isRead = false,
+            ),
+            InboxMessage(
+                id = "demo-2",
+                type = "reminder",
+                title = "Fertilizer prices updated",
+                body = "Check the latest fertilizer prices before you buy for the season.",
+                target = "recommendations",
+                receivedAt = now - 26 * hour,
+                isRead = true,
+            ),
+            InboxMessage(
+                id = "demo-3",
+                type = "announcement",
+                title = "Welcome to AKILIMO",
+                body = "Advice for cassava farmers, in your language and for your farm.",
+                target = "hub",
+                receivedAt = now - 72 * hour,
+                isRead = true,
+            ),
+        ).forEach { db.inboxMessageDao().insert(it) }
     }
 }

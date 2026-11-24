@@ -1,2 +1,6 @@
 package_name("com.akilimo.mobile")
-# Play API credentials: set SUPPLY_JSON_KEY_DATA (or SUPPLY_JSON_KEY) to the service-account JSON
+
+# Play API credentials. Locally the service-account key sits in the repo root (git-ignored); in CI it
+# arrives as SUPPLY_JSON_KEY_DATA. A key given through SUPPLY_JSON_KEY or SUPPLY_JSON_KEY_DATA wins.
+local_key = File.expand_path("../akilimo-dst-tools-825f76f13f36-fastlane.json", __dir__)
+json_key_file(local_key) if File.exist?(local_key) && ENV["SUPPLY_JSON_KEY"].nil? && ENV["SUPPLY_JSON_KEY_DATA"].nil?
