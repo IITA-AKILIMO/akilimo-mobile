@@ -123,7 +123,7 @@ New releases get their notes from `publish.yml`, which uploads `release/distribu
 
 The lane needs the release's **version code**, a whole number such as `345`. The version name (`33.0.3`) will not work. The code is not derived from the tag: CI fetches it from the version endpoint, so look it up in Play Console under Release > App bundle explorer (the "Version code" column) or in the release's bundle details.
 
-Edit the files in `release/distribution/whatsnew/` first. Play allows at most 500 characters per language, and the lane stops with the language name if a file is longer or empty. The file name suffix is the Play locale, so `whatsnew-en-GB` and `whatsnew-sw` exist today; add `whatsnew-rw` for Kinyarwanda.
+Edit the files in `release/distribution/whatsnew/` first. Play allows at most 500 characters per language, and the lane stops with the language name if a file is longer or empty. The file name suffix is the Play locale, so `whatsnew-en-GB` and `whatsnew-sw` exist today. Do not add a file for a language the Play listing does not have: Play rejects the whole update. Kinyarwanda (`rw`) is not available on Google Play, so there is no `whatsnew-rw` and no `rw` screenshots to upload (the `upload_screenshots` lane uploads every folder in `fastlane/screenshots/`, so delete `fastlane/screenshots/rw` first if you captured it).
 
 Check the files without uploading anything:
 
