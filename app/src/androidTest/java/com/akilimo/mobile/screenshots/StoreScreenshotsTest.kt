@@ -1,11 +1,13 @@
 package com.akilimo.mobile.screenshots
 
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
@@ -25,7 +27,6 @@ import org.junit.Test
 import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 import tools.fastlane.screengrab.Screengrab
-import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
 import tools.fastlane.screengrab.locale.LocaleUtil
 import java.util.Locale
 import javax.inject.Inject
@@ -65,11 +66,12 @@ class StoreScreenshotsTest {
     @Before
     fun seed() {
         hiltRule.inject()
-        Screengrab.setDefaultScreenshotStrategy(UiAutomatorScreenshotStrategy())
+        Screengrab.setDefaultScreenshotStrategy(PlayScreenshotStrategy())
         val tag = language
         runBlocking {
             db.akilimoUserDao().insert(DemoData.user(tag))
             DemoData.seedReferenceData(db)
+            DemoData.seedMessages(db)
             settings.setLanguageTagAndOverride(tag)
             settings.setPushPromptAnswered(true)
         }
@@ -102,6 +104,8 @@ class StoreScreenshotsTest {
                     val label = step.label(activity)
                     if (seenSteps.add(label)) {
                         open(label)
+                        // The market form is empty until a tab is chosen
+                        if (step == EnumAdviceTask.CASSAVA_MARKET_OUTLET) open(text(R.string.lbl_starch_factory))
                         shot("step_${step.name.lowercase()}")
                         Espresso.pressBack()
                     }
@@ -136,7 +140,14 @@ class StoreScreenshotsTest {
         if (compose.onAllNodesWithText(label).fetchSemanticsNodes().isEmpty()) {
             compose.onAllNodes(hasScrollAction()).onFirst().performScrollToNode(hasText(label))
         }
-        compose.onAllNodesWithText(label).onFirst().performClick()
+        val node = compose.onAllNodesWithText(label).onFirst()
+        // Invoke the click action itself: a touch at the node's position can land on the bottom bar
+        // ("Get recommendations") when the last list item sits underneath it
+        if (node.fetchSemanticsNode().config.contains(SemanticsActions.OnClick)) {
+            node.performSemanticsAction(SemanticsActions.OnClick)
+        } else {
+            node.performClick()
+        }
         compose.waitForIdle()
     }
 
