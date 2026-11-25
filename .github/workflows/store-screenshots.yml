@@ -51,7 +51,7 @@ jobs:
           script: bundle exec fastlane screenshots locale:en-GB && bundle exec fastlane screenshots locale:sw && bundle exec fastlane screenshots locale:rw
 
       - name: Keep the screenshots for review
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: store-screenshots
           path: fastlane/screenshots/**/*.png
