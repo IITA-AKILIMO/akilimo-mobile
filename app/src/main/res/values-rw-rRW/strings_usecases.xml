@@ -138,7 +138,6 @@
     <string name="lbl_planting_practices_rec">Uburyo  bwo gutera</string>
     <string name="lbl_scheduled_planting_rec">Gahunda y\'itera</string>
     <string name="lbl_no_recommendations_prompt">Nta nama ibonetse, tanga amakuru menshi adufashe kubona neza inama tukugenera</string>
-    <string name="error_fetch_recommendation">Yananiwe kubona inama</string>
     <string name="error_worker_stopped">Icyifuzo cya netiworoke cyahagaritswe</string>
     <string name="error_worker_cancelled">Icyifuzo cya netiworoke cyahagaritswe n\'uwagitanze</string>
     <string name="error_unexpected">Habaye ikosa ritateganyijwe</string>
