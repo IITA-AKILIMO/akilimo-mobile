@@ -46,7 +46,7 @@ class GetRecommendationViewModel @Inject constructor(
     private val database: AppDatabase,
     private val accountSession: AccountSessionStore,
     private val savedAdvice: SavedAdviceRepo,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
     sealed interface UiState {
@@ -70,7 +70,11 @@ class GetRecommendationViewModel @Inject constructor(
 
     /** Reader-chosen text size (1.0 = default), remembered across screens and launches. */
     val textScale: StateFlow<Float> = appSettings.readingTextScaleFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), ReadingTextScale.DEFAULT)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
+            ReadingTextScale.DEFAULT
+        )
 
     fun setTextScale(scale: Float) {
         viewModelScope.launch { appSettings.setReadingTextScale(scale) }
@@ -112,7 +116,10 @@ class GetRecommendationViewModel @Inject constructor(
                 val base = AppConfig.resolveBaseUrlFor(context, EnumServiceType.AKILIMO)
                 // A signed-in farmer's token goes along, so the server saves the advice in their account;
                 // without one the call is anonymous, exactly as before.
-                val client = ApiClient.createService<AkilimoApi>(context, base, bearerToken = { accountSession.token })
+                val client = ApiClient.createService<AkilimoApi>(
+                    context,
+                    base,
+                    bearerToken = { accountSession.token })
                 val result = client.computeRecommendations(payload)
 
                 if (result.isSuccessful) {
@@ -147,7 +154,11 @@ class GetRecommendationViewModel @Inject constructor(
         }
 
     /** Keeps a copy on the phone for the saved-advice list; the server saved its own when the token was valid. */
-    private suspend fun keepInAccount(useCase: EnumUseCase, payload: RecommendationRequest, resp: RecommendationResponse): Boolean {
+    private suspend fun keepInAccount(
+        useCase: EnumUseCase,
+        payload: RecommendationRequest,
+        resp: RecommendationResponse
+    ): Boolean {
         val session = accountSession.session.value ?: return false
         if (session.consentRequired) return false
         savedAdvice.saveComputed(
@@ -163,7 +174,11 @@ class GetRecommendationViewModel @Inject constructor(
     /** True while a farmer is signed in, so the screen can say the advice is saved or offer to save it. */
     val signedIn: StateFlow<Boolean> = accountSession.session
         .map { it != null && !it.consentRequired }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), accountSession.isSignedIn)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
+            accountSession.isSignedIn
+        )
 
     fun submitFeedback(useCase: EnumUseCase, rating: Int, npsScore: Int) =
         viewModelScope.launch {
