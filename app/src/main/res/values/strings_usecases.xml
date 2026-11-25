@@ -3,13 +3,20 @@
      Entries without a sw-TZ / rw-RW translation fall back to English. -->
 <resources>
     <!-- Recommendation errors (never show raw server text) -->
-    <string name="error_rec_profile_missing">We could not find your farm details. Please complete your profile and try again.</string>
-    <string name="error_rec_network">No internet connection. Check your connection and try again.</string>
-    <string name="error_rec_invalid_input">Some of your answers could not be used. Check the steps and try again.</string>
-    <string name="error_rec_server_busy">The AKILIMO service is busy right now. Please try again later.</string>
+    <string name="error_rec_profile_missing">Please complete your farm profile so we can work out advice for you.</string>
+    <string name="error_rec_network">Connect to the internet and try again. Your answers are kept on your phone.</string>
+    <string name="error_rec_invalid_input">Some answers could not be used to work out advice. Go back, check the steps, then try again.</string>
+    <string name="error_rec_server_busy">The service is busy right now. Please try again in a few minutes.</string>
     <!-- Use case step list -->
     <string name="msg_pull_to_refresh">Pull down to refresh</string>
-    <string name="lbl_could_not_get_advice">Could not get your advice</string>
+    <string name="title_rec_outside">No advice for this area yet</string>
+    <string name="title_rec_offline">You seem to be offline</string>
+    <string name="title_rec_busy">AKILIMO needs a moment</string>
+    <string name="title_rec_input">Let\'s check your answers</string>
+    <string name="title_rec_profile">A few details are missing</string>
+    <string name="title_rec_none">Not enough information yet</string>
+    <string name="error_rec_unknown">Something went wrong while getting your advice. Please try again. If it keeps happening, share the details below.</string>
+    <string name="lbl_could_not_get_advice">We could not get your advice just now</string>
     <string name="lbl_all">All</string>
     <string name="lbl_search_fertilizers">Search fertilizers</string>
     <string name="msg_no_matching_fertilizers">No fertilizers match your search.</string>
@@ -238,7 +245,6 @@
     <string name="error_rec_type_unavailable">This advice is not available in your country yet.</string>
     <string name="error_rec_no_fertilizer">Choose at least one fertilizer you can buy, then try again.</string>
     <string name="lbl_no_recommendations_prompt">No recommendations, provide more information to help us get better predictions</string>
-    <string name="error_fetch_recommendation">Failed to fetch recommendation</string>
     <string name="error_worker_stopped">Worker was stopped</string>
     <string name="error_worker_cancelled">Worker cancelled</string>
     <string name="error_unexpected">An unexpected error occurred</string>
@@ -251,7 +257,7 @@
     <string name="error_email_invalid">Please enter a valid email address</string>
     <string name="error_country_required">Please select your country</string>
     <string name="error_location_outside_coverage">Your field is outside the area where AKILIMO can give advice in %1$s. Pick a location inside the shaded area on the map.</string>
-    <string name="error_recommendation_outside_coverage">Your field is outside the area where AKILIMO can give advice. Change your field location in your profile and try again.</string>
+    <string name="error_recommendation_outside_coverage">AKILIMO does not have advice for your field\'s location yet. If the location is not right, you can change it in your profile.</string>
     <string name="lbl_coverage_legend">The shaded area is where AKILIMO can give advice</string>
     <string name="lbl_coverage_inside">AKILIMO can give advice for this location</string>
     <string name="lbl_coverage_outside">AKILIMO cannot give advice here. Move the pin into the shaded area.</string>

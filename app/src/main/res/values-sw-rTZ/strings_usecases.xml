@@ -141,7 +141,6 @@
     <string name="error_rec_type_unavailable">Ushauri huu bado haupatikani katika nchi yako.</string>
     <string name="error_rec_no_fertilizer">Chagua angalau mbolea moja unayoweza kununua, kisha jaribu tena.</string>
     <string name="lbl_no_recommendations_prompt">Hakuna mapendekezo, tafadhali toa habari zaidi kutusaidia kupata utabiri bora</string>
-    <string name="error_fetch_recommendation">Imeshindwa kuleta pendekezo</string>
     <string name="error_worker_stopped">Ombi la mtandao limesimamishwa</string>
     <string name="error_worker_cancelled">Ombi la mtandao limeghairiwa</string>
     <string name="error_unexpected">Hitilafu isiyotarajiwa imetokea</string>

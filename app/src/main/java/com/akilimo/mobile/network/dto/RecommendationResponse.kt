@@ -45,7 +45,15 @@ data class ApiErrorResponse(
     /** Machine-readable reason of the account endpoints, e.g. `consent_required` or `email_unverified`. */
     @param:Json(name = "code") val code: String? = null,
 ) {
-    /** True when the API refused the farm location as outside the supported area. */
+    /**
+     * True when the API refused the farm location as outside the supported area: either with the machine code
+     * `outside_coverage` (HTTP 400), or as a validation error on the farm's latitude (HTTP 422).
+     */
     val isOutsideCoverage: Boolean
-        get() = errors.orEmpty().keys.any { it.endsWith("farmInformation.map_lat") }
+        get() = code == OUTSIDE_COVERAGE_CODE ||
+            errors.orEmpty().keys.any { it.endsWith("farmInformation.map_lat") }
+
+    companion object {
+        const val OUTSIDE_COVERAGE_CODE = "outside_coverage"
+    }
 }

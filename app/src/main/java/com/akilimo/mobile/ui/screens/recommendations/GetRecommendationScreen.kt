@@ -1,5 +1,6 @@
 package com.akilimo.mobile.ui.screens.recommendations
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +39,13 @@ import com.akilimo.mobile.data.ReadingTextScale
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.EditNote
+import androidx.compose.material.icons.outlined.HourglassEmpty
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.LocationOff
+import androidx.compose.material.icons.outlined.PersonOutline
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -345,13 +352,20 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                 }
 
                 is GetRecommendationViewModel.UiState.Error -> {
+                    val look = errorLook(s.kind)
+                    // Retrying helps when the phone or the service was the problem; otherwise the farmer goes back to change something
+                    val canRetry = look.retry
                     StateMessage(
-                        icon = Icons.Outlined.ErrorOutline,
-                        title = stringResource(R.string.lbl_could_not_get_advice),
+                        icon = look.icon,
+                        title = stringResource(look.titleRes),
                         message = stringResource(s.messageRes),
-                        isError = true,
-                        actionLabel = stringResource(R.string.lbl_retry),
-                        onAction = { viewModel.fetchRecommendation(useCase) },
+                        isError = false,
+                        technicalDetail = s.technicalDetail,
+                        technicalBody = s.technicalBody,
+                        actionLabel = stringResource(if (canRetry) R.string.lbl_retry else R.string.lbl_back),
+                        onAction = {
+                            if (canRetry) viewModel.fetchRecommendation(useCase) else navController.popBackStackSafely()
+                        },
                         modifier = Modifier.align(Alignment.Center),
                     )
                 }
@@ -369,4 +383,24 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
             }
         )
     }
+}
+
+/** How one kind of failure is shown: a soft icon and plain title, and whether trying again is the right action. */
+private data class ErrorLook(val icon: ImageVector, @param:StringRes val titleRes: Int, val retry: Boolean)
+
+private fun errorLook(kind: GetRecommendationViewModel.UiState.ErrorKind): ErrorLook = when (kind) {
+    GetRecommendationViewModel.UiState.ErrorKind.OUTSIDE_COVERAGE ->
+        ErrorLook(Icons.Outlined.LocationOff, R.string.title_rec_outside, retry = false)
+    GetRecommendationViewModel.UiState.ErrorKind.OFFLINE ->
+        ErrorLook(Icons.Outlined.CloudOff, R.string.title_rec_offline, retry = true)
+    GetRecommendationViewModel.UiState.ErrorKind.BUSY ->
+        ErrorLook(Icons.Outlined.HourglassEmpty, R.string.title_rec_busy, retry = true)
+    GetRecommendationViewModel.UiState.ErrorKind.INPUT ->
+        ErrorLook(Icons.Outlined.EditNote, R.string.title_rec_input, retry = false)
+    GetRecommendationViewModel.UiState.ErrorKind.PROFILE ->
+        ErrorLook(Icons.Outlined.PersonOutline, R.string.title_rec_profile, retry = false)
+    GetRecommendationViewModel.UiState.ErrorKind.NO_ADVICE ->
+        ErrorLook(Icons.Outlined.Info, R.string.title_rec_none, retry = false)
+    GetRecommendationViewModel.UiState.ErrorKind.UNKNOWN ->
+        ErrorLook(Icons.Outlined.Info, R.string.lbl_could_not_get_advice, retry = true)
 }
