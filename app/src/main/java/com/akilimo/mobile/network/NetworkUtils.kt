@@ -62,14 +62,20 @@ object NetworkUtils {
 }
 
 private const val DETAIL_MAX_CHARS = 240
-private const val DETAIL_MESSAGE_MAX_CHARS = 160
+private const val DETAIL_HTTP_MAX_CHARS = 400
+private const val BODY_MAX_CHARS = 4000
 private val WHITESPACE = Regex("\\s+")
 private val DECIMAL_NUMBER = Regex("-?\\d+\\.\\d{2,}")
 
 /**
+ * Hides decimal numbers, which in an API message are the farm's coordinates. The farmer sees the full detail on their
+ * own screen; copies sent to Sentry go through this first.
+ */
+fun String.redactDecimals(): String = replace(DECIMAL_NUMBER, "\u2026")
+
+/**
  * One line a farmer can read out or paste to support when advice does not arrive: the failure type and its message
  * (for example `UnknownHostException: Unable to resolve host ...`), then the cause when it differs.
- * Never holds a request or response body.
  */
 fun Throwable.technicalDetail(): String {
     val root = cause?.takeIf { it !== this }
@@ -79,20 +85,25 @@ fun Throwable.technicalDetail(): String {
 }
 
 /**
- * Technical line for a failed HTTP answer: status, method and path (no query string, so no keys or signatures), plus
- * the API's own machine fields when it sent them: `code`, a short `message` and the names (not values) of invalid fields.
+ * Technical facts for a failed HTTP answer, one per ` \u00B7 ` separator: status, method and path (no query string, so
+ * no keys or signatures), plus the API's `code` and the names of invalid fields. The error body itself travels
+ * separately (see [cappedBody]) so the screen can show it as formatted JSON.
  */
 fun Response<*>.technicalDetail(error: ApiErrorResponse? = null): String {
     val request = raw().request
     val parts = mutableListOf("HTTP ${code()} ${request.method} ${request.url.encodedPath}")
     error?.code?.let { parts += "code=$it" }
-    // The free text only helps when there is no machine code, and it can quote the farm's coordinates: those are hidden
-    if (error?.code == null) {
-        error?.message?.takeIf { it.isNotBlank() }
-            ?.let { parts += "message=${it.replace(DECIMAL_NUMBER, "\u2026").take(DETAIL_MESSAGE_MAX_CHARS)}" }
-    }
     error?.errors?.keys?.takeIf { it.isNotEmpty() }?.let { parts += "fields=${it.joinToString(",")}" }
-    return parts.joinToString(" \u00B7 ").replace(WHITESPACE, " ").take(DETAIL_MAX_CHARS)
+    return parts.joinToString(" \u00B7 ").take(DETAIL_HTTP_MAX_CHARS)
+}
+
+/** The error body as the API sent it, trimmed and capped so a huge error page cannot fill the screen. */
+fun String.cappedBody(): String = trim().take(BODY_MAX_CHARS)
+
+/** Parses the API's error JSON; null when it is not that shape (for example an HTML error page from a proxy). */
+fun parseApiError(rawBody: String?): ApiErrorResponse? {
+    if (rawBody.isNullOrBlank()) return null
+    return runCatching { Moshi.Builder().build().adapter(ApiErrorResponse::class.java).fromJson(rawBody) }.getOrNull()
 }
 
 fun <T> Response<T>.parseError(): ApiErrorResponse? {

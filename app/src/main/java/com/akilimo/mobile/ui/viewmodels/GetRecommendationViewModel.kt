@@ -8,6 +8,7 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.network.dto.ReportKind
+import com.akilimo.mobile.network.cappedBody
 import com.akilimo.mobile.network.logRecommendationFailureEvent
 import com.akilimo.mobile.network.reportRecommendationFailure
 import com.akilimo.mobile.network.technicalDetail
@@ -23,7 +24,7 @@ import com.akilimo.mobile.network.dto.RecommendationResponse
 import com.akilimo.mobile.network.request.RecommendationRequest
 import com.akilimo.mobile.repos.account.SavedAdviceRepo
 import com.akilimo.mobile.network.ApiClient
-import com.akilimo.mobile.network.parseError
+import com.akilimo.mobile.network.parseApiError
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.RecommendationBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -73,6 +74,8 @@ class GetRecommendationViewModel @Inject constructor(
             @param:StringRes val messageRes: Int,
             val technicalDetail: String? = null,
             val kind: ErrorKind = ErrorKind.UNKNOWN,
+            /** The API's error body as sent (JSON or text), shown formatted under the details. */
+            val technicalBody: String? = null,
         ) : UiState
 
         /** Why advice could not be shown; the screen picks a calm icon, title and action for each. */
@@ -155,7 +158,9 @@ class GetRecommendationViewModel @Inject constructor(
                     }
                 } else {
                     // Never show the raw server message: it is English-only and technical
-                    val errorBody = result.parseError()
+                    // The body can be read once: keep the text for the technical details and parse it for the kind
+                    val rawBody = runCatching { result.errorBody()?.string() }.getOrNull()
+                    val errorBody = parseApiError(rawBody)
                     val outsideCoverage = errorBody?.isOutsideCoverage == true
                     val kind = if (outsideCoverage) UiState.ErrorKind.OUTSIDE_COVERAGE else errorKindForHttpCode(result.code())
                     _uiState.value = failure(
@@ -165,6 +170,7 @@ class GetRecommendationViewModel @Inject constructor(
                         result.technicalDetail(errorBody),
                         status = result.code(),
                         apiCode = errorBody?.code,
+                        body = rawBody?.cappedBody(),
                     )
                 }
             } catch (e: CancellationException) {
@@ -189,6 +195,7 @@ class GetRecommendationViewModel @Inject constructor(
         status: Int? = null,
         apiCode: String? = null,
         cause: Throwable? = null,
+        body: String? = null,
     ): UiState.Error {
         val calm = kind != UiState.ErrorKind.UNKNOWN
         val reference = reportRecommendationFailure(
@@ -199,10 +206,11 @@ class GetRecommendationViewModel @Inject constructor(
             apiCode = apiCode,
             cause = cause,
             throttle = kind == UiState.ErrorKind.OFFLINE || kind == UiState.ErrorKind.BUSY,
+            body = body,
         )
         logRecommendationFailureEvent(context, kind.name.lowercase(), status, apiCode)
         val full = if (reference == null) detail else "$detail \u00B7 ref=$reference"
-        return UiState.Error(messageRes, full, kind)
+        return UiState.Error(messageRes, full, kind, body?.takeIf { it.isNotBlank() })
     }
 
     /** Keeps a copy on the phone for the saved-advice list; the server saved its own when the token was valid. */

@@ -66,6 +66,7 @@ fun reportError(e: Throwable) {
 }
 
 private const val REFERENCE_LENGTH = 8
+private const val SENTRY_BODY_MAX_CHARS = 2000
 private const val ANALYTICS_VALUE_MAX = 100
 
 /**
@@ -98,6 +99,7 @@ fun reportRecommendationFailure(
     apiCode: String? = null,
     cause: Throwable? = null,
     throttle: Boolean = false,
+    body: String? = null,
 ): String? {
     if (cause?.isCancellation() == true) return null
     if (throttle && !allowEvent("recommendation:$kind:${status ?: ""}:${apiCode ?: ""}")) return null
@@ -108,7 +110,8 @@ fun reportRecommendationFailure(
         s.setTag("failure.kind", kind)
         status?.let { s.setTag("http.status", it.toString()) }
         apiCode?.let { s.setTag("api.code", it) }
-        s.setExtra("technical_detail", detail)
+        s.setExtra("technical_detail", detail.redactDecimals())
+        body?.let { s.setExtra("response_body", it.redactDecimals().take(SENTRY_BODY_MAX_CHARS)) }
     }
     val id = if (cause != null) {
         Sentry.captureException(cause, scope)

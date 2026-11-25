@@ -8,11 +8,15 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -52,6 +56,7 @@ fun StateMessage(
     isError: Boolean = false,
     hint: String? = null,
     technicalDetail: String? = null,
+    technicalBody: String? = null,
     actionLabel: String? = null,
     onAction: () -> Unit = {},
 ) {
@@ -84,7 +89,7 @@ fun StateMessage(
                 textAlign = TextAlign.Center,
             )
         }
-        if (technicalDetail != null) TechnicalDetail(technicalDetail)
+        if (technicalDetail != null) TechnicalDetail(technicalDetail, technicalBody)
         if (actionLabel != null) {
             Button(onClick = onAction, shape = MaterialTheme.shapes.medium) { Text(actionLabel) }
         }
@@ -93,15 +98,19 @@ fun StateMessage(
 
 /**
  * The raw failure under an error message, built to be read out or pasted to support: a tonal card with a header and a
- * copy button, then the facts in a selectable code block, one per line. The copy adds the app version.
+ * copy button, then the facts in a selectable code block, one per line, then the API's error body as indented,
+ * coloured JSON. The copy holds the app version, the facts and the same indented JSON.
  */
 @Composable
-private fun TechnicalDetail(detail: String) {
+private fun TechnicalDetail(detail: String, body: String?) {
     val context = LocalContext.current
     val copied = stringResource(R.string.msg_details_copied)
     val label = stringResource(R.string.lbl_technical_details)
     val copyLabel = stringResource(R.string.lbl_copy_details)
     val facts = remember(detail) { detail.split(DETAIL_SEPARATOR) }
+    // JSON gets indented and coloured; anything else (an HTML error page) is shown as plain text
+    val pretty = remember(body) { body?.let { prettyJson(it) } }
+    val bodyText = pretty ?: body
 
     Surface(
         shape = MaterialTheme.shapes.medium,
@@ -126,10 +135,12 @@ private fun TechnicalDetail(detail: String) {
                 )
                 IconButton(
                     onClick = {
+                        val text = buildString {
+                            append("AKILIMO ${BuildConfig.VERSION_NAME}$DETAIL_SEPARATOR$detail")
+                            if (bodyText != null) append("\n\n").append(bodyText)
+                        }
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        clipboard.setPrimaryClip(
-                            ClipData.newPlainText(label, "AKILIMO ${BuildConfig.VERSION_NAME}$DETAIL_SEPARATOR$detail")
-                        )
+                        clipboard.setPrimaryClip(ClipData.newPlainText(label, text))
                         Toast.makeText(context, copied, Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier.size(36.dp),
@@ -141,24 +152,21 @@ private fun TechnicalDetail(detail: String) {
                     )
                 }
             }
-            Surface(
-                shape = MaterialTheme.shapes.small,
-                color = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                SelectionContainer {
-                    Column(
-                        modifier = Modifier.padding(AkilimoSpacing.xs),
-                        verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xxs),
-                    ) {
-                        facts.forEach { fact ->
-                            Text(
-                                text = fact,
-                                style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-                            )
-                        }
+            CodeBlock {
+                facts.forEach { fact ->
+                    Text(text = fact, style = codeStyle())
+                }
+            }
+            if (bodyText != null) {
+                Text(
+                    text = stringResource(R.string.lbl_technical_response),
+                    style = MaterialTheme.typography.labelSmall,
+                )
+                CodeBlock(scrollable = true) {
+                    if (pretty != null) {
+                        Text(text = rememberJsonText(pretty), style = codeStyle())
+                    } else {
+                        Text(text = bodyText, style = codeStyle())
                     }
                 }
             }
@@ -170,5 +178,31 @@ private fun TechnicalDetail(detail: String) {
     }
 }
 
+/** A bordered, selectable code area on the plain surface; [scrollable] caps its height for long bodies. */
+@Composable
+private fun CodeBlock(scrollable: Boolean = false, content: @Composable ColumnScope.() -> Unit) {
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        color = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        SelectionContainer {
+            Column(
+                modifier = Modifier
+                    .then(if (scrollable) Modifier.heightIn(max = DETAIL_BODY_MAX_HEIGHT).verticalScroll(rememberScrollState()) else Modifier)
+                    .padding(AkilimoSpacing.xs),
+                verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.xxs),
+                content = content,
+            )
+        }
+    }
+}
+
+@Composable
+private fun codeStyle() = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace)
+
 private const val DETAIL_SEPARATOR = " \u00B7 "
 private val DETAIL_MAX_WIDTH = 420.dp
+private val DETAIL_BODY_MAX_HEIGHT = 240.dp

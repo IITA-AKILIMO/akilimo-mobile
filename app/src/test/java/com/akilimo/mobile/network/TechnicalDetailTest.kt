@@ -70,23 +70,33 @@ class TechnicalDetailTest {
     }
 
     @Test
-    fun `a machine code replaces the free text so coordinates are never shown`() {
-        val error = ApiErrorResponse(
-            error = "Bad Request",
-            message = "No recommendation data available for lat=-9.287, lon=39.107 in TZ",
-            status = 400,
-            code = "outside_coverage",
-        )
-        val detail = failed(400).technicalDetail(error)
-        assertEquals("HTTP 400 POST /v1/recommendations/compute · code=outside_coverage", detail)
+    fun `http detail holds the facts and leaves the body out`() {
+        val body = """{"message": "No data for lat=-9.287", "code": "outside_coverage"}"""
+        val detail = failed(400).technicalDetail(parseApiError(body))
+
+        assertEquals("HTTP 400 POST /v1/recommendations/compute \u00B7 code=outside_coverage", detail)
+        assertFalse(detail.contains("lat="))
     }
 
     @Test
-    fun `free text without a code has its decimal numbers hidden`() {
-        val error = ApiErrorResponse(message = "No data for lat=-9.287, lon=39.107")
-        val detail = failed(400).technicalDetail(error)
-        assertTrue(detail.contains("message=No data for lat=…, lon=…"))
-        assertFalse(detail.contains("9.287"))
+    fun `a huge body is trimmed and capped`() {
+        val capped = ("  <html>" + "x".repeat(10_000) + "</html>  ").cappedBody()
+
+        assertTrue(capped.startsWith("<html>xxx"))
+        assertEquals(4000, capped.length)
+    }
+
+    @Test
+    fun `copies sent to sentry hide decimal numbers such as coordinates`() {
+        val hidden = "message=No data for lat=-9.287, lon=39.107, zoom 12".redactDecimals()
+
+        assertEquals("message=No data for lat=\u2026, lon=\u2026, zoom 12", hidden)
+    }
+
+    @Test
+    fun `an unreadable or missing error body gives no parsed error`() {
+        assertEquals(null, parseApiError(null))
+        assertEquals(null, parseApiError("<html>Bad gateway</html>"))
     }
 
     @Test

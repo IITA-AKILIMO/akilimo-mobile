@@ -360,6 +360,7 @@ fun GetRecommendationScreen(useCase: EnumUseCase, navController: NavHostControll
                         message = stringResource(s.messageRes),
                         isError = false,
                         technicalDetail = s.technicalDetail,
+                        technicalBody = s.technicalBody,
                         actionLabel = stringResource(if (canRetry) R.string.lbl_retry else R.string.lbl_back),
                         onAction = {
                             if (canRetry) viewModel.fetchRecommendation(useCase) else navController.popBackStackSafely()

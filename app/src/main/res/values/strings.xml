@@ -47,5 +47,6 @@
     <string name="lbl_technical_details">Technical details</string>
     <string name="lbl_copy_details">Copy details</string>
     <string name="msg_details_copied">Details copied</string>
+    <string name="lbl_technical_response">Server response</string>
     <string name="msg_details_share_hint">Share this when you report a problem.</string>
 </resources>
