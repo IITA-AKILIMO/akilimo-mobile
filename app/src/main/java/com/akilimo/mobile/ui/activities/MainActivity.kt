@@ -28,6 +28,7 @@ import com.akilimo.mobile.navigation.LegalWizardRoute
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.akilimo.mobile.navigation.HubRoute
 import com.akilimo.mobile.navigation.OnboardingRoute
+import com.akilimo.mobile.ui.screens.update.AppUpdateHost
 import com.akilimo.mobile.ui.theme.AkilimoTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -134,11 +135,13 @@ class MainActivity : ComponentActivity() {
             val signedIn = session?.consentRequired == false
 
             AkilimoTheme(darkTheme = darkTheme, textScale = textScale, signedIn = signedIn) {
-                AkilimoNavHost(
-                    startDestination = startRoute,
-                    notificationTarget = notificationTarget,
-                    onTargetHandled = { notificationTarget = null },
-                )
+                AppUpdateHost {
+                    AkilimoNavHost(
+                        startDestination = startRoute,
+                        notificationTarget = notificationTarget,
+                        onTargetHandled = { notificationTarget = null },
+                    )
+                }
             }
         }
     }

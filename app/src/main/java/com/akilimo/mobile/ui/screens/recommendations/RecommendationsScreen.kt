@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -56,7 +57,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.activity.compose.LocalActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelStoreOwner
+import com.akilimo.mobile.ui.viewmodels.AppUpdateViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
@@ -89,6 +93,10 @@ private fun EnumAdvice.icon(): ImageVector = when (this) {
 fun RecommendationsScreen(navController: NavHostController) {
     val viewModel = hiltViewModel<RecommendationsViewModel>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    // Onboarding is a one-time step that can take long after the launch check: ask the server again when advice is opened.
+    // The activity-wide view model is the one the update prompts listen to.
+    val updateViewModel = hiltViewModel<AppUpdateViewModel>(LocalActivity.current as ViewModelStoreOwner)
+    LaunchedEffect(Unit) { updateViewModel.recheck(minIntervalMs = 60_000L) }
     RecommendationsContent(
         uiState = state,
         onAdviceClick = { option ->
