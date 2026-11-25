@@ -9,7 +9,8 @@ import org.junit.Test
 
 class ReportDtoTest {
 
-    private val base = "https://api.akilimo.org/"
+    // A reserved .test host: no real API address in test code
+    private val base = "https://api.example.test/"
 
     private fun report(vararg files: Pair<String, String>) = ReportDto(
         id = "r1",
@@ -22,7 +23,7 @@ class ReportDtoTest {
             .downloadLinks(base)
 
         assertEquals(
-            "https://api.akilimo.org/v1/recommendations/reports/r1/fertilizer_advice.pdf?expires=1&signature=abc",
+            "${base}v1/recommendations/reports/r1/fertilizer_advice.pdf?expires=1&signature=abc",
             links[ReportKind.FERTILIZER],
         )
     }
