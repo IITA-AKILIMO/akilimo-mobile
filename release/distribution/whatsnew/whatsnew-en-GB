@@ -1,6 +1,5 @@
-Bug fixes and performance improvements.
+Clearer messages when advice cannot be loaded.
 
-- Improved app stability and reliability
-- Enhanced user interface experience
-- Optimized background processes
-- Fixed minor issues reported by users
+- Calmer, easier-to-understand messages when AKILIMO cannot give advice, for example when you are offline or your field is outside the supported area
+- New "Technical details" box that you can copy and share when you report a problem
+- Fixed: a field outside the supported area now shows the right message
