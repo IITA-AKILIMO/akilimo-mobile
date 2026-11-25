@@ -22,8 +22,8 @@ class GetRecommendationViewModelTest {
 
     @Test
     fun `other errors fall back to the generic message`() {
-        assertEquals(R.string.error_fetch_recommendation, GetRecommendationViewModel.errorMessageForHttpCode(404))
-        assertEquals(R.string.error_fetch_recommendation, GetRecommendationViewModel.errorMessageForHttpCode(401))
+        assertEquals(R.string.error_rec_unknown, GetRecommendationViewModel.errorMessageForHttpCode(404))
+        assertEquals(R.string.error_rec_unknown, GetRecommendationViewModel.errorMessageForHttpCode(401))
     }
 
     @Test

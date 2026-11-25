@@ -7,29 +7,1173 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Bug Fixes
 
-- **Full Jetpack Compose Migration**: Eliminated all legacy XML layouts and View-based Fragments/Activities in favor of a 100% Compose-driven UI.
-- **Material 3 Redesign**: Complete application overhaul using Material 3 design system, featuring custom themes, typography, and Jetsnack-inspired UI patterns.
-- **Hilt Dependency Injection**: Introduced Hilt (Dagger 2.57.1) for modern dependency injection across all ViewModels, repositories, and activities.
-- **Single-Activity Architecture**: Migrated to a single-Activity host (`MainActivity`) using Jetpack Compose Navigation with type-safe `@Serializable` routes.
-- **Preferences DataStore**: Replaced all legacy `SharedPreferences` with `androidx.datastore:datastore-preferences`, providing a reactive, `Flow`-based single source of truth for app settings.
-- **Proper Room Migrations**: Replaced `fallbackToDestructiveMigration()` with manual, safe SQL migrations and bumped database versioning to preserve user data during schema changes.
-- **Native Locale APIs**: Replaced third-party libraries (`AppLocale`, `Reword`) with native `AppCompatDelegate.setApplicationLocales()` and Compose `stringResource`.
-- **Enhanced Edge-to-Edge**: Implemented modern `enableEdgeToEdge()` with proper `navigationBarsPadding` and `contentWindowInsets` handling across all screens.
+- Fix(html): update terms page copyright information
 
-### Changed
+- Fix(icon): invert launcher icon to Gmail-style green symbol on white
 
-- **Onboarding Redesign**: Replaced the legacy step-based wizard with a modern, single-scrollable form UX in the onboarding flow.
-- **ViewModel Standardization**: Every screen now uses an `@HiltViewModel` exposing a single `StateFlow<UiState>` and a `Flow<Effect>` for one-shot side effects.
-- **Repository Pattern**: Standardized all data access through the repository layer, removing direct DAO calls from UI components.
-- **Navigation Flow**: Standardized navigation to pass only primitive IDs in routes, with ViewModels loading full entities from repositories.
+Swap background/foreground colours: white background layer + AKILIMO
+green (#3D7600) cassava head foreground, giving a coloured-mark-on-
+neutral look (similar to Gmail) instead of the previous white-on-green.
+Monochrome layer unchanged.
 
-### Removed
+Co-Authored-By: munywele-sonar <noreply@sonar.com>
 
-- **Legacy Libraries**: Removed `material-stepper`, `reword`, `app-locale`, `viewpump`, `ProcessPhoenix`, and `country-code-picker`.
-- **Legacy Components**: Deleted all XML layouts, ViewBinding-generated classes, and legacy `BaseFragment`/`BaseStepFragment`.
-- **Redundant Navigation**: Removed XML-based NavGraphs (`nav_graph.xml`, `nav_recommendations.xml`).
+- Fix(drawable): update ic_grid.xml tint color
+
+- Fix/cleanup 
+
+- Fix(di): correct context annotation targeting
+
+- Fix(fertilizer): correct repository DAO method calls
+
+- Fix(repo): restore CIM/CIS DAO filtering and fix rec language default
+
+Restores observeByCimAvailable/observeByCisAvailable to use the correct
+SQL-filtered DAO queries instead of the unfiltered observeAllByCountry.
+Fixes recommendationLanguage UiState default from "" to "en" to prevent
+blank display in SummaryStep.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix(db): correct migration version range
+
+
+### Code Refactoring
+
+- Refactor(theme): strip XML theme to minimal base; improve adaptive app icon
+
+Compose owns all theming via AkilimoTheme — the XML theme now only
+suppresses the ActionBar and sets windowBackground to prevent white flash.
+Removes all widget, typography, shape, and toolbar styles from XML (262 to 9
+lines in themes.xml) and deletes the now-redundant type.xml.
+
+App icon updated to branded adaptive icon:
+- Background: AKILIMO green (#3D7600) replacing plain white
+- Foreground: white cassava head (from ic_akilimo_head) scaled 3x into
+  the 72dp safe zone, replacing the poorly offset lime-coloured version
+- Monochrome layer added for Android 13+ dynamic-colour themed icons
+- mipmap-anydpi-v26 adaptive icon XML added (was missing entirely)
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Refactor(ui): extract recommendation feedback copy
+
+- Refactor(settings): extract weather summary strings
+
+- Refactor(viewmodels): extract validation and worker messages
+
+- Refactor(packages): consolidate package structure — phases 1–3
+
+Dissolve 5 misplaced or single-file packages and relocate all files to
+semantically correct destinations. No logic changes; all unit tests pass.
+
+Packages dissolved:
+- wizard/        → ui/screens/onboarding/ (OnboardingSection)
+- interfaces/    → enums/ (ILabelProvider, IProduceType) + base/workers/ (IDispatcherProvider)
+- helper/        → workers/ (WorkStateMapper, WorkerError) + data/ (LocaleHelper)
+- extensions/    → workers/ (WorkerExtensions)
+- ui/viewmodels/usecases/ → ui/viewmodels/ (FertilizerViewModel flattened)
+
+Files moved to correct packages:
+- dao/MaizePerformanceRepo, dao/ProduceMarketRepo → repos/
+- base/BaseEntity → entities/
+- utils/Converters → database/
+- utils/GeocodingService, utils/WeatherService, utils/LocationHelper → network/
+- utils/RecommendationBuilder → repos/
+- utils/AnimationHelper deleted (zero callers in Compose-only codebase)
+
+Import sites updated across ~40 files. docs/ and CLAUDE.md updated to
+reflect current package layout and correct DB version (v5).
+
+Co-Authored-By: munywele-sonar <noreply@sonar.com>
+
+- Refactor(packages): consolidate remote-data layer — phase 4
+
+Merge rest/ into network/ and split dto/ into API-layer vs UI-layer,
+fulfilling the CLAUDE.md guardrail: all remote-data code now lives under network/.
+
+rest/ dissolved:
+- rest/request/ → network/request/ (ComputeRequest, FertilizerRequest, RecommendationRequest, UserInfo)
+- rest/response/ → network/response/ (ReverseGeocodeResponse, WeatherResponse)
+- rest/ directory deleted
+
+dto/ split:
+- API-layer DTOs (Moshi-annotated, .toEntity() methods) → network/dto/
+  (Fertilizers, FertilizerPrices, CassavaPrices, CassavaUnits, InvestmentAmounts,
+   MaizePrices, StarchFactories, Pagination, RecommendationResponse, UserFeedBackRequest,
+   CurrencyDto)
+- UI/domain DTOs remain in dto/
+  (AdviceCompletionDto, Options, OptionEntries)
+
+Import sites updated: AkilimoApi, NetworkUtils, GeocodingService, LocationIqApi,
+WeatherApi, RecommendationBuilder, GetRecommendationViewModel.
+
+Build and all unit tests pass.
+
+Co-Authored-By: munywele-sonar <noreply@sonar.com>
+
+- Refactor(dto): consolidate recommendation response structure
+
+- extract shared recommendation data into dedicated class
+- update request model to include language field
+- improve type safety and validation
+
+- Refactor(ui): consolidate recommendations screen components
+
+- extract advice options and navigation logic into dedicated composable
+- remove duplicated navigation handlers and route mappings
+- improve component reusability and maintainability
+
+- Refactor(dto): consolidate paged response wrappers
+
+
+### Documentation
+
+- Docs: update changelog
+
+- Docs: remove obsolete settings.json configuration
+
+- Docs: remove unused integer resource
+
+- Docs: add architecture cleanup plan
+
+Introduce a comprehensive roadmap for refactoring the Android app
+structure to improve maintainability and reduce package sprawl.
+
+Closes #256
+
+- Docs: remove architecture cleanup and audit plans
+
+Delete `ARCHITECTURE_CLEANUP_PLAN.md`, `PACKAGE_AUDIT_CHECKLIST.md`, and
+`UI_REDESIGN_PLAN.md` to reflect the completion of the structural
+reorganization.
+
+These documents were used to track the migration to feature-oriented
+packaging and navigation splitting which are now finalized.
+
+- Docs: update architecture and development guides
+
+Update documentation to reflect the completed Jetpack Compose migration,
+Room v5 schema changes, and standardized ViewModel state patterns.
+
+Closes #475
+
+- Docs: create package structure improvement plan
+
+Add a detailed four-phase execution plan to resolve structural issues
+in the package layout and align with target architecture.
+
+- Docs: add Mapbox to MapLibre migration guide
+
+
+### Features
+
+- Feat: migrate from XML-based layouts to Jetpack Compose 
+
+## Summary
+
+- Replace all legacy XML-based Activities and Fragments with Jetpack
+Compose screens using Material3
+- Adopt single-Activity architecture (`MainActivity`) with a type-safe
+`NavHost` replacing Intent-based navigation
+- All ViewModels updated to inject `AppSettingsDataStore` directly (no
+`userName` params on public methods)
+- Result passing between screens done via `savedStateHandle` (consistent
+pattern throughout)
+
+## Screens migrated (32 Compose screens)
+
+**Onboarding wizard**
+- `OnboardingScreen` + 11 step composables (Welcome, Disclaimer, Terms,
+BioData, Country, Location, AreaUnit, PlantingDate, Tillage,
+InvestmentPref, Summary)
+
+**Recommendations**
+- `RecommendationsScreen`, `UseCaseScreen`, `GetRecommendationScreen`,
+`FeedbackBottomSheet`, `TaskItemCard`
+
+**Settings**
+- `UserSettingsScreen`, `LocationPickerScreen` (Mapbox map embedded via
+`AndroidView`)
+
+**Use-case forms**
+- `FertilizerScreen` (shared by FR / CIM / CIS flows via
+`@AssistedInject`)
+- `InvestmentAmountScreen`, `CassavaYieldScreen`,
+`MaizePerformanceScreen`
+- `CassavaMarketScreen`, `MaizeMarketScreen`, `SweetPotatoMarketScreen`
+- `DatesScreen` (Material3 `DatePickerDialog`, no FragmentManager)
+- `ManualTillageCostScreen`, `TractorAccessScreen`,
+`WeedControlCostsScreen`
+
+## Deleted (legacy)
+
+- 30+ Activities and Fragments: `HomeStepperActivity`, all onboarding
+Fragments, all recommendation Activities/Fragments, all use-case form
+Activities, `LocationPickerActivity`, `UserSettingsActivity`,
+`WeedManagementActivity`
+- Base classes no longer needed: `AbstractRecommendationActivity`,
+`AbstractRecommendationFragment`, `BaseStepFragment`, `WizardAdapter`
+
+## Shared Compose components added
+
+`AkilimoTextField`, `AkilimoDropdown`, `WizardBottomBar`,
+`ExitConfirmDialog`
+
+## Test plan
+
+- [x] Fresh install: onboarding wizard completes end-to-end and
+navigates to Recommendations
+- [x] Language change in Settings persists after app restart
+- [x] Dark mode toggle applies immediately
+- [x] Location picker (Mapbox) opens from onboarding LocationStep and
+returns coordinates
+- [x] Each use-case form (FR, PP, SP, CIM, CIS) opens all task screens
+and marks tasks complete
+- [x] Get Recommendation screen loads and displays results
+- [x] Feedback bottom sheet submits rating
+- [x] Back navigation works correctly throughout all screens
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+---------
+
+Co-authored-by: munywele-sonar <noreply@github.com>
+Co-authored-by: munywele-sonar <munywele-sonar@users.noreply.github.com>
+Co-authored-by: munywele-sonar <noreply@sonar.com>
+Co-authored-by: Claude Opus 4.6 <noreply@anthropic.com>
+Co-authored-by: munywele-sonar <noreply@munywele.co.ke>
+
+- Feat(assets): add MapBox terms link
+
+- Feat(drawable): update ic_akilimo_head.xml color value to use a hex code instead of a color resource
+
+- Feat(package-audit): implement concrete package audit checklist for helper, utils, interfaces, extensions, wizard, network, and rest packages.
+
+- Feat(build.gradle.kts): add AndroidX Compose UI test dependencies
+
+- Feat(build.gradle.kts): add AndroidX Compose UI test dependencies 
+
+- Feat(db): update database schema version 6 with new user fields
+
+- add recommendation_language and weed_control_method fields to akilimo_users table
+- update identity hash for database version 6
+- maintain backward compatibility with existing schema structure
+
+- Feat(db): add recommendation_language column to akilimo_users table
+
+The migration adds a new column to store the recommendation language preference for users, which will be used to pre-fill the BPP weed-control use-case screen during onboarding. This change updates the database schema from version 5 to 6 with the necessary migration logic.
+
+- Feat(recommendation): add language preference
+
+- Feat(db): add recommendation language preference to user entity
+
+- Feat(i18n): add recommendation language strings
+
+- Feat(onboarding): add recommendation language field
+
+- Feat(onboarding): add recommendation language preference
+
+- Feat(dto): add cis and cim availability flags
+
+- Feat!(network): add required X-Api-Key authentication header
+
+BREAKING CHANGE: All API requests now include X-Api-Key header.
+This is a behavioral change that will cause API requests to fail
+if the backend requires this header and AKILIMO_API_KEY is not
+configured.
+
+Migration:
+- Set AKILIMO_API_KEY in .env or gradle.properties
+- For CI: add AKILIMO_API_KEY to repository secrets
+- The header is automatically redacted in debug logging
+
+- Feat: update to new API structure with recommendation language support 
+
+
+### Miscellaneous Tasks
+
+- Chore(cleanup): remove legacy View-era resource files
+
+Delete 26 drawable/menu/animator resources that were never referenced
+after the full Jetpack Compose migration . Includes:
+- 18 unused drawables (bg_*, ic_* icons superseded by Material Icons)
+- 2 legacy menu XMLs (toolbar_menu, menu_fertilizers)
+- 1 unused animator (card_elevation_animator)
+- lbl_toggle_layout string removed from all 3 locale files
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+-  chore(res): strip colors.xml to only referenced entries
+
+  Remove 130+ unused color definitions — Compose owns all theming via
+  AkilimoTheme. Only 6 colors remain: color_background and
+  color_dark_background (themes.xml), color_primary/variant/light
+  (ic_fertilizer_bag.xml), and color_on_background (ic_list.xml).
+
+  Co-Authored-By: munywele-sonar <noreply@sonar.com>
+
+-   chore(res): delete dimens.xml — no references in Compose codebase
+
+  All spacing and font sizes are defined inline in Kotlin/Compose.
+  No @dimen/ or R.dimen. references exist anywhere in the project.
+
+  Co-Authored-By: munywele-sonar <noreply@sonar.com>
+
+- Chore(res): delete arrays.xml — no references in Compose codebase
+
+units_grain and units_cobs string-arrays have no @array/ or R.array.
+references anywhere; Compose screens define their own data inline.
+
+Co-Authored-By: munywele-sonar <noreply@sonar.com>
+
+- Chore(resources): add extracted UI string resources
+
+- 📝 docs: add package placement guardrails
+
+Update development guidelines to restrict the use of generic packages
+and encourage feature-specific code organization.
+
+- 📝 docs(viewmodel): update architecture cleanup plan
+
+Update documentation to reflect the new feature-specific packaging
+strategy for ViewModels and mark the initial migration as complete.
+
+- 📝 docs: update ci status badges in readme
+
+Add specific badges for unit tests, APK building, and Sonar analysis.
+This provides clearer visibility of the individual CI workflow states.
+
+- 📝 docs: update ci status badges in readme 
+
+- Chore(build): add AKILIMO_API_KEY configuration and CI secret
+
+
+### Styling
+
+- Style: reorganize strings.xml and add section headers
+
+Group related string resources into logical categories using XML comments. This improves maintainability and makes it easier to locate specific UI labels.
+
+- Style(ui): reorder and group strings.xml resources
+
+Reorganize string resources into logical sections and improve grouping
+to enhance maintainability and translation workflow.
+
+
+## [31.2.0] - 2026-03-21
+
+### Documentation
+
+- Docs: update changelog
+
+
+### Features
+
+- Feat: pre-fill BPP screens from onboarding tillage selections
+
+- TillageOperationFragment.verifyStep() now also writes to CurrentPractice
+  (performPloughing, ploughingMethod, performRidging, ridgingMethod,
+  weedControlMethod) so RecommendationBuilder has correct values
+  even before the user completes any BPP use-case screen
+- OnboardingViewModel: inject CurrentPracticeRepo and expose
+  saveCurrentPractice() / getCurrentPractice() for use during onboarding
+- TractorAccessViewModel.loadData(): pre-fill tractorAvailable=true when
+  AkilimoUser.tillageOperations shows TRACTOR was selected in onboarding
+  (falls back gracefully if BPP has already been filled)
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Feat: pre-fill BPP screens from onboarding tillage selections 
+
+- Feat: context-aware BPP screens and onboarding step status pre-fill
+
+- ManualTillageCostViewModel: load CurrentPractice to expose
+  performPloughing/performRidging in UiState
+- ManualTillageCostFragment + Activity: show/hide ploughing and ridging
+  sections based on what the user opted into during onboarding — if the
+  user said no ploughing, the ploughing cost field is hidden
+- AdviceCompletionRepo: add markInProgressIfNotCompleted() to safely
+  set a step to IN_PROGRESS without downgrading COMPLETED steps
+- OnboardingViewModel: inject AdviceCompletionRepo and expose
+  markStepInProgress()
+- TillageOperationFragment.verifyStep(): after writing CurrentPractice,
+  mark MANUAL_TILLAGE_COST, TRACTOR_ACCESS, and COST_OF_WEED_CONTROL
+  as IN_PROGRESS on the BPP screen based on the user's onboarding
+  selections, so the step badges reflect pre-filled data
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Feat: context-aware BPP screens and onboarding step status pre-fill 
+
+
+## [31.1.0] - 2026-03-21
+
+### Bug Fixes
+
+- Fix/ui 
+
+- Fix(database): replace fallbackToDestructiveMigration with proper migrations 
+
+- Remove fallbackToDestructiveMigration() — all upgrade paths from v2
+  are now covered by explicit Migration objects (MIGRATION_2_3,
+  MIGRATION_3_4)
+- Keep fallbackToDestructiveMigrationOnDowngrade() as a safety net for
+  downgrade scenarios only
+- Add Room schema drift check to CI: fails the build if app/schemas/
+  changes without the generated JSON being committed, preventing silent
+  schema/migration divergence
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Fix(database): replace fallbackToDestructiveMigration with proper Room migrations 
+
+- Fix(ui): highlight tapped item in cassava yield and maize performance screens
+
+CassavaYieldViewModel had two compounding bugs:
+- selectYield() persisted to selected_cassava_markets but yieldRepo.observeAll()
+  watches cassava_yields (different table) so it never re-emitted after selection
+- isSelected lives in BaseEntity outside the data class constructor, so StateFlow
+  equality checks blocked any update even when a new list was submitted
+
+Fix: use combine(yieldRepo.observeAll(), selectedRepo.observeSelected(userId)) so
+selection changes are reactive, track selectedYieldId: Int? in UiState (a proper
+data class field), add an optimistic _uiState.update in selectYield(), and enrich
+yields with copyWithSelection() in the Activity before submitting to the adapter.
+
+MaizePerformanceViewModel: MaizePerfOption.isSelected is a constructor param so
+the reactive chain works, but saveSelection() had no optimistic update causing a
+visible lag. Fix: immediately update options in _uiState before the DB write.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Fix(settings): update test command
+
+- Fix(nav): host recommendation fragments in full-size NavHostFragment
+
+The previous approach navigated to fragment destinations inside a 0dp×0dp
+container, so nothing was visible. Fix:
+- Introduce nav_recommendations.xml as a dedicated sub-graph with
+  RecommendationsFragment as startDestination
+- Replace activity_recommendations.xml content with a full-size NavHostFragment
+  pointing at nav_recommendations.xml
+- RecommendationsActivity becomes a thin shell; the NavHostFragment auto-starts
+  RecommendationsFragment
+- Restore nav_graph.xml to use the recommendationsActivity activity destination
+  so HomeStepperActivity still opens RecommendationsActivity in its own window
+
+Co-Authored-By: munywele-sonar <noreply@sonar>
+
+- Fix: replace onBackPressedDispatcher with findNavController().popBackStack() in recommendation fragments
+
+Back-navigation from use-case screens (Cassava Market, Maize Performance,
+User Settings) was skipping the recommendation sub-screen and landing on
+RecommendationsFragment. Routing through the Activity dispatcher triggered
+extra pop callbacks; using NavController directly ensures a single back step.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix: restore proper back navigation in recommendations flow
+
+BaseActivity registers its OnBackPressedCallback after NavHostFragment's,
+so it wins in LIFO order and was calling finish() instead of popping the
+nav graph. Fix:
+- RecommendationsActivity overrides handleBackPressed() to delegate to
+  NavController.popBackStack() so system back navigates within the graph
+- BaseFertilizerFragment registers its own OnBackPressedCallback so system
+  back still fires handleBackNavigation() (step status + fragment result)
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix: fix tillage/weeding questions and persist weed control method
+
+- TillageOperationFragment: PLOUGHING and RIDGING are now optional;
+  WEEDING row uses correct EnumWeedControlMethod options (Manual,
+  Herbicide, Both) instead of EnumOperationMethod (Tractor/Manual)
+- AkilimoUser: add weed_control_method column (DB migration 4→5)
+- WeedControlCostsViewModel.saveCosts() now persists the selected
+  weed control method to CurrentPractice — it was silently dropped
+- WeedControlCostsFragment + WeedControlCostsActivity: track selected
+  method and pass it through to saveCosts()
+- RecommendationBuilder: fall back to AkilimoUser.weedControlMethod
+  when CurrentPractice has no weed method yet (onboarding path)
+- SummaryFragment: display weeding method in Tillage Operations section
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+
+### Code Refactoring
+
+- Refactor(viewmodels): add ViewModels to all remaining screens 
+
+- Refactor(workflows): update unit test workflow configuration
+
+- Refactor(database): move AppDatabase to com.akilimo.mobile.database package
+
+Relocates AppDatabase from the root package into the database subpackage
+alongside DatabaseMigrations, and updates all 8 import sites accordingly.
+
+Co-Authored-By: munywele-sonar <noreply@sonar>
+
+- Refactor(database): move AppDatabase to com.akilimo.mobile.database package 
+
+
+### Documentation
+
+- Docs: update changelog
+
+- Docs: update changelog 
+
+
+### Features
+
+- Feat(navigation): introduce Jetpack NavGraph for top-level navigation 
+
+Add View-based Navigation Component infrastructure (Option A) replacing
+scattered Intent construction with typed navController.navigate() calls.
+
+- Add nav_graph.xml defining HomeStepperActivity → RecommendationsActivity
+  and RecommendationsActivity → 5 recommendation Activity destinations
+- Add NavRouterFragment (zero-size startDestination placeholder) to give
+  each host Activity a NavController without auto-launching any screen
+- Add hidden (0×0) NavHostFragment to activity_home_stepper and
+  activity_recommendations layouts
+- Replace openActivity(Intent(...)) in HomeStepperActivity with
+  navController.navigate(R.id.recommendationsActivity)
+- Replace 5 Intent-based branches in RecommendationsActivity with
+  navController.navigate(destId) via a when expression
+
+Option B : convert recommendation screens to Fragments.
+Option C : full single-Activity migration incl. onboarding wizard.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat(navigation): introduce Jetpack NavGraph for top-level navigation 
+
+- Feat(.github): update workflow references to .github-old
+
+- Feat(libs): update versions for androidx-core-ktx and material
+
+- Feat(nav): NavGraph Option B — convert recommendation screens to Fragments 
+
+Replaces Activity destinations in nav_graph.xml with Fragment destinations.
+Introduces AbstractRecommendationFragment as the base class mirroring
+AbstractRecommendationActivity, and adds RecommendationsFragment plus
+FrFragment, BppFragment, SphFragment, IcMaizeFragment, IcSweetPotatoFragment.
+
+HomeStepperActivity now navigates to recommendationsFragment via NavController.
+RecommendationsActivity is retained as a legacy fallback pending Option C removal.
+
+Closes #493
+
+Co-Authored-By: munywele-sonar <noreply@sonar>
+
+- Feat(nav): NavGraph Option B — convert recommendation screens to Fragments 
+
+- Feat(nav): Option C Phase 1+2 — use-case Fragments (no-result + result-returning)
+
+Phase 1 — fragments that save state directly to Room (no result):
+- CassavaYieldFragment
+- InvestmentAmountFragment
+- CassavaMarketFragment
+
+Phase 2 — fragments using Fragment Result API instead of setResult():
+- DatesFragment
+- WeedControlCostsFragment
+- TractorAccessFragment
+- ManualTillageCostFragment
+
+Introduces UseCaseResults constants (ADVICE_COMPLETION / ADVICE_COMPLETION_DTO)
+as the shared Fragment Result API key used by all result-returning use-case fragments.
+
+Co-Authored-By: munywele-sonar <noreply@sonar>
+
+- Feat(nav): Option C Phase 3+4 — fertilizer and settings Fragments
+
+Add BaseFertilizerFragment to mirror BaseFertilizerActivity, and create
+FertilizersFragment, InterCropFertilizersFragment,
+SweetPotatoInterCropFertilizersFragment, GetRecommendationFragment, and
+UserSettingsFragment. All use Fragment Result API, childFragmentManager,
+and viewLifecycleOwner as appropriate for Fragment hosting.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat(nav): Option C Phase 5 — wire use-case Fragments into NavGraph
+
+Replace ActivityResult launcher in AbstractRecommendationFragment with
+NavController navigation and Fragment Result API. Add
+AbstractProduceMarketFragment base class; create MaizeMarketFragment,
+SweetPotatoMarketFragment, and MaizePerformanceFragment. Update
+FrFragment, BppFragment, SphFragment, IcMaizeFragment, and
+IcSweetPotatoFragment to use mapTaskToDestination instead of
+mapTaskToIntent. Add all use-case fragment destinations to
+nav_recommendations.xml so the full flow is navgraph-driven.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat(nav): Option C — convert use-case Activities to NavGraph Fragments 
+
+
+### Miscellaneous Tasks
+
+- 👷 ci: make gradlew executable and rename workflow
+
+Grant execution permissions to the Gradle wrapper to prevent runner
+failures and simplify the workflow name for better visibility.
+
+- 👷 ci: make gradlew executable and rename workflow 
+
+- Ci: merge CI Gate into Unit Tests workflow and trigger on push
+
+Combines change detection and unit test jobs into a single workflow
+so the Unit Tests check registers directly on push/PR commits and can
+be used as a required status check in branch protection rules.
+Removes the now-redundant ci-gate.yml file.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- 🔧 chore: expand allowed bash commands in settings
+
+Add various Gradle, Git, and file search commands to the local Claude
+configuration. This enables the assistant to run tests, perform builds,
+and locate specific Android components more efficiently.
+
+- 👷 ci: optimize unit test workflow triggers
+
+Update workflow to run on pull requests only when relevant source code or
+build configuration files are modified.
+
+Closes #45
+
+- 👷 ci: update next release workflow action
+
+Replace the devops-infra pull request action with the peter-evans
+action to improve reliability and PR management.
+
+- 👷 ci: update and add release workflows
+
+Add a new release workflow and migrate the existing one to use the
+devops-infra pull request action to automate PR creation.
+
+- 👷 ci: reduce test artifact retention period
+
+Lower the retention days for unit test reports to save storage space.
+This ensures artifact cleanup happens more frequently.
+
+- 👷 ci(gradle): streamline unit test workflow
+
+Simplify the CI pipeline by removing redundant path filtering and
+implementing explicit Gradle caching to improve build reliability.
+
+- Ci: improve Gradle cache to prevent unnecessary unit test runs
+
+Replace two manual actions/cache steps (which had a broken build-cache key
+using github.sha — unique per commit, so it never restored) with
+gradle/actions/setup-gradle@v4, which correctly caches:
+  - Gradle wrapper distribution (~60 MB, re-downloaded every run before)
+  - Dependency jars and POM files
+  - AAR transforms (most expensive step, previously uncached)
+  - kapt/ksp annotation processor outputs
+  - Local Gradle build cache (content-addressed, not SHA-keyed)
+
+cache-read-only on feature branches: only develop writes to the shared
+cache, preventing cache poisoning from in-flight feature branches while
+still giving them full read access for fast restores.
+
+Remove redundant CLI flags from the test command:
+  --build-cache, --configuration-cache, --parallel are all set in
+  gradle.properties; --daemon replaced with --no-daemon (daemons waste
+  memory on ephemeral CI runners with no warm-up benefit).
+
+Add libs.versions.toml to path triggers (dependency version bumps should
+re-run tests). Add push trigger alongside pull_request so the workflow
+qualifies as a required status check for branch protection.
+
+Also remove stale commented-out duplicate entries from gradle.properties.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- 👷 ci: disable push trigger for unit tests
+
+Disable automatic unit test runs on every push to save CI resources.
+Tests will now only run during pull request workflows.
+
+- Ci: apply gradle/actions/setup-gradle caching to sonar workflow
+
+Same principle as the unit-test workflow:
+- Replace manual actions/cache step (which only cached ~/.gradle/caches,
+  missing wrapper distribution, AAR transforms, and ksp/kapt outputs)
+  with gradle/actions/setup-gradle@v4
+- cache-read-only: false — sonar runs on develop so it owns the cache
+  write; PR builds (unit-test workflow) restore from this warm cache
+- Fix Sonar cache key: sonar-${{ runner.os }} (was missing runner.os
+  prefix, making it ambiguous across OS runners)
+- Add --no-daemon to sonar run (no warm-up benefit on ephemeral runners)
+- Keep --no-configuration-cache (Sonar Gradle plugin does not support it)
+- Remove stale Cache Gradle packages step
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- 👷 ci: update release workflow naming
+
+Update workflow and PR titles with the PV suffix and change the
+automated PR title to "Upcoming release" for better identification.
+
+- Ci: apply gradle/actions/setup-gradle caching to sonar workflow 
+
+- Ci: rename workflow files to consistent kebab-case names
+
+Old → New:
+  android.yml           → build-apk.yml
+  merge-to-develop.yml  → pr-to-develop.yml
+  next-release-new.yml  → release-branch-pr.yml
+  next-release.yml      → next-release-pr.yml
+  pr-automation.yml     → auto-approve.yml
+  release.yml           → github-release.yml
+  sonar-checks.yml      → sonar-analysis.yml
+  todo-checker.yml      → todo-check.yml
+
+Update name: fields to match new filenames.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Ci: rename workflow files and improve Gradle cache 
+
+- 👷 chore(ci): add workflow_dispatch trigger
+
+Allow manual triggering of the release branch PR workflow from the
+GitHub Actions tab.
+
+- 👷 ci: update base branch for release prs
+
+Update the target branch from release/next to develop to align with the
+standard GitFlow branching strategy.
+
+- 👷 ci(workflow): remove automated release pr workflow
+
+Delete the GitHub Action that automatically creates pull requests from
+develop to main to simplify the release process.
+
+
+### Testing
+
+- Test(coverage): add unit tests for repos, ViewModels, and locale logic 
+
+- Add TestDispatcherRule using UnconfinedTestDispatcher for coroutine tests
+- Add LocalesTest (7 tests) for Locales.normalize() BCP-47 normalisation
+- Add WelcomeViewModelTest (4 tests) for language loading and persistence
+- Add UserSettingsViewModelTest (4 tests) for preferences save/reset flow
+- Add CassavaMarketViewModelTest (6 tests) for factory selection and user loading
+- Add coroutines-test, turbine, and mockk test dependencies
+- Fix StateFlow deduplication bug: track selectedFactoryId/selectedUnitId in
+  CassavaMarketViewModel.UiState instead of mutating isSelected on entities
+  (data class equality excluded isSelected from BaseEntity, blocking StateFlow updates)
+- Update CassavaMarketActivity to enrich factories for display from state
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Test(coverage): add unit tests for repos, ViewModels, and locale logic 
+
+- Test: add regression tests for recommendations navigation flow
+
+AdviceCompletionViewModelTest — covers step-status ViewModel: completions
+Flow, updateStatus() delegation, and multi-task updates. Guards the logic
+that drives completion indicators on recommendation sub-screens.
+
+RecommendationsNavGraphTest — JVM XML-parse test that verifies all 20
+destinations exist in nav_recommendations.xml and that recommendationsFragment
+declares the 5 sub-screen actions. Catches accidental removal of destinations
+that would cause NavController to crash at runtime.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Test: add ViewModel and utility unit tests for recommendations flow
+
+MathHelperTest — covers convertFromAcres (all area units, scaling,
+zero), and format (whole/fractional numbers).
+
+RecommendationsViewModelTest — verifies country-based advice option
+logic: NG gets INTERCROPPING_MAIZE, TZ gets INTERCROPPING_SWEET_POTATO,
+unsupported country keeps 3 base options; trackActiveAdvice saves to repo.
+
+TractorAccessViewModelTest — covers conditional cost saving: when
+tractorAvailable=false all tractor costs are zeroed regardless of input;
+partial-null inputs merge with existing costs; saved/onSaveHandled flags;
+guard against saveCosts when userId is 0.
+
+FertilizerViewModelTest — covers getStepStatus (COMPLETED vs IN_PROGRESS),
+selectFertilizer/deselectFertilizer repo delegation, null price handling,
+and correct repo flow used for each EnumFertilizerFlow variant.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Test: add instrumented tests for DAO correctness and back-navigation regression
+
+Setup:
+- Add hilt-testing, navigation-testing, mockk-android, room-testing, coroutines-test
+  to androidTest deps in libs.versions.toml and build.gradle.kts
+- Switch testInstrumentationRunner to HiltTestRunner so @AndroidEntryPoint
+  activities work under HiltTestApplication in all instrumented tests
+
+AdviceCompletionDaoTest (Room in-memory, no Hilt):
+- getAllFlow returns empty list initially
+- upsert inserts and updates (idempotent on PrimaryKey)
+- multiple distinct tasks all persisted
+- getAdviceByTask returns correct record / null for missing
+- delete removes only the target task and is safe when task absent
+
+RecommendationsBackNavigationTest (ActivityScenario, on-device):
+- Direct regression guard: pressBack() from each sub-screen (FR, BPP, SPH,
+  IcMaize) must land on recommendationsFragment, not finish the Activity
+- pressBack() at the start destination (RecommendationsFragment) finishes
+  the Activity and produces DESTROYED state
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+
+## [31.0.1] - 2026-03-18
+
+### Documentation
+
+- Docs: update changelog
+
+
+## [31.0.0] - 2026-03-18
+
+### Bug Fixes
+
+- Fix(database): remove allowMainThreadQueries from AppDatabase
+
+All repository methods are suspend functions called from safeScope.launch
+or background dispatchers — no main-thread DB calls exist in the codebase.
+Removes the ANR risk and unblocks the Compose migration prerequisites.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix(database): add suspend to all blocking DAO and repo methods
+
+Room throws IllegalStateException when blocking DAO methods are called
+from a coroutine running on Dispatchers.Main. All non-Flow DAO methods
+across 18 DAO interfaces now marked suspend so Room dispatches them to
+its own I/O executor automatically. Affected repo methods (saveAll,
+saveOrUpdate, getPricesByCountry, getSelectedBy*) also marked suspend
+to propagate the contract to call sites.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix(database): replace @Transaction body with @Upsert in InvestmentAmountDao
+
+@Transaction suspend fun with a concrete body causes Room KSP to emit
+an invalid JVM signature ("unexpected jvm signature V"). Replaced the
+hand-rolled insert-or-update transaction with @Upsert which Room 2.6+
+handles natively and generates correct coroutine-aware code.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix(database): upgrade Room to 2.7.1 to fix KSP 2.2.x compatibility
+
+Room 2.6.1 KSP processor mishandles suspend DAO methods returning Unit
+under KSP 2.2.20, emitting an invalid void JVM signature at code-gen time.
+Room 2.7.1 has full Kotlin 2.x / KSP 2.x support and resolves the issue.
+Updated fallbackToDestructiveMigration() to the new required API signature.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix(i18n): disable AAB language splitting to fix in-app language switching
+
+Google Play's Dynamic Delivery splits AABs by language and only delivers
+resources matching the device locale. This means sw-rTZ and rw-rRW string
+resources were stripped on non-matching devices, making in-app language
+selection silently fail in production while working fine in debug APKs
+(which bundle all resources locally).
+
+Setting bundle.language.enableSplit = false ensures all locale resources
+are included in every install, enabling reliable in-app language switching.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix(security): move Mapbox and LocationIQ keys out of source
+
+Hardcoded API key defaults replaced with BuildConfig fields sourced from
+env vars via uzzu-env plugin (MAPBOX_RUNTIME_TOKEN, LOCATION_IQ_TOKEN).
+CI workflow updated to inject both secrets at build time. Keys no longer
+ship in source code. Added both vars to .env.template for local onboarding.
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix(ui): persist fertilizer selections to database on price confirmation
+
+The onSelectionChanged callback only updated the adapter UI but never
+called selectedRepo.select()/deselect(), so selections were lost on
+every screen return. Fixed by:
+- Expanding the callback signature to include fertilizerPriceId and
+  isExactPrice (sourced from the chosen FertilizerPrice entity)
+- Calling selectedRepo.select() on save and selectedRepo.deselect()
+  on remove inside BaseFertilizerActivity's callback lambda
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Fix: use currency symbol for custom fertilizer price display
+
+Use currencySymbol from FertilizerPrice instead of currencyName() for
+consistent currency display across all price types including custom prices.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Fix: filter intercrop fertilizers by cimAvailable/cisAvailable flags
+
+- Add observeAllByCimAvailable and observeAllByCisAvailable queries to FertilizerDao
+- Add corresponding observeByCimAvailable/observeByCisAvailable to FertilizerRepo
+- Replace fetchFertilizersFlow(country) override with fertilizerFlowFactory() in
+  BaseFertilizerActivity so the country is resolved at runtime by the ViewModel
+- InterCropFertilizersActivity filters by cim_available = 1
+- SweetPotatoInterCropFertilizersActivity filters by cis_available = 1
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Fix: apply ViewModel to RecommendationsActivity; fix missing country-specific items
+
+The country-conditional items (Intercropping Maize for NG, Intercropping Sweet Potato
+for TZ) were added inside a coroutine but submitList() was called outside it, so they
+were never included. RecommendationsViewModel now builds the full list including
+country-specific options before emitting to the UI. Countries other than NG/TZ see
+neither intercrop option.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Fix: resolve Hilt javapoet conflict and detached-fragment crash on HomeStepperActivity
+
+- Force javapoet 1.13.0 in buildscript so AggregateDepsTask (Hilt 2.56.1)
+  can call ClassName.canonicalName(); AGP bundles 1.12.x which lacks it
+- Defer wizardAdapter.getStep(0).onSelected() via post {} so the initial
+  WelcomeFragment is attached before its ViewModel is accessed
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Fix: defer prefillFromEntity() when fragment view is not yet created
+
+ViewPager2 fires onPageSelected() (and thus onSelected()) before the
+incoming fragment's view exists. Guard with a pendingOnSelected flag:
+if view is null, set the flag and replay prefillFromEntity() from
+onViewCreated() once the view lifecycle is ready.
+
+Fixes: IllegalStateException "Can't access Fragment View's LifecycleOwner
+... when getView() is null" on BioDataFragment and other step fragments.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Fix(MUN-16): normalize legacy short language codes to BCP-47 tags
+
+Root cause: UserPreferences.languageCode defaulted to "en" while the UI
+built languageOptions from Locale.toLanguageTag() ("en-US", "sw-TZ",
+"rw-RW"). The exact-match lookup in UserSettingsActivity always missed,
+rendering an empty language dropdown for existing users.
+
+Changes:
+- Locales.normalize(code): maps short codes ("en","sw","rw") and full tags
+  to the canonical BCP-47 tag; falls back to English
+- UserPreferences.languageCode default: "en" → "en-US"
+- WelcomeViewModel.loadLanguage(): normalize raw DB value before emitting
+- UserSettingsViewModel.loadPreferences(): normalize before exposing prefs
+- AkilimoApp.initLocale(): normalize SessionManager fallback tag so the
+  AppLocale lookup never misses on old installs
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Fix(MUN-16): language selection does not persist — normalize BCP-47 codes 
+
+
+### Documentation
+
+- Docs: update changelog
+
+- Docs: mark API key migration as done in roadmap and architecture
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- Docs: update debug-db version to v1.0.7
+
+- Update debug-db version from v1.0.6 to v1.0.7
+- No changes to other library versions
+- This change ensures the project uses the latest version of the debug-db library, which may include bug fixes or performance improvements.
+
+- Docs(api): update settings.json to include new bash commands
+
+- Update bash commands to include gh pr:*
+- Update bash commands to include python3:*
+- This change improves the settings.json file to reflect the new bash commands, making it easier to manage dependencies and build processes.
+
+
+### Features
+
+- Feature/mun 15 
+
+- Feat: introduce ViewModels for WelcomeFragment, UserSettings, and Fertilizer screens
+
+- Add lifecycle-viewmodel-ktx dependency for viewModelScope support
+- WelcomeViewModel: moves language load/save out of WelcomeFragment
+- UserSettingsViewModel: moves prefs load/save and user sync out of UserSettingsActivity
+- FertilizerViewModel: moves fertilizer list observation and selection persistence
+  out of BaseFertilizerActivity; supports custom flow injection for subclass filtering
+- FertilizerListManager: remove repo dependencies (data now flows from ViewModel)
+- FertilizerSelectionHelper: remove unused Context constructor param
+- InterCropFertilizersActivity, SweetPotatoInterCropFertilizersActivity: remove
+  redundant fetchFertilizers overrides (default behaviour is identical)
+- All Android context side-effects (AppLocale, ProcessPhoenix, AppCompatDelegate,
+  Snackbar) remain in Activity/Fragment layer
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat: add ViewModels for MaizePerformance, InvestmentAmount, CassavaYield, CassavaMarket
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat: add ViewModels for Dates, ManualTillageCost, TractorAccess, WeedControlCosts
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat: add ProduceMarketViewModel and migrate AbstractProduceMarketActivity
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat: introduce proper Room migrations; bump DB to version 3
+
+- Enable exportSchema=true and configure KSP schema export directory
+- Create DatabaseMigrations with MIGRATION_2_3 (no-op baseline)
+- Replace destructive-only strategy with explicit addMigrations()
+- Keep fallbackToDestructiveMigration as safety net for pre-v2 installs
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat: sample migration — add last_sync_at to akilimo_users (v3→v4)
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat: introduce Hilt DI; migrate 11 ViewModels to @HiltViewModel
+
+- Add Hilt 2.56.1 dependency (KAPT for compiler, KSP incompatible with 2.2.20)
+- Annotate AkilimoApp with @HiltAndroidApp
+- Create di/AppModule providing AppDatabase and all repos as singletons
+- Convert 11 ViewModels to @HiltViewModel @Inject constructor
+- Annotate 12 concrete Activities/Fragments with @AndroidEntryPoint
+- FertilizerViewModel and ProduceMarketViewModel keep manual factory (runtime params)
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat: replace material-stepper with ViewPager2-based wizard
+
+Remove stepstone/material-stepper (Jetifier offender) and replace with
+a lightweight custom wizard: WizardStep interface, ValidationError,
+WizardAdapter (FragmentStateAdapter), and ViewPager2 in HomeStepperActivity.
+All 8 step fragments migrated from VerificationError to ValidationError.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat: complete @AndroidEntryPoint coverage across all Activities and Fragments
+
+Annotated all 25 remaining concrete non-generic Activity/Fragment subclasses
+so Hilt can inject into them and their hosted fragments without runtime
+crashes. Generic base classes (AbstractProduceMarketActivity, BaseFertilizerActivity)
+are intentionally left unannotated — Hilt cannot process parameterized types.
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat(api): update AndroidManifest.xml to remove legacy auto-initializer and tools:replace attributes
+
+- Update the tools:replace attributes to remove android:icon, android:theme, and android:label
+- Update the tools:ignore attribute to remove GoogleAppIndexingWarning
+- Update the tools:targetApi attribute to the latest supported API level
+
+- Feat(#474, #475): Hilt DI + ViewPager2 wizard replacement 
+
+- Feat: consolidate language + dark mode to Preferences DataStore
+
+Replaces dual SharedPreferences storage (SessionManager + AppLocale's
+SharedPrefsAppLocaleRepository) with a single AppSettingsDataStore:
+
+- AppSettingsDataStore: Preferences DataStore with SharedPreferencesMigration
+  from "new-akilimo-config" so existing users' settings carry over automatically
+- AkilimoApp: injects AppSettingsDataStore; initLocale() and initDarkMode()
+  read from DataStore synchronously on cold start (runBlocking, main thread)
+- BaseActivity.attachBaseContext(): uses AppSettingsDataStore.readLanguageTagSync()
+  companion helper (pre-Hilt injection, synchronous)
+- WelcomeViewModel: writes language tag to DataStore on selection
+- UserSettingsViewModel: reads previous language tag from DataStore to detect
+  actual changes; writes both language + dark mode on save; drops sessionManager
+  param from savePreferences()
+- UserSettingsActivity / WelcomeFragment: no longer write to SessionManager
+- SessionManager: languageCode and darkMode properties removed
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat: migrate ALL SharedPreferences to Preferences DataStore
+
+Expands AppSettingsDataStore to cover every key previously in SessionManager,
+then deletes SessionManager entirely. All existing call sites compile unchanged
+via a backward-compatible `sessionManager` alias in BaseActivity/BaseFragment.
+
+Changes:
+- AppSettingsDataStore: all 17 keys from SessionManager (languageCode, darkMode,
+  userName, apiResource, fuelrodResource, apiToken, apiRefreshToken, mapBoxKey,
+  locationIqToken, firstRun, notificationCount, deviceToken, termsAccepted,
+  disclaimerRead, termsLink, isFertilizerGrid, rememberAreaUnit).
+  SharedPreferencesMigration migrates ALL keys from "new-akilimo-config"
+  automatically on first access — existing users lose no data.
+  Exposes: typed var properties (sync get / async set), Flow<T> for reactive
+  callers, suspend setters for ViewModels, and companion statics for pre-Hilt
+  and Worker contexts.
+- BaseActivity: @Inject lateinit var appSettings; sessionManager = alias
+- BaseFragment: same; drops manual SessionManager.get() init in onViewCreated
+- AppConfig: uses AppSettingsDataStore.readEndpointSync / writeEndpointSync
+  companions so BaseApiWorker (no Hilt injection) keeps working unchanged
+- RecommendationBuilder: session param type SessionManager → AppSettingsDataStore
+- SessionManager.kt: deleted
+
+Co-Authored-By: munywele-sonar <noreply@github.com>
+
+- Feat(ai-commit): remove unnecessary commit message generator
+
+- Feat: consolidate language + dark mode to Preferences DataStore 
+
+
+### Miscellaneous Tasks
+
+- Chore: update Claude tool permissions for DAO inspection commands
+
+Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
+
+- 🔧 chore(gradle): add git and file commands to allowed list
+
+Update local tool settings to permit execution of git and xargs cat commands. This enables more efficient file handling and version control automation within the environment.
+
+- 👷 ci: disable automatic push trigger
+
+Comment out the push event trigger in the merge-to-develop workflow.
+This restricts the action to manual execution via workflow_dispatch.
+
+- 🧱 chore(database): standardize database name
+
+Update the database name constant to a generic value to remove
+date-specific naming and ensure consistency across versions.
+
+- 👷 ci: optimize unit test workflow
+
+Streamline CI by adding path filtering and concurrency control to reduce
+redundant runs. Remove unnecessary environment variables and step logic.
+
+- ⚡️ ci: optimize unit test workflow
+
+Streamline CI by replacing manual path filtering with GitHub native
+path triggers and enabling Gradle caching for faster execution.
+
+- 👷 ci: optimize unit test pipeline with ci gate
+
+Introduce a path-filtering gate and enable Gradle configuration caching
+for faster execution. These changes ensure tests trigger only when
+relevant files change to optimize resource usage.
+
 
 ## [30.0.1] - 2026-03-04
 
