@@ -8,6 +8,10 @@ import com.akilimo.mobile.R
 import com.akilimo.mobile.database.AppDatabase
 import com.akilimo.mobile.config.AppConfig
 import com.akilimo.mobile.network.dto.ReportKind
+import com.akilimo.mobile.network.logRecommendationFailureEvent
+import com.akilimo.mobile.network.reportRecommendationFailure
+import com.akilimo.mobile.network.technicalDetail
+import io.sentry.SentryLevel
 import com.akilimo.mobile.network.dto.downloadLinks
 import com.akilimo.mobile.data.AppSettingsDataStore
 import com.akilimo.mobile.network.dto.UserFeedBackRequest
@@ -61,8 +65,18 @@ class GetRecommendationViewModel @Inject constructor(
             val reportLinks: Map<ReportKind, String> = emptyMap(),
         ) : UiState
 
-        /** [messageRes] is resolved by the screen so it follows the in-app locale. */
-        data class Error(@StringRes val messageRes: Int) : UiState
+        /**
+         * [messageRes] is resolved by the screen so it follows the in-app locale. [technicalDetail] is the raw
+         * failure (HTTP status and path, or the exception), shown small so a farmer can quote it when reporting.
+         */
+        data class Error(
+            @param:StringRes val messageRes: Int,
+            val technicalDetail: String? = null,
+            val kind: ErrorKind = ErrorKind.UNKNOWN,
+        ) : UiState
+
+        /** Why advice could not be shown; the screen picks a calm icon, title and action for each. */
+        enum class ErrorKind { OUTSIDE_COVERAGE, OFFLINE, BUSY, INPUT, PROFILE, NO_ADVICE, UNKNOWN }
     }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
@@ -109,7 +123,7 @@ class GetRecommendationViewModel @Inject constructor(
                 val builder = RecommendationBuilder(database, appSettings, useCase)
                 val payload = builder.build() ?: run {
                     // The only reason build() returns null is a missing farmer profile
-                    _uiState.value = UiState.Error(R.string.error_rec_profile_missing)
+                    _uiState.value = UiState.Error(R.string.error_rec_profile_missing, kind = UiState.ErrorKind.PROFILE)
                     return@launch
                 }
 
@@ -132,26 +146,64 @@ class GetRecommendationViewModel @Inject constructor(
                             reportLinks = resp.report.downloadLinks(base),
                         )
                     } else {
-                        UiState.Error(R.string.lbl_no_recommendations_prompt)
+                        failure(
+                            UiState.ErrorKind.NO_ADVICE,
+                            R.string.lbl_no_recommendations_prompt,
+                            "HTTP ${result.code()} empty response body",
+                            status = result.code(),
+                        )
                     }
                 } else {
                     // Never show the raw server message: it is English-only and technical
-                    val outsideCoverage = result.parseError()?.isOutsideCoverage == true
-                    _uiState.value = UiState.Error(
+                    val errorBody = result.parseError()
+                    val outsideCoverage = errorBody?.isOutsideCoverage == true
+                    val kind = if (outsideCoverage) UiState.ErrorKind.OUTSIDE_COVERAGE else errorKindForHttpCode(result.code())
+                    _uiState.value = failure(
+                        kind,
                         if (outsideCoverage) R.string.error_recommendation_outside_coverage
-                        else errorMessageForHttpCode(result.code())
+                        else errorMessageForHttpCode(result.code()),
+                        result.technicalDetail(errorBody),
+                        status = result.code(),
+                        apiCode = errorBody?.code,
                     )
                 }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                // Offline/timeouts are expected in the field; only report real bugs
-                if (e !is IOException) Sentry.captureException(e)
-                _uiState.value = UiState.Error(
-                    if (e is IOException) R.string.error_rec_network else R.string.error_fetch_recommendation
-                )
+                _uiState.value = if (e is IOException) {
+                    failure(UiState.ErrorKind.OFFLINE, R.string.error_rec_network, e.technicalDetail(), cause = e)
+                } else {
+                    failure(UiState.ErrorKind.UNKNOWN, R.string.error_rec_unknown, e.technicalDetail(), cause = e)
+                }
             }
         }
+
+    /**
+     * Builds the error state and sends a copy to Sentry. The Sentry reference is added to the technical details, so
+     * a farmer who reports the problem gives support the exact event. Offline and busy cases are throttled.
+     */
+    private fun failure(
+        kind: UiState.ErrorKind,
+        @StringRes messageRes: Int,
+        detail: String,
+        status: Int? = null,
+        apiCode: String? = null,
+        cause: Throwable? = null,
+    ): UiState.Error {
+        val calm = kind != UiState.ErrorKind.UNKNOWN
+        val reference = reportRecommendationFailure(
+            kind = kind.name.lowercase(),
+            detail = detail,
+            level = if (calm) SentryLevel.INFO else SentryLevel.ERROR,
+            status = status,
+            apiCode = apiCode,
+            cause = cause,
+            throttle = kind == UiState.ErrorKind.OFFLINE || kind == UiState.ErrorKind.BUSY,
+        )
+        logRecommendationFailureEvent(context, kind.name.lowercase(), status, apiCode)
+        val full = if (reference == null) detail else "$detail \u00B7 ref=$reference"
+        return UiState.Error(messageRes, full, kind)
+    }
 
     /** Keeps a copy on the phone for the saved-advice list; the server saved its own when the token was valid. */
     private suspend fun keepInAccount(
@@ -218,13 +270,21 @@ class GetRecommendationViewModel @Inject constructor(
         private const val HTTP_TOO_MANY = 429
         private const val HTTP_SERVER_MIN = 500
 
+        /** Maps an unsuccessful HTTP status to the kind of failure the screen shows. */
+        fun errorKindForHttpCode(code: Int): UiState.ErrorKind = when {
+            code == HTTP_BAD_REQUEST || code == HTTP_UNPROCESSABLE -> UiState.ErrorKind.INPUT
+            code == HTTP_TIMEOUT || code == HTTP_TOO_MANY || code >= HTTP_SERVER_MIN -> UiState.ErrorKind.BUSY
+            else -> UiState.ErrorKind.UNKNOWN
+        }
+
         /** Maps an unsuccessful HTTP status to a farmer-friendly, translatable message. */
         @StringRes
         fun errorMessageForHttpCode(code: Int): Int = when {
             code == HTTP_BAD_REQUEST || code == HTTP_UNPROCESSABLE -> R.string.error_rec_invalid_input
             code == HTTP_TIMEOUT || code == HTTP_TOO_MANY || code >= HTTP_SERVER_MIN ->
                 R.string.error_rec_server_busy
-            else -> R.string.error_fetch_recommendation
+
+            else -> R.string.error_rec_unknown
         }
     }
 }

@@ -138,7 +138,6 @@
     <string name="lbl_planting_practices_rec">Mbinu za kupanda</string>
     <string name="lbl_scheduled_planting_rec">Utofauti wa wakati wa kupanda na kuvuna</string>
     <string name="lbl_no_recommendations_prompt">Hakuna mapendekezo, tafadhali toa habari zaidi kutusaidia kupata utabiri bora</string>
-    <string name="error_fetch_recommendation">Imeshindwa kuleta pendekezo</string>
     <string name="error_worker_stopped">Ombi la mtandao limesimamishwa</string>
     <string name="error_worker_cancelled">Ombi la mtandao limeghairiwa</string>
     <string name="error_unexpected">Hitilafu isiyotarajiwa imetokea</string>

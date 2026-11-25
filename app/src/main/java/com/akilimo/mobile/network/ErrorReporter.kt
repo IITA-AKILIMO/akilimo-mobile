@@ -1,8 +1,13 @@
 package com.akilimo.mobile.network
 
+import android.content.Context
+import android.os.Bundle
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
+import io.sentry.ScopeCallback
 import io.sentry.SentryLevel
+import io.sentry.protocol.SentryId
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.EOFException
@@ -58,6 +63,68 @@ fun reportError(e: Throwable) {
         e.isExpectedNetworkFailure() -> trackExpectedFailure(e)
         else -> Sentry.captureException(e)
     }
+}
+
+private const val REFERENCE_LENGTH = 8
+private const val ANALYTICS_VALUE_MAX = 100
+
+/**
+ * Counts a failed recommendation request in Firebase Analytics for quick tracking by day, app version and country:
+ * only the kind of failure, HTTP status and API code, never any farm data. Never throws.
+ */
+fun logRecommendationFailureEvent(context: Context, kind: String, status: Int?, apiCode: String?) {
+    runCatching {
+        FirebaseAnalytics.getInstance(context).logEvent(
+            "recommendation_failed",
+            Bundle().apply {
+                putString("kind", kind)
+                status?.let { putLong("http_status", it.toLong()) }
+                apiCode?.let { putString("api_code", it.take(ANALYTICS_VALUE_MAX)) }
+            },
+        )
+    }.onFailure { Timber.d(it, "Analytics event not sent") }
+}
+
+/**
+ * Sends a copy of a failed recommendation request to Sentry, grouped into one issue per kind of failure (kind, HTTP
+ * status and API code, never the farm's data) with the technical line attached. Returns a short reference the farmer can
+ * quote so support finds the event, or null when nothing was sent (cancelled, throttled, or Sentry is off).
+ */
+fun reportRecommendationFailure(
+    kind: String,
+    detail: String,
+    level: SentryLevel,
+    status: Int? = null,
+    apiCode: String? = null,
+    cause: Throwable? = null,
+    throttle: Boolean = false,
+): String? {
+    if (cause?.isCancellation() == true) return null
+    if (throttle && !allowEvent("recommendation:$kind:${status ?: ""}:${apiCode ?: ""}")) return null
+
+    val scope = ScopeCallback { s ->
+        s.level = level
+        s.fingerprint = listOf("recommendation-failure", kind, status?.toString().orEmpty(), apiCode.orEmpty())
+        s.setTag("failure.kind", kind)
+        status?.let { s.setTag("http.status", it.toString()) }
+        apiCode?.let { s.setTag("api.code", it) }
+        s.setExtra("technical_detail", detail)
+    }
+    val id = if (cause != null) {
+        Sentry.captureException(cause, scope)
+    } else {
+        Sentry.captureMessage("Recommendation failed: ${listOfNotNull(kind, status, apiCode).joinToString(" ")}", scope)
+    }
+    return id.takeUnless { it == SentryId.EMPTY_ID }?.toString()?.take(REFERENCE_LENGTH)
+}
+
+/** True at most once per [EXPECTED_EVENT_INTERVAL_MS] for each [key]. */
+private fun allowEvent(key: String): Boolean {
+    val now = System.currentTimeMillis()
+    val last = lastExpectedEvent[key] ?: 0L
+    if (now - last < EXPECTED_EVENT_INTERVAL_MS) return false
+    lastExpectedEvent[key] = now
+    return true
 }
 
 private fun trackExpectedFailure(e: Throwable) {
