@@ -8,9 +8,9 @@ import com.akilimo.mobile.enums.EnumCountry
  * each kind has its own Android channel so farmers can mute one kind in system settings.
  */
 enum class NotificationType(val wireName: String, val channelId: String, val defaultTarget: NotificationTarget) {
-    ADVICE("advice", "advice_updates", NotificationTarget.RECOMMENDATIONS),
-    REMINDER("reminder", "reminders", NotificationTarget.HUB),
-    ANNOUNCEMENT("announcement", "announcements", NotificationTarget.HUB);
+    ADVICE("advice", "advice_updates", NotificationTarget.INBOX),
+    REMINDER("reminder", "reminders", NotificationTarget.INBOX),
+    ANNOUNCEMENT("announcement", "announcements", NotificationTarget.INBOX);
 
     companion object {
         /** Unknown or missing kinds are treated as announcements so nothing is silently dropped. */

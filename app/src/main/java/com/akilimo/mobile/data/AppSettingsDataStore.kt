@@ -85,6 +85,8 @@ private object Keys {
     // Message sync: server time of the newest message fetched, and the "TZ|sw" audience it was fetched for
     val MESSAGE_CURSOR = stringPreferencesKey("messageSyncCursor")
     val MESSAGE_AUDIENCE = stringPreferencesKey("messageSyncAudience")
+    val PUSH_DEVICE_TOKEN = stringPreferencesKey("pushDeviceFcmToken")
+    val PUSH_DEVICE_DETAILS = stringPreferencesKey("pushDeviceDetails")
     val LAST_SYNC_FAILED_AT = longPreferencesKey("lastSyncFailedAt")
 }
 
@@ -410,6 +412,25 @@ class AppSettingsDataStore @Inject constructor(
 
     suspend fun setSubscribedPushTopics(topics: Set<String>) {
         dataStore.edit { it[Keys.PUSH_TOPICS] = topics }
+    }
+
+    /** The FCM token last registered with the API for this phone, or null when it is not registered. */
+    suspend fun registeredPushToken(): String? = dataStore.data.first()[Keys.PUSH_DEVICE_TOKEN]
+
+    /** What was registered with that token (country, language, account, app version), as one string. */
+    suspend fun registeredPushDetails(): String? = dataStore.data.first()[Keys.PUSH_DEVICE_DETAILS]
+
+    /** Remembers a registration, or forgets it when [token] is null (the phone was unregistered). */
+    suspend fun setRegisteredPush(token: String?, details: String?) {
+        dataStore.edit { prefs ->
+            if (token != null && details != null) {
+                prefs[Keys.PUSH_DEVICE_TOKEN] = token
+                prefs[Keys.PUSH_DEVICE_DETAILS] = details
+            } else {
+                prefs.remove(Keys.PUSH_DEVICE_TOKEN)
+                prefs.remove(Keys.PUSH_DEVICE_DETAILS)
+            }
+        }
     }
 
     suspend fun messageSyncCursor(): String? = dataStore.data.first()[Keys.MESSAGE_CURSOR]

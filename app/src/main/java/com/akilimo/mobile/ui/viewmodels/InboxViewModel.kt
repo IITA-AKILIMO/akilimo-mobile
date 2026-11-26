@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 /** The farmer's message history, shared by the Hub card (unread badge) and the Inbox screen. */
@@ -26,6 +27,10 @@ class InboxViewModel @Inject constructor(
         val unreadCount: Int = 0,
         /** Message whose full text is open. */
         val expandedId: String? = null,
+        /** A fetch from the API is running (the pull-to-refresh spinner). */
+        val refreshing: Boolean = false,
+        /** The last fetch failed or ran out of time, so the list may be out of date. */
+        val refreshFailed: Boolean = false,
     )
 
     private val _uiState = MutableStateFlow(UiState())
@@ -42,9 +47,17 @@ class InboxViewModel @Inject constructor(
         refresh()
     }
 
-    /** Fetches messages the phone missed (offline, push off, new install) from the API. */
+    /**
+     * Fetches messages the phone missed (offline, push off, new install) from the API. Gives up after
+     * [REFRESH_TIMEOUT_MS] so the spinner never hangs on a bad connection; the saved messages stay shown either way.
+     */
     fun refresh() {
-        viewModelScope.launch { messageSync.sync() }
+        if (_uiState.value.refreshing) return
+        _uiState.update { it.copy(refreshing = true, refreshFailed = false) }
+        viewModelScope.launch {
+            val ok = withTimeoutOrNull(REFRESH_TIMEOUT_MS) { messageSync.sync() } ?: false
+            _uiState.update { it.copy(refreshing = false, refreshFailed = !ok) }
+        }
     }
 
     /** Opens a message (and marks it read) or closes it if it is already open. */
@@ -66,5 +79,10 @@ class InboxViewModel @Inject constructor(
     fun deleteAll() {
         _uiState.update { it.copy(expandedId = null) }
         viewModelScope.launch { repo.deleteAll() }
+    }
+
+    companion object {
+        /** How long a fetch may take before it counts as failed. */
+        const val REFRESH_TIMEOUT_MS = 15_000L
     }
 }

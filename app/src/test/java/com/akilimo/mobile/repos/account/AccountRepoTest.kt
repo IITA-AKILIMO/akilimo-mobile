@@ -9,6 +9,8 @@ import com.akilimo.mobile.network.AccountApi
 import com.akilimo.mobile.network.dto.AccountUserDto
 import com.akilimo.mobile.network.dto.AuthResponse
 import com.akilimo.mobile.network.dto.MessageResponse
+import com.akilimo.mobile.notifications.MessageSync
+import com.akilimo.mobile.notifications.PushDeviceSync
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -32,6 +34,8 @@ class AccountRepoTest {
     private val factory = mockk<AccountApiFactory> { every { create() } returns api }
     private val settings = mockk<AppSettingsDataStore> { every { deviceToken } returns "phone-1" }
     private val savedAdvice = mockk<SavedAdviceRepo>(relaxed = true)
+    private val pushDevices = mockk<PushDeviceSync>(relaxed = true)
+    private val messageSync = mockk<MessageSync>(relaxed = true)
     private lateinit var store: AccountSessionStore
     private lateinit var repo: AccountRepo
 
@@ -51,7 +55,7 @@ class AccountRepoTest {
     @Before
     fun setUp() {
         store = AccountSessionStore(FakeSessionStorage(), FakeTokenCipher())
-        repo = AccountRepo(AccountCalls(factory, store), store, settings, savedAdvice)
+        repo = AccountRepo(AccountCalls(factory, store), store, settings, savedAdvice, pushDevices, messageSync)
     }
 
     @Test
@@ -226,6 +230,8 @@ class AccountRepoTest {
 
         assertNull(store.session.value)
         coVerify { savedAdvice.clearAll() }
+        coVerify { pushDevices.unregister() }
+        coVerify { messageSync.resetAndSync() }
     }
 
     @Test

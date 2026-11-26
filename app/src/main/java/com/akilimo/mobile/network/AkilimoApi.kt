@@ -40,6 +40,8 @@ interface AkilimoApi {
         @Query("language") language: String? = null,
         @Query("since") since: String? = null,
         @Query("limit") limit: Int = MESSAGES_PAGE_SIZE,
+        /** The install id: adds the messages private to this phone or to the account it is registered under. */
+        @Query("device_token") deviceToken: String? = null,
     ): MessagesResponse
 
     @Headers(CLIENT_ID_HEADER)

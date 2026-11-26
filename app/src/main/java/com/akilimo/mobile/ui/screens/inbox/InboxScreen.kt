@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material.icons.outlined.Delete
@@ -32,14 +34,18 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
@@ -69,6 +75,13 @@ fun InboxScreen(
     var menuOpen by rememberSaveable { mutableStateOf(false) }
     var confirmDeleteAll by rememberSaveable { mutableStateOf(false) }
     val messages = state.messages
+
+    // The view model already fetched once when it was created; every later arrival on the screen (back from another app,
+    // a tapped notification while the app was in the background) fetches again so the list is current
+    var firstResume by remember { mutableStateOf(true) }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        if (firstResume) firstResume = false else viewModel.refresh()
+    }
 
     Scaffold(
         topBar = {
@@ -108,12 +121,20 @@ fun InboxScreen(
             )
         },
     ) { padding ->
+        // Pull down to fetch again; the spinner is the status while it runs and a note says when it did not work
+        PullToRefreshBox(
+            isRefreshing = state.refreshing,
+            onRefresh = viewModel::refresh,
+            modifier = Modifier.fillMaxSize().padding(padding),
+        ) {
         when {
-            messages == null -> SkeletonList(modifier = Modifier.padding(padding).padding(AkilimoSpacing.md))
-            messages.isEmpty() -> Box(
-                modifier = Modifier.fillMaxSize().padding(padding),
-                contentAlignment = Alignment.Center,
+            messages == null -> SkeletonList(modifier = Modifier.padding(AkilimoSpacing.md))
+            messages.isEmpty() -> Column(
+                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(AkilimoSpacing.md),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                if (state.refreshFailed) RefreshFailedNote()
                 StateMessage(
                     icon = Icons.Outlined.Inbox,
                     title = stringResource(R.string.inbox_empty_title),
@@ -121,10 +142,11 @@ fun InboxScreen(
                 )
             }
             else -> LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(padding),
+                modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(AkilimoSpacing.md),
                 verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
             ) {
+                if (state.refreshFailed) item(key = "refresh_failed") { RefreshFailedNote() }
                 items(messages, key = { it.id }) { message ->
                     InboxRow(
                         message = message,
@@ -142,6 +164,7 @@ fun InboxScreen(
                 }
             }
         }
+        }
     }
 
     if (confirmDeleteAll) {
@@ -157,6 +180,17 @@ fun InboxScreen(
             dismissButton = { TextButton(onClick = { confirmDeleteAll = false }) { Text(stringResource(R.string.lbl_cancel)) } },
         )
     }
+}
+
+/** Shown above the list when the last fetch failed or timed out: the saved messages are still there. */
+@Composable
+private fun RefreshFailedNote() {
+    Text(
+        text = stringResource(R.string.inbox_refresh_failed),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.error,
+        modifier = Modifier.fillMaxWidth().padding(bottom = AkilimoSpacing.sm),
+    )
 }
 
 @Composable

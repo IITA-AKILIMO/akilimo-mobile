@@ -8,6 +8,7 @@ import com.akilimo.mobile.network.dto.MessageDto
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.InboxRepo
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -31,11 +32,19 @@ class MessageSyncTest {
         /** Everything the "server" holds, oldest first. */
         var all = listOf<MessageDto>()
         val calls = mutableListOf<Triple<String?, String?, String?>>()
+        val deviceTokens = mutableListOf<String?>()
         var failing = false
 
-        override suspend fun fetch(country: String?, language: String?, since: String?, limit: Int): List<MessageDto> {
+        override suspend fun fetch(
+            country: String?,
+            language: String?,
+            since: String?,
+            limit: Int,
+            deviceToken: String?,
+        ): List<MessageDto> {
             check(!failing) { "offline" }
             calls += Triple(country, language, since)
+            deviceTokens += deviceToken
             return all.filter { since == null || it.createdAt!! >= since }.take(limit)
         }
     }
@@ -48,6 +57,7 @@ class MessageSyncTest {
     fun setUp() {
         every { appSettings.akilimoUser } returns "user1"
         every { appSettings.languageTag } returns "sw-TZ"
+        every { appSettings.deviceToken } returns "install-1"
         coEvery { userRepo.getUser("user1") } returns AkilimoUser(userName = "user1", enumCountry = EnumCountry.TZ)
         coEvery { appSettings.messageSyncAudience() } answers { audience }
         coEvery { appSettings.messageSyncCursor() } answers { cursor }
@@ -71,6 +81,17 @@ class MessageSyncTest {
         assertTrue(saved.all { it.isRead })
         assertEquals("TZ|sw", audience)
         assertEquals("2026-11-02T10:00:00+00:00", cursor)
+    }
+
+    @Test
+    fun `every fetch carries the install id so private messages arrive`() = runTest {
+        fetcher.all = listOf(dto("a", "2026-11-01T10:00:00+00:00"))
+
+        sync().sync()
+        sync().sync()
+
+        assertTrue(fetcher.deviceTokens.isNotEmpty())
+        assertTrue(fetcher.deviceTokens.all { it == "install-1" })
     }
 
     @Test
@@ -110,6 +131,22 @@ class MessageSyncTest {
 
         assertNull(fetcher.calls.last().third)
         assertEquals("TZ|rw", audience)
+        assertTrue(saved.all { it.isRead })
+    }
+
+    @Test
+    fun `resetAndSync empties the inbox and fetches again from scratch as read`() = runTest {
+        coEvery { inbox.deleteAll() } answers { saved.clear() }
+        fetcher.all = listOf(dto("a", "2026-11-01T10:00:00+00:00"), dto("b", "2026-11-02T10:00:00+00:00"))
+        sync().sync()
+        saved.clear()
+        fetcher.all += dto("c", "2026-11-03T10:00:00+00:00")
+
+        assertTrue(sync().resetAndSync())
+
+        coVerify { inbox.deleteAll() }
+        assertNull(fetcher.calls.last().third) // from the start, not after the old cursor
+        assertEquals(listOf("a", "b", "c"), saved.map { it.id })
         assertTrue(saved.all { it.isRead })
     }
 

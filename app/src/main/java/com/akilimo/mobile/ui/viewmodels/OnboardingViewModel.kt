@@ -24,6 +24,7 @@ import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.CoverageRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.UserSelectionResetter
+import com.akilimo.mobile.notifications.PushDeviceSync
 import com.akilimo.mobile.notifications.PushTopicSync
 import com.akilimo.mobile.repos.UserPreferencesRepo
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
@@ -56,6 +57,7 @@ class OnboardingViewModel @Inject constructor(
     private val coverageRepo: CoverageRepo,
     private val phoneNumbers: PhoneNumberHelper,
     private val pushTopicSync: PushTopicSync,
+    private val pushDeviceSync: PushDeviceSync,
     @param:ApplicationContext private val context: Context,
 ) : ViewModel() {
 
@@ -691,8 +693,9 @@ class OnboardingViewModel @Inject constructor(
         // Choices, prices and progress depend on the country: a saved country change starts them over
         if (user.enumCountry != s.country) {
             uid?.let { selectionResetter.clear(it) }
-            // Country topics follow the profile
+            // Country topics and the phone's registration with the API follow the profile
             pushTopicSync.sync()
+            pushDeviceSync.sync()
         }
 
         // Update current practice

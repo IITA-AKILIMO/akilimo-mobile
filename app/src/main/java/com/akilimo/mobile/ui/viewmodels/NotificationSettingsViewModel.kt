@@ -3,6 +3,7 @@ package com.akilimo.mobile.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.notifications.PushDeviceSync
 import com.akilimo.mobile.notifications.PushTopicSync
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class NotificationSettingsViewModel @Inject constructor(
     private val appSettings: AppSettingsDataStore,
     private val topicSync: PushTopicSync,
+    private val deviceSync: PushDeviceSync,
 ) : ViewModel() {
 
     data class UiState(
@@ -96,5 +98,7 @@ class NotificationSettingsViewModel @Inject constructor(
     private suspend fun apply(enable: Boolean) {
         appSettings.setPushEnabled(enable)
         topicSync.sync()
+        // Registers the phone for messages to one person when on, removes it from the API when off
+        deviceSync.sync()
     }
 }
