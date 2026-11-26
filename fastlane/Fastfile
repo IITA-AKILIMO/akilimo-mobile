@@ -1,0 +1,158 @@
+default_platform(:android)
+
+# Helper methods rather than constants: constants in a Fastfile are not always visible inside lanes.
+def package_name_id
+  "com.akilimo.mobile"
+end
+
+# Play shows at most 8 phone screenshots per language. These are the ones uploaded, in this order; each
+# name is the capture name without its NN_ prefix. Edit the list to change what the listing shows.
+def store_shots
+  %w[
+    hub
+    recommendations
+    advice_fertilizer_recommendations
+    step_available_fertilizers
+    step_cassava_market_outlet
+    step_planting_and_harvest
+    map_picker
+    settings
+  ]
+end
+
+def max_store_shots
+  8
+end
+
+# Runs adb (honours ANDROID_SERIAL for a specific device) and returns the raw bytes it printed.
+# Binary mode matters: a text-mode pipe on Windows rewrites newlines and corrupts PNG files.
+def adb_bytes(*args)
+  out = IO.popen(["adb", *args], "rb", err: [:child, :out], &:read)
+  UI.user_error!("adb #{args.join(' ')} failed:\n#{out}") unless $?.success?
+  out
+end
+
+platform :android do
+  desc "Capture Play Store screenshots on the connected device in one language: fastlane screenshots locale:sw"
+  lane :screenshots do |options|
+    locale = options[:locale] || "en-GB"
+    # fastlane runs lanes from the fastlane/ folder, so project paths go through the repo root
+    root = File.expand_path("..", Dir.pwd)
+    # One folder per locale, named as passed on the command line (en-GB, sw, rw)
+    screenshot_dir = File.join(root, "fastlane", "screenshots", locale)
+
+    gradle(task: "assembleDebug assembleDebugAndroidTest")
+    adb_bytes("install", "-r", File.join(root, "app/build/outputs/apk/debug/app-debug.apk"))
+    adb_bytes("install", "-r", File.join(root, "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"))
+    adb_bytes("shell", "run-as", package_name_id, "rm", "-rf", "app_screengrab")
+
+    # The device locale is not changed; the test applies the language through the app's own setting
+    result = adb_bytes(
+      "shell", "am", "instrument", "-w",
+      "-e", "class", "#{package_name_id}.screenshots.StoreScreenshotsTest",
+      "-e", "testLocale", locale,
+      "#{package_name_id}.test/#{package_name_id}.HiltTestRunner"
+    )
+    UI.user_error!("Screenshot test failed:\n#{result}") unless result.include?("OK (1 test)")
+
+    # Screengrab names the folder after the full device locale (sw becomes sw-TZ), so search for the files
+    paths = adb_bytes("shell", "run-as", package_name_id, "find", "app_screengrab", "-name", "*.png").split(/\s+/).grep(/\.png\z/)
+    UI.user_error!("No screenshots found in the app's app_screengrab folder") if paths.empty?
+
+    # Start clean so images from an older run never get uploaded alongside the new ones
+    FileUtils.rm_rf(screenshot_dir)
+    FileUtils.mkdir_p(screenshot_dir)
+    paths.each do |path|
+      File.binwrite(File.join(screenshot_dir, File.basename(path)), adb_bytes("exec-out", "run-as", package_name_id, "cat", path))
+    end
+    UI.success("Saved #{paths.size} screenshots to #{screenshot_dir}")
+  end
+
+  desc "Correct the release notes of a published release: fastlane update_release_notes version_code:123 [track:production] [dry_run:true]"
+  lane :update_release_notes do |options|
+    version_code = options[:version_code]
+    UI.user_error!("Pass the release's version code, for example version_code:123") if version_code.to_s.empty?
+
+    track = options[:track] || "production"
+    notes_dir = File.join(File.expand_path("..", Dir.pwd), "release", "distribution", "whatsnew")
+    files = Dir.glob(File.join(notes_dir, "whatsnew-*"))
+    UI.user_error!("No whatsnew-<locale> files in #{notes_dir}") if files.empty?
+
+    # supply reads <metadata>/<locale>/changelogs/<version_code>.txt, so stage the whatsnew files there
+    Dir.mktmpdir("play-release-notes") do |staging|
+      files.each do |file|
+        locale = File.basename(file).sub("whatsnew-", "")
+        text = File.read(file).strip
+        UI.user_error!("#{locale}: release notes are #{text.length} characters, Play allows at most 500") if text.length > 500
+        UI.user_error!("#{locale}: release notes are empty") if text.empty?
+
+        target = File.join(staging, locale, "changelogs")
+        FileUtils.mkdir_p(target)
+        File.write(File.join(target, "#{version_code}.txt"), text)
+        UI.message("#{locale}: #{text.length} characters")
+      end
+
+      if options[:dry_run]
+        UI.success("Dry run: #{files.size} languages checked, nothing uploaded")
+        next
+      end
+
+      upload_to_play_store(
+        track: track,
+        version_code: version_code.to_i,
+        metadata_path: staging,
+        skip_upload_apk: true,
+        skip_upload_aab: true,
+        skip_upload_metadata: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+        skip_upload_changelogs: false,
+      )
+    end
+  end
+
+  desc "Upload the store_shots (max 8) from fastlane/screenshots/<locale>/ to the Play listing; dry_run:true only lists them"
+  lane :upload_screenshots do |options|
+    UI.user_error!("store_shots has #{store_shots.size} entries, Play allows at most #{max_store_shots}") if store_shots.size > max_store_shots
+
+    source = File.join(File.expand_path("..", Dir.pwd), "fastlane", "screenshots")
+    UI.user_error!("No screenshots in #{source}; run the screenshots lane first") unless Dir.exist?(source)
+    locales = Dir.children(source).select { |l| File.directory?(File.join(source, l)) }
+    UI.user_error!("No locale folders in #{source}") if locales.empty?
+
+    # supply only reads <metadata>/<locale>/images/phoneScreenshots, so stage the chosen files there,
+    # numbered so Play keeps the store_shots order
+    Dir.mktmpdir("play-screenshots") do |staging|
+      locales.each do |locale|
+        files = Dir.glob(File.join(source, locale, "*.png"))
+        chosen = store_shots.each_with_index.filter_map do |name, index|
+          file = files.find { |f| File.basename(f).sub(/\A\d+_/, "") == "#{name}.png" }
+          UI.important("#{locale}: no capture named #{name}, skipping it") if file.nil?
+          [index + 1, name, file] if file
+        end
+        UI.user_error!("#{locale}: Play needs at least 2 screenshots, found #{chosen.size}") if chosen.size < 2
+
+        target = File.join(staging, locale, "images", "phoneScreenshots")
+        FileUtils.mkdir_p(target)
+        chosen.each { |number, name, file| FileUtils.cp(file, File.join(target, format("%02d_%s.png", number, name))) }
+        UI.message("#{locale}: #{chosen.size} screenshots (#{chosen.map { |_, name, _| name }.join(', ')})")
+      end
+
+      if options[:dry_run]
+        UI.success("Dry run: #{locales.size} languages checked, nothing uploaded")
+        next
+      end
+
+      upload_to_play_store(
+        track: "production",
+        metadata_path: staging,
+        skip_upload_apk: true,
+        skip_upload_aab: true,
+        skip_upload_metadata: true,
+        skip_upload_changelogs: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: false,
+      )
+    end
+  end
+end

@@ -1,0 +1,63 @@
+name: Play Store screenshots
+
+# Manual: captures fresh screenshots on an emulator, one run per language (saved in fastlane/screenshots/<locale>). Uploading them to the
+# live Play listing is a separate opt-in input so a capture can be reviewed first (artifact).
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Upload the screenshots to the Play Store listing'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  screenshots:
+    name: Capture${{ inputs.upload && ' and upload' || '' }} screenshots
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Capture screenshots
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: bundle exec fastlane screenshots locale:en-GB && bundle exec fastlane screenshots locale:sw && bundle exec fastlane screenshots locale:rw
+
+      - name: Keep the screenshots for review
+        uses: actions/upload-artifact@v7
+        with:
+          name: store-screenshots
+          path: fastlane/screenshots/**/*.png
+
+      - name: Upload to Play Store
+        if: inputs.upload
+        run: bundle exec fastlane upload_screenshots
+        env:
+          SUPPLY_JSON_KEY_DATA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}

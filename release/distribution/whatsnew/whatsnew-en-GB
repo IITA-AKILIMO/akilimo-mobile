@@ -1,5 +1,6 @@
-Clearer messages when advice cannot be loaded.
+What's new:
 
-- Calmer, easier-to-understand messages when AKILIMO cannot give advice, for example when you are offline or your field is outside the supported area
-- New "Technical details" box that you can copy and share when you report a problem
-- Fixed: a field outside the supported area now shows the right message
+- Messages: your new inbox brings advice and updates from AKILIMO. Switch on notifications in Settings to be alerted.
+- Planting date and cultivar advice for maize farmers in Nigeria.
+- Clearer, calmer messages when advice is not available for your location or crop, or cannot be loaded, with a "Technical details" box you can copy and share when you report a problem.
+- Stability improvements.

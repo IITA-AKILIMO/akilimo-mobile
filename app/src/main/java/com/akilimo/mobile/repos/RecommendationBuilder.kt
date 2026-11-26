@@ -120,7 +120,8 @@ class RecommendationBuilder(
                 fertilizerRec = useCase == EnumUseCase.FR,
                 plantingPracticesRec = useCase == EnumUseCase.PP,
                 scheduledPlantingRec = useCase == EnumUseCase.SP,
-                scheduledHarvestRec = false
+                scheduledHarvestRec = false,
+                plantingDateCultivarRec = useCase == EnumUseCase.PDC
             ),
             planting = ComputeRequest.Planting(
                 plantingDate = profile.plantingDate ?: LocalDate.ofEpochDay(0),

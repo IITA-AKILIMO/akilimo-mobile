@@ -112,6 +112,7 @@ Room DB version: **9** — the destructive fallback is used only on a downgrade.
 - Changelog: `CHANGELOG.md`
 - Release note assets: `release/distribution/whatsnew/`
 - Script docs: `scripts/README.md`
+- Play Store screenshots (fastlane capture and upload): `docs/PLAY_STORE_SCREENSHOTS.md`
 
 ## 9. Compose development conventions
 

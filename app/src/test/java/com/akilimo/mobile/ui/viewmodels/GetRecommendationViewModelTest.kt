@@ -25,4 +25,17 @@ class GetRecommendationViewModelTest {
         assertEquals(R.string.error_rec_unknown, GetRecommendationViewModel.errorMessageForHttpCode(404))
         assertEquals(R.string.error_rec_unknown, GetRecommendationViewModel.errorMessageForHttpCode(401))
     }
+
+    @Test
+    fun `known reasons from the compute service get their own message`() {
+        assertEquals(R.string.error_recommendation_outside_coverage, GetRecommendationViewModel.errorMessageForCode("outside_coverage"))
+        assertEquals(R.string.error_rec_type_unavailable, GetRecommendationViewModel.errorMessageForCode("rec_type_unavailable"))
+        assertEquals(R.string.error_rec_no_fertilizer, GetRecommendationViewModel.errorMessageForCode("no_fertilizer"))
+    }
+
+    @Test
+    fun `unknown or missing reasons leave the decision to the http status`() {
+        assertEquals(null, GetRecommendationViewModel.errorMessageForCode("invalid_input"))
+        assertEquals(null, GetRecommendationViewModel.errorMessageForCode(null))
+    }
 }

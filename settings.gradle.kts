@@ -7,6 +7,8 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
+        // Google's mirror of Maven Central first (faster/more reliable); mavenCentral() stays as the fallback
+        maven { url = uri("https://maven-central.storage-download.googleapis.com/maven2/") }
         mavenCentral()
         gradlePluginPortal()
         maven {
@@ -22,6 +24,8 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
+        // Google's mirror of Maven Central first (faster/more reliable); mavenCentral() stays as the fallback
+        maven { url = uri("https://maven-central.storage-download.googleapis.com/maven2/") }
         mavenCentral()
 
         maven {

@@ -162,11 +162,16 @@ class GetRecommendationViewModel @Inject constructor(
                     val rawBody = runCatching { result.errorBody()?.string() }.getOrNull()
                     val errorBody = parseApiError(rawBody)
                     val outsideCoverage = errorBody?.isOutsideCoverage == true
-                    val kind = if (outsideCoverage) UiState.ErrorKind.OUTSIDE_COVERAGE else errorKindForHttpCode(result.code())
+                    val codeMessage = errorMessageForCode(errorBody?.code)
+                    val kind = if (outsideCoverage) {
+                        UiState.ErrorKind.OUTSIDE_COVERAGE
+                    } else {
+                        errorKindForCode(errorBody?.code) ?: errorKindForHttpCode(result.code())
+                    }
                     _uiState.value = failure(
                         kind,
                         if (outsideCoverage) R.string.error_recommendation_outside_coverage
-                        else errorMessageForHttpCode(result.code()),
+                        else codeMessage ?: errorMessageForHttpCode(result.code()),
                         result.technicalDetail(errorBody),
                         status = result.code(),
                         apiCode = errorBody?.code,
@@ -277,6 +282,25 @@ class GetRecommendationViewModel @Inject constructor(
         private const val HTTP_TIMEOUT = 408
         private const val HTTP_TOO_MANY = 429
         private const val HTTP_SERVER_MIN = 500
+
+        /**
+         * The farmer-facing message for a machine-readable reason the API passes on from the compute
+         * service, or null for a reason this app does not know (the HTTP status then decides).
+         */
+        @StringRes
+        fun errorMessageForCode(code: String?): Int? = when (code) {
+            "outside_coverage" -> R.string.error_recommendation_outside_coverage
+            "rec_type_unavailable" -> R.string.error_rec_type_unavailable
+            "no_fertilizer" -> R.string.error_rec_no_fertilizer
+            else -> null
+        }
+
+        /** The kind of failure for a known reason code, or null when the HTTP status decides. */
+        fun errorKindForCode(code: String?): UiState.ErrorKind? = when (code) {
+            "outside_coverage", "rec_type_unavailable" -> UiState.ErrorKind.OUTSIDE_COVERAGE
+            "no_fertilizer" -> UiState.ErrorKind.INPUT
+            else -> null
+        }
 
         /** Maps an unsuccessful HTTP status to the kind of failure the screen shows. */
         fun errorKindForHttpCode(code: Int): UiState.ErrorKind = when {

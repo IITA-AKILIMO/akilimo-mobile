@@ -23,6 +23,10 @@ object FarmRoute
 @Serializable
 object RecommendationsRoute
 
+/** The farmer's message history */
+@Serializable
+object InboxRoute
+
 // ── Recommendation sub-routes ────────────────────────────────────────────────
 
 @Serializable
@@ -33,6 +37,9 @@ object BppRoute         // Best Planting Practices
 
 @Serializable
 object SphRoute         // Scheduled Planting High-Starch
+
+@Serializable
+object PdcRoute         // Planting Date and Cultivar (maize, Nigeria)
 
 @Serializable
 object IcMaizeRoute     // Intercropping with Maize

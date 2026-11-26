@@ -21,19 +21,19 @@ jobs:
     steps:
       - name: Generate GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v3.3.0
+        uses: actions/create-github-app-token@v3.4.0
         with:
           client-id: ${{ vars.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Checkout repository
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Create pull request
-        uses: devops-infra/action-pull-request@v0.6.0
+        uses: devops-infra/action-pull-request@v1.4.0
         with:
           github_token: ${{ steps.app-token.outputs.token }}
           title: 'Next release'

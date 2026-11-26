@@ -3,6 +3,8 @@ package com.akilimo.mobile
 import android.app.Application
 import android.content.Context
 import androidx.test.runner.AndroidJUnitRunner
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import dagger.hilt.android.testing.HiltTestApplication
 
 /**
@@ -17,4 +19,12 @@ class HiltTestRunner : AndroidJUnitRunner() {
         name: String?,
         context: Context?
     ): Application = super.newApplication(cl, HiltTestApplication::class.java.name, context)
+
+    override fun callApplicationOnCreate(app: Application) {
+        super.callApplicationOnCreate(app)
+        // The manifest removes WorkManager's auto-initializer and HiltTestApplication is not a
+        // Configuration.Provider. Jobs left scheduled by an earlier run start SystemJobService as soon as
+        // the process does, before any test code, so WorkManager has to be ready here.
+        WorkManager.initialize(app, Configuration.Builder().build())
+    }
 }

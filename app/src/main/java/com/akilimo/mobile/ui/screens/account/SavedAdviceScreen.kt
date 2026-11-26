@@ -447,6 +447,7 @@ fun adviceKindLabel(kind: String?): String = when (kind) {
     "IC" -> stringResource(R.string.lbl_intercrop_rec)
     "PP" -> stringResource(R.string.lbl_planting_practices_rec)
     "SP" -> stringResource(R.string.lbl_scheduled_planting_rec)
+    "PDC" -> stringResource(R.string.lbl_planting_date_cultivar)
     else -> kind ?: stringResource(R.string.lbl_recommendations)
 }
 

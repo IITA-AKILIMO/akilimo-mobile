@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Strings for the app update prompts. English only for now:
+     sw/rw fall back to these until translated. -->
+<resources>
+    <string name="lbl_update_required">Update required</string>
+    <string name="msg_update_required">This version of AKILIMO is no longer supported. Please update the app to continue.</string>
+    <string name="lbl_update_available">Update available</string>
+    <string name="msg_update_available">A newer version of AKILIMO is ready.</string>
+    <string name="lbl_update_now">Update</string>
+    <string name="lbl_update_later">Later</string>
+    <string name="lbl_update_downloaded">Update downloaded</string>
+    <string name="msg_update_downloaded">Restart AKILIMO to finish installing the update.</string>
+    <string name="lbl_update_restart">Restart</string>
+</resources>

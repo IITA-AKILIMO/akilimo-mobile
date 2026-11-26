@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- PUSH NOTIFICATIONS (English origin; sw and rw to be translated) -->
+    <string name="notif_channel_advice">Advice and price updates</string>
+    <string name="notif_channel_advice_desc">New advice and price changes for your crops</string>
+    <string name="notif_channel_reminders">Reminders</string>
+    <string name="notif_channel_reminders_desc">Reminders about your farming tasks</string>
+    <string name="notif_channel_announcements">Announcements</string>
+    <string name="notif_channel_announcements_desc">News from AKILIMO</string>
+
+    <string name="notif_settings_section">Notifications</string>
+    <string name="notif_settings_switch">Push notifications</string>
+    <string name="notif_settings_switch_desc">Advice, price updates, reminders and announcements</string>
+    <string name="notif_blocked_hint">Notifications are blocked for AKILIMO. Allow them in your phone settings.</string>
+
+    <string name="notif_allow_in_settings">Allow in phone settings</string>
+    <string name="notif_allow_in_settings_desc">Opens your phone settings for AKILIMO notifications</string>
+
+    <!-- INBOX: the history of messages sent to this phone -->
+    <string name="inbox_title">Messages</string>
+    <string name="inbox_hub_desc">Advice, reminders and news from AKILIMO</string>
+    <string name="inbox_hub_unread">%1$d new</string>
+    <string name="inbox_empty_title">No messages yet</string>
+    <string name="inbox_empty_msg">Advice, reminders and news from AKILIMO will show up here.</string>
+    <string name="inbox_refresh_failed">Could not check for new messages. Showing the messages saved on this phone. Pull down to try again.</string>
+    <string name="inbox_unread">New</string>
+    <string name="inbox_open">Open</string>
+    <string name="inbox_delete">Delete</string>
+    <string name="inbox_more_options">More options</string>
+    <string name="inbox_mark_all_read">Mark all as read</string>
+    <string name="inbox_delete_all">Delete all messages</string>
+    <string name="inbox_delete_all_title">Delete all messages?</string>
+    <string name="inbox_delete_all_body">Your message history on this phone will be removed. This cannot be undone.</string>
+    <string name="inbox_delete_all_confirm">Delete all</string>
+
+    <string name="notif_prompt_title">Get farming updates?</string>
+    <string name="notif_prompt_body">AKILIMO can send you new advice, price updates, reminders and announcements for your country and language. You can change this any time in Settings.</string>
+    <string name="notif_prompt_allow">Allow</string>
+    <string name="notif_prompt_not_now">Not now</string>
+</resources>

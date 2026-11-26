@@ -32,6 +32,7 @@ import com.akilimo.mobile.ui.theme.iitaAccentContainer
 import com.akilimo.mobile.ui.theme.onIitaAccentContainer
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.TextButton
@@ -65,6 +66,7 @@ import androidx.compose.material.icons.outlined.Bookmarks
 import com.akilimo.mobile.data.account.PromptSnooze
 import com.akilimo.mobile.navigation.AccountRoute
 import com.akilimo.mobile.navigation.FarmRoute
+import com.akilimo.mobile.navigation.InboxRoute
 import com.akilimo.mobile.navigation.SavedAdviceRoute
 import com.akilimo.mobile.ui.viewmodels.AccountEntryViewModel
 import com.akilimo.mobile.navigation.ProfileRoute
@@ -77,6 +79,11 @@ import com.akilimo.mobile.ui.components.compose.SyncStatusStrip
 import com.akilimo.mobile.ui.screens.recommendations.navigateIfResumed
 import com.akilimo.mobile.ui.theme.AkilimoSpacing
 import com.akilimo.mobile.ui.viewmodels.HubViewModel
+import com.akilimo.mobile.ui.viewmodels.InboxViewModel
+import com.akilimo.mobile.ui.viewmodels.NotificationSettingsViewModel
+import androidx.compose.material.icons.outlined.Inbox
+import com.akilimo.mobile.ui.components.compose.NotificationPermissionEffect
+import com.akilimo.mobile.ui.components.compose.NotificationPromptDialog
 import com.akilimo.mobile.workers.SyncPhase
 
 /** How far the Recommendations card overlaps the bottom edge of the green header. */
@@ -91,7 +98,10 @@ fun HubScreen(
     navController: NavHostController,
     viewModel: HubViewModel = hiltViewModel(),
     accountEntry: AccountEntryViewModel = hiltViewModel(),
+    notifications: NotificationSettingsViewModel = hiltViewModel(),
+    inbox: InboxViewModel = hiltViewModel(),
 ) {
+    val inboxState by inbox.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val signedInAs by accountEntry.signedInAs.collectAsStateWithLifecycle()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -128,6 +138,16 @@ fun HubScreen(
         )
     }
 
+    // Offered once, after the account prompt is out of the way; the system permission dialog follows "Allow"
+    NotificationPermissionEffect(notifications)
+    val notificationState by notifications.uiState.collectAsStateWithLifecycle()
+    if (!showPrompt && notificationState.showPrompt) {
+        NotificationPromptDialog(
+            onAllow = notifications::onPromptAccepted,
+            onNotNow = notifications::onPromptDismissed,
+        )
+    }
+
     Scaffold(
         bottomBar = {
             state.displayStatus?.let { status ->
@@ -158,6 +178,17 @@ fun HubScreen(
                 verticalArrangement = Arrangement.spacedBy(AkilimoSpacing.sm),
             ) {
                 RecommendationsCard(onClick = { navController.navigateIfResumed(RecommendationsRoute) })
+                HubLinkCard(
+                    icon = Icons.Outlined.Inbox,
+                    title = stringResource(R.string.inbox_title),
+                    subtitle = if (inboxState.unreadCount > 0) {
+                        stringResource(R.string.inbox_hub_unread, inboxState.unreadCount)
+                    } else {
+                        stringResource(R.string.inbox_hub_desc)
+                    },
+                    badgeCount = inboxState.unreadCount,
+                    onClick = { navController.navigateIfResumed(InboxRoute) },
+                )
                 // Optional: saved advice for a signed-in farmer, an invitation to sign in for everyone else
                 HubLinkCard(
                     icon = Icons.Outlined.Bookmarks,
@@ -310,7 +341,13 @@ private fun RecommendationsCard(onClick: () -> Unit) {
 }
 
 @Composable
-private fun HubLinkCard(icon: ImageVector, title: String, subtitle: String, onClick: () -> Unit) {
+private fun HubLinkCard(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+    badgeCount: Int = 0,
+) {
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
@@ -332,6 +369,10 @@ private fun HubLinkCard(icon: ImageVector, title: String, subtitle: String, onCl
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+            if (badgeCount > 0) {
+                Badge { Text(if (badgeCount > 99) "99+" else badgeCount.toString()) }
+                Spacer(Modifier.width(AkilimoSpacing.xs))
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,

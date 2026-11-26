@@ -15,6 +15,8 @@ import com.akilimo.mobile.repos.CoverageRepo
 import com.akilimo.mobile.repos.CurrentPracticeRepo
 import com.akilimo.mobile.repos.UserSelectionResetter
 import com.akilimo.mobile.repos.UserPreferencesRepo
+import com.akilimo.mobile.notifications.PushDeviceSync
+import com.akilimo.mobile.notifications.PushTopicSync
 import com.akilimo.mobile.rules.TestDispatcherRule
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingSection
 import com.akilimo.mobile.ui.screens.onboarding.OnboardingStep
@@ -48,6 +50,8 @@ class OnboardingViewModelTest {
     private val prefsRepo: UserPreferencesRepo = mockk(relaxed = true)
     private val appSettings: AppSettingsDataStore = mockk(relaxed = true)
     private val selectionResetter: UserSelectionResetter = mockk(relaxed = true)
+    private val pushTopicSync: PushTopicSync = mockk(relaxed = true)
+    private val pushDeviceSync: PushDeviceSync = mockk(relaxed = true)
     private val currentPracticeRepo: CurrentPracticeRepo = mockk(relaxed = true)
     private val adviceCompletionRepo: AdviceCompletionRepo = mockk(relaxed = true)
     private val coverageRepo: CoverageRepo = mockk(relaxed = true)
@@ -71,7 +75,7 @@ class OnboardingViewModelTest {
     private fun buildViewModel() = OnboardingViewModel(
         userRepo, prefsRepo, appSettings,
         selectionResetter, currentPracticeRepo, adviceCompletionRepo, coverageRepo,
-        phoneNumbers, context,
+        phoneNumbers, pushTopicSync, pushDeviceSync, context,
     )
 
     /**
@@ -366,6 +370,8 @@ class OnboardingViewModelTest {
         advanceUntilIdle()
 
         coVerify { selectionResetter.clear(42) }
+        coVerify { pushTopicSync.sync() }
+        coVerify { pushDeviceSync.sync() }
     }
 
     @Test
@@ -384,6 +390,8 @@ class OnboardingViewModelTest {
         advanceUntilIdle()
 
         coVerify(exactly = 0) { selectionResetter.clear(any()) }
+        coVerify(exactly = 0) { pushTopicSync.sync() }
+        coVerify(exactly = 0) { pushDeviceSync.sync() }
     }
 
     @Test
