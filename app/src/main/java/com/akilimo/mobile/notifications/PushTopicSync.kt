@@ -7,6 +7,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.resume
@@ -26,13 +27,14 @@ class FirebaseTopicSubscriber @Inject constructor() : TopicSubscriber {
     override suspend fun subscribe(topic: String) = await(FirebaseMessaging.getInstance().subscribeToTopic(topic))
     override suspend fun unsubscribe(topic: String) = await(FirebaseMessaging.getInstance().unsubscribeFromTopic(topic))
 
-    private suspend fun await(task: com.google.android.gms.tasks.Task<Void>) = suspendCoroutine { cont ->
-        task.addOnCompleteListener { done ->
-            if (done.isSuccessful) cont.resume(Unit) else cont.resumeWithException(
-                done.exception ?: IllegalStateException("FCM topic request failed")
-            )
+    private suspend fun await(task: com.google.android.gms.tasks.Task<Void>) =
+        suspendCancellableCoroutine { cont ->
+            task.addOnCompleteListener { done ->
+                if (done.isSuccessful) cont.resume(Unit) else cont.resumeWithException(
+                    done.exception ?: IllegalStateException("FCM topic request failed")
+                )
+            }
         }
-    }
 }
 
 @Module
