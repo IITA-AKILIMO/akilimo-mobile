@@ -46,9 +46,11 @@ If a `notification` block is sent anyway, FCM shows it itself while the app is i
 
 | `type` | Channel id (user-visible name) | Default tap target |
 |---|---|---|
-| `advice` | `advice_updates` (Advice and price updates) | Recommendations |
-| `reminder` | `reminders` (Reminders) | Hub |
-| `announcement` | `announcements` (Announcements) | Hub |
+| `advice` | `advice_updates` (Advice and price updates) | Messages (inbox) |
+| `reminder` | `reminders` (Reminders) | Messages (inbox) |
+| `announcement` | `announcements` (Announcements) | Messages (inbox) |
+
+Every notification opens the Messages inbox unless the message sets an explicit `target`.
 
 Farmers can mute one kind in the phone's notification settings without losing the others.
 

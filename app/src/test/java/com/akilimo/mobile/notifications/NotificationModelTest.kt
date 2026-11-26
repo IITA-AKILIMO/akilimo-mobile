@@ -32,11 +32,11 @@ class NotificationModelTest {
     @Test
     fun `missing or unknown target uses the type default`() {
         assertEquals(
-            NotificationTarget.RECOMMENDATIONS,
+            NotificationTarget.INBOX,
             NotificationRouting.resolveTarget(NotificationType.ADVICE, null),
         )
         assertEquals(
-            NotificationTarget.HUB,
+            NotificationTarget.INBOX,
             NotificationRouting.resolveTarget(NotificationType.REMINDER, "unknown-screen"),
         )
     }
@@ -48,7 +48,7 @@ class NotificationModelTest {
 
     @Test
     fun `fcm launch extras route by type when no target is given`() {
-        assertEquals(NotificationTarget.RECOMMENDATIONS, NotificationRouting.fromExtras("advice", null))
+        assertEquals(NotificationTarget.INBOX, NotificationRouting.fromExtras("advice", null))
         assertEquals(NotificationTarget.HUB, NotificationRouting.fromExtras(null, "hub"))
     }
 

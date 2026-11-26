@@ -11,6 +11,7 @@ import com.akilimo.mobile.network.dto.RegisterRequest
 import com.akilimo.mobile.network.dto.ResetPasswordRequest
 import com.akilimo.mobile.network.dto.SocialSignInRequest
 import com.akilimo.mobile.network.dto.VerifyEmailRequest
+import com.akilimo.mobile.notifications.MessageSync
 import com.akilimo.mobile.notifications.PushDeviceSync
 import java.time.OffsetDateTime
 import javax.inject.Inject
@@ -35,6 +36,7 @@ class AccountRepo @Inject constructor(
     private val settings: AppSettingsDataStore,
     private val savedAdvice: SavedAdviceRepo,
     private val pushDevices: PushDeviceSync,
+    private val messageSync: MessageSync,
 ) {
     suspend fun register(email: String, password: String, name: String?, consent: Boolean): AccountResult<SignInOutcome> =
         calls.execute(authenticated = false) {
@@ -93,6 +95,8 @@ class AccountRepo @Inject constructor(
         savedAdvice.clearAll()
         // The account link goes with the session: the API forgets this phone until the farmer registers it again
         pushDevices.unregister()
+        // Messages addressed to the account go with it: the inbox is cleaned and fetched again for the phone alone
+        messageSync.resetAndSync()
     }
 
     /** Deletes the account (past requests stay on the server as anonymous statistics) and everything kept on the phone. */
@@ -103,6 +107,7 @@ class AccountRepo @Inject constructor(
                 sessionStore.clear()
                 savedAdvice.clearAll()
                 pushDevices.unregister()
+                messageSync.resetAndSync()
                 AccountResult.Success(Unit)
             }
         }

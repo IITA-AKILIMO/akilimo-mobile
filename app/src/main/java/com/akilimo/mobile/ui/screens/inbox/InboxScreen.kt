@@ -32,6 +32,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +41,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.akilimo.mobile.R
@@ -69,6 +72,13 @@ fun InboxScreen(
     var menuOpen by rememberSaveable { mutableStateOf(false) }
     var confirmDeleteAll by rememberSaveable { mutableStateOf(false) }
     val messages = state.messages
+
+    // The view model already fetched once when it was created; every later arrival on the screen (back from another app,
+    // a tapped notification while the app was in the background) fetches again so the list is current
+    var firstResume by remember { mutableStateOf(true) }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        if (firstResume) firstResume = false else viewModel.refresh()
+    }
 
     Scaffold(
         topBar = {

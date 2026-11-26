@@ -77,6 +77,19 @@ class MessageSync @Inject constructor(
 ) {
     private val lock = Mutex()
 
+    /**
+     * Empties the inbox and starts the sync over, for when the farmer signs out: messages addressed to the account must
+     * not stay on the phone, and the API now answers for the phone alone. What it returns is stored as already read.
+     * Returns true when the inbox is up to date again; false if the API could not be reached (the inbox stays empty).
+     */
+    suspend fun resetAndSync(): Boolean {
+        lock.withLock {
+            inbox.deleteAll()
+            appSettings.setMessageSync("", null)
+        }
+        return sync()
+    }
+
     /** Returns true when the inbox is up to date; false if the API could not be reached. Never throws. */
     suspend fun sync(): Boolean = lock.withLock {
         val country = NotificationTopics.countryCode(userRepo.getUser(appSettings.akilimoUser)?.enumCountry)

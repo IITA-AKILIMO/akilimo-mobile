@@ -8,6 +8,7 @@ import com.akilimo.mobile.network.dto.MessageDto
 import com.akilimo.mobile.repos.AkilimoUserRepo
 import com.akilimo.mobile.repos.InboxRepo
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -130,6 +131,22 @@ class MessageSyncTest {
 
         assertNull(fetcher.calls.last().third)
         assertEquals("TZ|rw", audience)
+        assertTrue(saved.all { it.isRead })
+    }
+
+    @Test
+    fun `resetAndSync empties the inbox and fetches again from scratch as read`() = runTest {
+        coEvery { inbox.deleteAll() } answers { saved.clear() }
+        fetcher.all = listOf(dto("a", "2026-11-01T10:00:00+00:00"), dto("b", "2026-11-02T10:00:00+00:00"))
+        sync().sync()
+        saved.clear()
+        fetcher.all += dto("c", "2026-11-03T10:00:00+00:00")
+
+        assertTrue(sync().resetAndSync())
+
+        coVerify { inbox.deleteAll() }
+        assertNull(fetcher.calls.last().third) // from the start, not after the old cursor
+        assertEquals(listOf("a", "b", "c"), saved.map { it.id })
         assertTrue(saved.all { it.isRead })
     }
 
