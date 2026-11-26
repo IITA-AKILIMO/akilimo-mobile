@@ -31,11 +31,19 @@ class MessageSyncTest {
         /** Everything the "server" holds, oldest first. */
         var all = listOf<MessageDto>()
         val calls = mutableListOf<Triple<String?, String?, String?>>()
+        val deviceTokens = mutableListOf<String?>()
         var failing = false
 
-        override suspend fun fetch(country: String?, language: String?, since: String?, limit: Int): List<MessageDto> {
+        override suspend fun fetch(
+            country: String?,
+            language: String?,
+            since: String?,
+            limit: Int,
+            deviceToken: String?,
+        ): List<MessageDto> {
             check(!failing) { "offline" }
             calls += Triple(country, language, since)
+            deviceTokens += deviceToken
             return all.filter { since == null || it.createdAt!! >= since }.take(limit)
         }
     }
@@ -48,6 +56,7 @@ class MessageSyncTest {
     fun setUp() {
         every { appSettings.akilimoUser } returns "user1"
         every { appSettings.languageTag } returns "sw-TZ"
+        every { appSettings.deviceToken } returns "install-1"
         coEvery { userRepo.getUser("user1") } returns AkilimoUser(userName = "user1", enumCountry = EnumCountry.TZ)
         coEvery { appSettings.messageSyncAudience() } answers { audience }
         coEvery { appSettings.messageSyncCursor() } answers { cursor }
@@ -71,6 +80,17 @@ class MessageSyncTest {
         assertTrue(saved.all { it.isRead })
         assertEquals("TZ|sw", audience)
         assertEquals("2026-11-02T10:00:00+00:00", cursor)
+    }
+
+    @Test
+    fun `every fetch carries the install id so private messages arrive`() = runTest {
+        fetcher.all = listOf(dto("a", "2026-11-01T10:00:00+00:00"))
+
+        sync().sync()
+        sync().sync()
+
+        assertTrue(fetcher.deviceTokens.isNotEmpty())
+        assertTrue(fetcher.deviceTokens.all { it == "install-1" })
     }
 
     @Test

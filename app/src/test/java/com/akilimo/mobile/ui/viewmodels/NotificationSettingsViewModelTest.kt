@@ -2,6 +2,7 @@ package com.akilimo.mobile.ui.viewmodels
 
 import app.cash.turbine.test
 import com.akilimo.mobile.data.AppSettingsDataStore
+import com.akilimo.mobile.notifications.PushDeviceSync
 import com.akilimo.mobile.notifications.PushTopicSync
 import com.akilimo.mobile.rules.TestDispatcherRule
 import io.mockk.clearAllMocks
@@ -27,6 +28,7 @@ class NotificationSettingsViewModelTest {
 
     private val appSettings: AppSettingsDataStore = mockk(relaxed = true)
     private val topicSync: PushTopicSync = mockk(relaxed = true)
+    private val deviceSync: PushDeviceSync = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -36,7 +38,7 @@ class NotificationSettingsViewModelTest {
         every { appSettings.pushPromptAnsweredFlow } returns flowOf(false)
     }
 
-    private fun buildViewModel() = NotificationSettingsViewModel(appSettings, topicSync)
+    private fun buildViewModel() = NotificationSettingsViewModel(appSettings, topicSync, deviceSync)
 
     @Test
     fun `fresh install is off and shows the prompt once`() = runTest {
@@ -84,7 +86,7 @@ class NotificationSettingsViewModelTest {
     }
 
     @Test
-    fun `granted permission enables and syncs topics`() = runTest {
+    fun `granted permission enables and syncs topics and the device registration`() = runTest {
         val viewModel = buildViewModel()
         viewModel.onPermissionResult(true)
         advanceUntilIdle()
@@ -92,6 +94,7 @@ class NotificationSettingsViewModelTest {
         coVerifyOrder {
             appSettings.setPushEnabled(true)
             topicSync.sync()
+            deviceSync.sync()
         }
     }
 

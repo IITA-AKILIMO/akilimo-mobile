@@ -11,6 +11,7 @@ import com.akilimo.mobile.network.dto.RegisterRequest
 import com.akilimo.mobile.network.dto.ResetPasswordRequest
 import com.akilimo.mobile.network.dto.SocialSignInRequest
 import com.akilimo.mobile.network.dto.VerifyEmailRequest
+import com.akilimo.mobile.notifications.PushDeviceSync
 import java.time.OffsetDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -33,6 +34,7 @@ class AccountRepo @Inject constructor(
     private val sessionStore: AccountSessionStore,
     private val settings: AppSettingsDataStore,
     private val savedAdvice: SavedAdviceRepo,
+    private val pushDevices: PushDeviceSync,
 ) {
     suspend fun register(email: String, password: String, name: String?, consent: Boolean): AccountResult<SignInOutcome> =
         calls.execute(authenticated = false) {
@@ -81,11 +83,16 @@ class AccountRepo @Inject constructor(
     suspend fun resetPassword(email: String, code: String, password: String): AccountResult<Unit> =
         calls.execute(authenticated = false) { it.resetPassword(ResetPasswordRequest(email.trim(), code.trim(), password)) }.unit()
 
-    /** Signs out. The phone forgets the session and the saved advice copies even if the server cannot be reached. */
+    /**
+     * Signs out. The phone forgets the session and the saved advice copies even if the server cannot be reached, and
+     * is removed from the API's push list (it registers again at the next start, without the account).
+     */
     suspend fun signOut() {
         if (sessionStore.isSignedIn) calls.execute(authenticated = true) { it.logout() }
         sessionStore.clear()
         savedAdvice.clearAll()
+        // The account link goes with the session: the API forgets this phone until the farmer registers it again
+        pushDevices.unregister()
     }
 
     /** Deletes the account (past requests stay on the server as anonymous statistics) and everything kept on the phone. */
@@ -95,6 +102,7 @@ class AccountRepo @Inject constructor(
             is AccountResult.Success -> {
                 sessionStore.clear()
                 savedAdvice.clearAll()
+                pushDevices.unregister()
                 AccountResult.Success(Unit)
             }
         }

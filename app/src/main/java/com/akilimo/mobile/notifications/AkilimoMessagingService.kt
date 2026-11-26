@@ -21,7 +21,8 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 /**
- * Shows push messages. Messages are topic-based (see [NotificationTopics]) and should be sent as
+ * Shows push messages. Messages go to topics (see [NotificationTopics]) or to this phone's own FCM token (registered by
+ * [PushDeviceSync]) and should be sent as
  * data-only so this service builds the notification in the farmer's channel and language:
  * `type` (advice | reminder | announcement), `title`, `body` and an optional `target`
  * (hub | recommendations | settings | inbox) that overrides the type's default screen.
@@ -37,6 +38,9 @@ class AkilimoMessagingService : FirebaseMessagingService() {
 
     @Inject
     lateinit var inbox: InboxRepo
+
+    @Inject
+    lateinit var pushDeviceSync: PushDeviceSync
 
     override fun onMessageReceived(message: RemoteMessage) {
         val data = message.data
@@ -77,8 +81,13 @@ class AkilimoMessagingService : FirebaseMessagingService() {
         }
     }
 
-    /** The FCM token is not stored: delivery is by topic, so the token never leaves the device. */
-    override fun onNewToken(token: String) = Unit
+    /**
+     * Firebase rotated the token: register the new one with the API (while notifications are on) so messages addressed to
+     * this phone keep arriving. If the call fails, the next start registers it, because the stored token differs.
+     */
+    override fun onNewToken(token: String) {
+        runBlocking { pushDeviceSync.sync(knownToken = token) }
+    }
 
     companion object {
         /** True when Android lets the app post: permission granted (13+) and not blocked in settings. */
