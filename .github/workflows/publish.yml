@@ -96,6 +96,31 @@ jobs:
           status: completed
           whatsNewDirectory: release/distribution/whatsnew
 
+      # Tell the API which version is now live so installed apps are offered the update (GET /v1/app/version).
+      # Only `latest` is raised: forcing an update (`min_supported`) stays a deliberate admin call. Must run before the
+      # build number is bumped below: until then the counter still holds the code this build was made with.
+      # Never fails the publish: the upload already succeeded, and the value can be set by hand (see docs).
+      - name: Raise latest version in the AKILIMO API
+        if: >
+          steps.upload_beta.outcome == 'success' ||
+          steps.upload_prod.outcome == 'success'
+        continue-on-error: true
+        run: |
+          VERSION_CODE=$(curl -fsS https://munywele.co.ke/app-releases/akilimo)
+          if ! [[ "$VERSION_CODE" =~ ^[0-9]+$ ]]; then
+            echo "::warning::No numeric version code; latest not updated"
+            exit 1
+          fi
+          curl -fsS -X PUT "${API_URL:-https://api.akilimo.org}/api/v1/admin/app/version" \
+            -H "X-Api-Key: ${AKILIMO_ADMIN_API_KEY}" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/json" \
+            -d "{\"platform\":\"android\",\"latest\":${VERSION_CODE}}"
+          echo "latest version code set to ${VERSION_CODE}"
+        env:
+          API_URL: ${{ vars.AKILIMO_API_URL }}
+          AKILIMO_ADMIN_API_KEY: ${{ secrets.AKILIMO_ADMIN_API_KEY }}
+
       - name: Update build number
         if: >
           steps.upload_beta.outcome == 'success' ||

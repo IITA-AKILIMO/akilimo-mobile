@@ -37,6 +37,7 @@ env = "4.0.0"
 google-services = "4.4.0"
 play-services-location = "21.3.0"
 play-services-auth = "21.3.0"
+play-app-update = "2.1.0"
 firebase-bom = "32.7.0"
 firebase-installations = "18.0.0"
 firebase-crashlytics-plugin = "3.0.6"
@@ -102,6 +103,8 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 firebase-installations = { group = "com.google.firebase", name = "firebase-installations", version.ref = "firebase-installations" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
+play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "play-app-update" }
+play-app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "play-app-update" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }

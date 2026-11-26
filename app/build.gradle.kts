@@ -299,6 +299,8 @@ dependencies {
     //Region: Google services
     implementation(libs.play.services.location)
     implementation(libs.play.services.auth)
+    implementation(libs.play.app.update)
+    implementation(libs.play.app.update.ktx)
     //Region: Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.installations)
