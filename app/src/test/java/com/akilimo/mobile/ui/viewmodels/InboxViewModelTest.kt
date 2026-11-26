@@ -5,15 +5,20 @@ import com.akilimo.mobile.notifications.MessageSync
 import com.akilimo.mobile.repos.InboxRepo
 import com.akilimo.mobile.rules.TestDispatcherRule
 import io.mockk.clearAllMocks
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -59,6 +64,57 @@ class InboxViewModelTest {
         advanceUntilIdle()
 
         coVerify { messageSync.sync() }
+    }
+
+    @Test
+    fun `a refresh shows the spinner while it runs and clears it when it succeeds`() = runTest {
+        coEvery { messageSync.sync() } coAnswers { delay(1_000); true }
+        val viewModel = buildViewModel()
+
+        assertTrue(viewModel.uiState.value.refreshing)
+        advanceTimeBy(1_001)
+        advanceUntilIdle()
+
+        assertFalse(viewModel.uiState.value.refreshing)
+        assertFalse(viewModel.uiState.value.refreshFailed)
+    }
+
+    @Test
+    fun `a refresh that fails is reported and can be tried again`() = runTest {
+        coEvery { messageSync.sync() } returns false
+        val viewModel = buildViewModel()
+        advanceUntilIdle()
+
+        assertFalse(viewModel.uiState.value.refreshing)
+        assertTrue(viewModel.uiState.value.refreshFailed)
+
+        coEvery { messageSync.sync() } returns true
+        viewModel.refresh()
+        advanceUntilIdle()
+        assertFalse(viewModel.uiState.value.refreshFailed)
+    }
+
+    @Test
+    fun `a refresh that takes too long times out instead of hanging`() = runTest {
+        coEvery { messageSync.sync() } coAnswers { delay(10 * InboxViewModel.REFRESH_TIMEOUT_MS); true }
+        val viewModel = buildViewModel()
+
+        advanceTimeBy(InboxViewModel.REFRESH_TIMEOUT_MS + 1)
+        advanceUntilIdle()
+
+        assertFalse(viewModel.uiState.value.refreshing)
+        assertTrue(viewModel.uiState.value.refreshFailed)
+    }
+
+    @Test
+    fun `a second pull while one is running does not start another fetch`() = runTest {
+        coEvery { messageSync.sync() } coAnswers { delay(1_000); true }
+        val viewModel = buildViewModel()
+        viewModel.refresh()
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { messageSync.sync() }
     }
 
     @Test

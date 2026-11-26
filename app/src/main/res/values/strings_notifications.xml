@@ -22,6 +22,7 @@
     <string name="inbox_hub_unread">%1$d new</string>
     <string name="inbox_empty_title">No messages yet</string>
     <string name="inbox_empty_msg">Advice, reminders and news from AKILIMO will show up here.</string>
+    <string name="inbox_refresh_failed">Could not check for new messages. Showing the messages saved on this phone. Pull down to try again.</string>
     <string name="inbox_unread">New</string>
     <string name="inbox_open">Open</string>
     <string name="inbox_delete">Delete</string>
