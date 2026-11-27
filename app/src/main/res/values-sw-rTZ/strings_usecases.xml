@@ -116,6 +116,10 @@
     <string name="lbl_market_outlet_sweet_potato">Unatarajia kuuza bei gani viazi vitamu wakati wa mavuno?</string>
     <string name="lbl_unit_price">Kizio cha bei</string>
     <string name="lbl_exact_price">Bei halisi</string>
+    <string name="lbl_price_subsidised">Bei zenye ruzuku</string>
+    <string name="lbl_price_open_market">Bei za soko huria</string>
+    <string name="msg_price_subsidised">Hizi ni bei ambazo wakulima hulipa kwa ruzuku ya serikali ya mbolea.</string>
+    <string name="msg_price_open_market">Hizi ni bei ambazo wakulima hulipa dukani, bila ruzuku.</string>
     <string name="lbl_weather_feels_like">Inahisi kama %1$d°C - unyevunyevu %2$d%%</string>
     <string name="per_tonne_sale_unit">Kwa tani</string>
     <string name="per_kg_sale_unit">Kwa kilo</string>

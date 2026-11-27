@@ -124,4 +124,14 @@ object DatabaseMigrations {
             db.execSQL("CREATE INDEX IF NOT EXISTS `index_inbox_messages_received_at` ON `inbox_messages` (`received_at`)")
         }
     }
+
+    /**
+     * v10 → v11: each fertilizer price says whether its country's prices are subsidised or open market
+     * (`price_basis`). A nullable column; the next price sync fills it.
+     */
+    val MIGRATION_10_11 = object : Migration(10, 11) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `fertilizer_prices` ADD COLUMN `price_basis` TEXT")
+        }
+    }
 }
