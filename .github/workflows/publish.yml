@@ -125,8 +125,13 @@ jobs:
         if: >
           steps.upload_beta.outcome == 'success' ||
           steps.upload_prod.outcome == 'success'
+        # The endpoint now requires an API key (fuelrod-admin SEC-017): add it as the repository secret
+        # FUELROD_API_KEY. -f makes a rejected key fail the step instead of silently skipping the bump.
         run: |
-          curl -s https://munywele.co.ke/app-releases/akilimo/update
+          curl -fsS -X POST https://munywele.co.ke/app-releases/akilimo/update \
+            -H "X-Api-Key: ${FUELROD_API_KEY}"
+        env:
+          FUELROD_API_KEY: ${{ secrets.FUELROD_API_KEY }}
 
       - name: Send success webhook
         if: >
