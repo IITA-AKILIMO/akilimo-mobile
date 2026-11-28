@@ -70,11 +70,18 @@ jobs:
 
       - name: Generate Tag
         id: tag_version
-        uses: masgeek/github-tag-action@release
+        uses: masgeek/github-tag-action@4
         with:
           github_token: ${{ steps.app-token.outputs.token }}
           tag_prefix: ""
           create_annotated_tag: true
+          default_bump: "false"        # nothing releasable (docs/ci/chore only) → no tag
+          default_prerelease_bump: "false" # nothing releasable (docs/ci/chore only) → no tag
+          gitmoji: true                # understand ✨ feat(x): … and 💥 breaking commits
+          extended_release_rules: true # also: accessibility/removal → minor; security/refactor/build → patch
+          fetch_all_tags: true
+          create_release: true         # GitHub Release with the changelog as its body
+
 
       - name: Verify tag was produced
         run: |

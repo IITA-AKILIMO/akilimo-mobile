@@ -216,6 +216,10 @@
     <string name="lbl_market_outlet_sweet_potato">What price do you expect to sell your sweet potatoes at  harvest</string>
     <string name="lbl_unit_price">Unit price</string>
     <string name="lbl_exact_price">Exact price</string>
+    <string name="lbl_price_subsidised">Subsidised prices</string>
+    <string name="lbl_price_open_market">Open-market prices</string>
+    <string name="msg_price_subsidised">These prices are what farmers pay with the government fertilizer subsidy.</string>
+    <string name="msg_price_open_market">These prices are what farmers pay in the shop, without a subsidy.</string>
     <string name="lbl_weather_summary" translatable="false">%1$d° - %2$s</string>
     <string name="lbl_weather_feels_like">Feels like %1$d°C - %2$d%% humidity</string>
     <!-- Sale units -->

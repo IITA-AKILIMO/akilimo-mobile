@@ -58,6 +58,7 @@ import com.akilimo.mobile.ui.components.compose.RadioButtonRow
 import com.akilimo.mobile.ui.components.compose.SectionHeader
 import com.akilimo.mobile.ui.components.compose.StatItem
 import com.akilimo.mobile.ui.components.compose.StatSummaryCard
+import com.akilimo.mobile.ui.components.compose.StatusChip
 import com.akilimo.mobile.ui.components.compose.StatusTone
 import com.akilimo.mobile.ui.components.compose.SelectionCard
 import com.akilimo.mobile.ui.components.compose.completeTask
@@ -284,6 +285,23 @@ private fun FertilizerFilters(
         }
     }
 }
+/** The API's `price_basis` values */
+private const val PRICE_BASIS_SUBSIDISED = "subsidised"
+private const val PRICE_BASIS_OPEN_MARKET = "open_market"
+
+/** A chip saying whether the prices are subsidised, with a line that explains it. */
+@Composable
+private fun PriceBasisNote(label: String, note: String, tone: StatusTone) {
+    StatusChip(text = label, tone = tone)
+    Spacer(modifier = Modifier.height(AkilimoSpacing.xxs))
+    Text(
+        text = note,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FertilizerPriceSheet(
@@ -339,6 +357,20 @@ private fun FertilizerPriceSheet(
         ) {
             Text(text = fertilizer.name.orEmpty(), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(AkilimoSpacing.xs))
+
+            // Whether the options are the subsidised or the open-market price (known once the prices have synced)
+            when (loaded?.firstNotNullOfOrNull { it.priceBasis }) {
+                PRICE_BASIS_SUBSIDISED -> PriceBasisNote(
+                    label = stringResource(R.string.lbl_price_subsidised),
+                    note = stringResource(R.string.msg_price_subsidised),
+                    tone = StatusTone.Success,
+                )
+                PRICE_BASIS_OPEN_MARKET -> PriceBasisNote(
+                    label = stringResource(R.string.lbl_price_open_market),
+                    note = stringResource(R.string.msg_price_open_market),
+                    tone = StatusTone.Neutral,
+                )
+            }
 
             when {
                 loaded == null -> ListLoading()

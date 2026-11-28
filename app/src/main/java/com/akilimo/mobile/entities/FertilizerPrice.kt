@@ -17,6 +17,8 @@ data class FertilizerPrice(
     @ColumnInfo(name = "sort_order") val sortOrder: Int = 0,
     @ColumnInfo(name = "price_per_bag") val pricePerBag: Double = 0.0,
     @ColumnInfo(name = "price_range") val priceRange: String,
+    /** "subsidised" or "open_market"; null until the prices are next synced */
+    @ColumnInfo(name = "price_basis") val priceBasis: String? = null,
     @ColumnInfo(name = "active") val isActive: Boolean = true,
     @ColumnInfo(name = "description") val description: String?,
 ) : BaseEntity()

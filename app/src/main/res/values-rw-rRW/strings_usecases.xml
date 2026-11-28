@@ -116,6 +116,10 @@
     <string name="lbl_market_outlet_sweet_potato">Ni ikihe giciro uteganya kugurisha ibijumba byawe mu gihe cyo gusarura?</string>
     <string name="lbl_unit_price">Igiciro</string>
     <string name="lbl_exact_price">Igiciro nyacyo</string>
+    <string name="lbl_price_subsidised">Ibiciro birimo nkunganire</string>
+    <string name="lbl_price_open_market">Ibiciro by\'isoko risanzwe</string>
+    <string name="msg_price_subsidised">Ibi ni ibiciro abahinzi bishyura bafashijwe na nkunganire ya leta ku ifumbire.</string>
+    <string name="msg_price_open_market">Ibi ni ibiciro abahinzi bishyura mu iduka, nta nkunganire.</string>
     <string name="lbl_weather_feels_like">Wiyumvikanisha nka %1$d°C - ubuhehere %2$d%%</string>
     <string name="per_tonne_sale_unit">Kuri toni</string>
     <string name="per_kg_sale_unit">Kuri kg</string>
