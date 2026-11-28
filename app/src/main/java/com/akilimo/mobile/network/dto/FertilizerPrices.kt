@@ -16,6 +16,8 @@ data class FertilizerPriceDto(
     @param:Json(name = "sort_order") val sortOrder: Int,
     @param:Json(name = "price_per_bag") val pricePerBag: Double,
     @param:Json(name = "price_range") val priceRange: String,
+    /** "subsidised" or "open_market": which price the country's options are built from */
+    @param:Json(name = "price_basis") val priceBasis: String? = null,
     @param:Json(name = "active") val isActive: Boolean,
     @param:Json(name = "description") val description: String?,
     @param:Json(name = "created_at") val createdAt: String?,
@@ -31,6 +33,7 @@ data class FertilizerPriceDto(
         sortOrder = sortOrder,
         pricePerBag = pricePerBag,
         priceRange = priceRange,
+        priceBasis = priceBasis,
         isActive = isActive,
         description = description
     )

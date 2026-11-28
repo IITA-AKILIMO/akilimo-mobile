@@ -82,7 +82,7 @@ import com.akilimo.mobile.database.EnumWeedControlConverter
         SavedAdvice::class,
         InboxMessage::class
     ],
-    version = 10,
+    version = 11,
     exportSchema = true
 )
 @TypeConverters(
@@ -162,6 +162,7 @@ abstract class AppDatabase : RoomDatabase() {
                     DatabaseMigrations.MIGRATION_6_8,
                     DatabaseMigrations.MIGRATION_8_9,
                     DatabaseMigrations.MIGRATION_9_10,
+                    DatabaseMigrations.MIGRATION_10_11,
                 )
                 .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
                 .build()
