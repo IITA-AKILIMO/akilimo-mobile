@@ -7,170 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Bug Fixes
+### ⚠️ BREAKING CHANGES
 
-- Fix(html): update terms page copyright information
+- **publish:** authenticate the build-number bump with an API key — the publish workflow needs the FUELROD_API_KEY repository
 
-- Fix(icon): invert launcher icon to Gmail-style green symbol on white
+### ✨ Features
 
-Swap background/foreground colours: white background layer + AKILIMO
-green (#3D7600) cassava head foreground, giving a coloured-mark-on-
-neutral look (similar to Gmail) instead of the previous white-on-green.
-Monochrome layer unchanged.
+- **fertilizer:** show whether the prices are subsidised in the price sheet (9d75ace)
+- **inbox:** pull to refresh with a spinner, a failure note and a 15 s timeout (90f851e)
+- **push:** open the inbox from notifications, refresh it, clean it on sign-out (c6a167c)
+- **push:** register the FCM token so messages reach one farmer or phone (b7473d6)
+- **update:** tell users an update is available and force it below the minimum (85ee767)
+- **advice:** show a specific message for known compute errors (d5380d6)
+- **inbox:** push notifications and a message inbox (8ec6643)
+- **advice:** add planting date and cultivar advice for Nigeria (c68f539)
 
-Co-Authored-By: munywele-sonar <noreply@sonar.com>
+### ♻️ Refactoring
 
-- Fix(drawable): update ic_grid.xml tint color
+- **notifications:** use suspendCancellableCoroutine for FCM topic tasks (135b235)
 
-- Fix/cleanup 
+### 📝 Documentation
 
-- Fix(di): correct context annotation targeting
+- **docs:** document the plan for multi-farmer support on a single device (36fb0fc)
+- **release:** write English release notes for the push and inbox release (0065408)
+- Play Store screenshot capture, upload and release notes guide (dfc3840)
 
-- Fix(fertilizer): correct repository DAO method calls
+### 🛠️ Build
 
-- Fix(repo): restore CIM/CIS DAO filtering and fix rec language default
-
-Restores observeByCimAvailable/observeByCisAvailable to use the correct
-SQL-filtered DAO queries instead of the unfiltered observeAllByCountry.
-Fixes recommendationLanguage UiState default from "" to "en" to prevent
-blank display in SummaryStep.
-
-Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
-
-- Fix(db): correct migration version range
-
-
-### Code Refactoring
-
-- Refactor(theme): strip XML theme to minimal base; improve adaptive app icon
-
-Compose owns all theming via AkilimoTheme — the XML theme now only
-suppresses the ActionBar and sets windowBackground to prevent white flash.
-Removes all widget, typography, shape, and toolbar styles from XML (262 to 9
-lines in themes.xml) and deletes the now-redundant type.xml.
-
-App icon updated to branded adaptive icon:
-- Background: AKILIMO green (#3D7600) replacing plain white
-- Foreground: white cassava head (from ic_akilimo_head) scaled 3x into
-  the 72dp safe zone, replacing the poorly offset lime-coloured version
-- Monochrome layer added for Android 13+ dynamic-colour themed icons
-- mipmap-anydpi-v26 adaptive icon XML added (was missing entirely)
-
-Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
-
-- Refactor(ui): extract recommendation feedback copy
-
-- Refactor(settings): extract weather summary strings
-
-- Refactor(viewmodels): extract validation and worker messages
-
-- Refactor(packages): consolidate package structure — phases 1–3
-
-Dissolve 5 misplaced or single-file packages and relocate all files to
-semantically correct destinations. No logic changes; all unit tests pass.
-
-Packages dissolved:
-- wizard/        → ui/screens/onboarding/ (OnboardingSection)
-- interfaces/    → enums/ (ILabelProvider, IProduceType) + base/workers/ (IDispatcherProvider)
-- helper/        → workers/ (WorkStateMapper, WorkerError) + data/ (LocaleHelper)
-- extensions/    → workers/ (WorkerExtensions)
-- ui/viewmodels/usecases/ → ui/viewmodels/ (FertilizerViewModel flattened)
-
-Files moved to correct packages:
-- dao/MaizePerformanceRepo, dao/ProduceMarketRepo → repos/
-- base/BaseEntity → entities/
-- utils/Converters → database/
-- utils/GeocodingService, utils/WeatherService, utils/LocationHelper → network/
-- utils/RecommendationBuilder → repos/
-- utils/AnimationHelper deleted (zero callers in Compose-only codebase)
-
-Import sites updated across ~40 files. docs/ and CLAUDE.md updated to
-reflect current package layout and correct DB version (v5).
-
-Co-Authored-By: munywele-sonar <noreply@sonar.com>
-
-- Refactor(packages): consolidate remote-data layer — phase 4
-
-Merge rest/ into network/ and split dto/ into API-layer vs UI-layer,
-fulfilling the CLAUDE.md guardrail: all remote-data code now lives under network/.
-
-rest/ dissolved:
-- rest/request/ → network/request/ (ComputeRequest, FertilizerRequest, RecommendationRequest, UserInfo)
-- rest/response/ → network/response/ (ReverseGeocodeResponse, WeatherResponse)
-- rest/ directory deleted
-
-dto/ split:
-- API-layer DTOs (Moshi-annotated, .toEntity() methods) → network/dto/
-  (Fertilizers, FertilizerPrices, CassavaPrices, CassavaUnits, InvestmentAmounts,
-   MaizePrices, StarchFactories, Pagination, RecommendationResponse, UserFeedBackRequest,
-   CurrencyDto)
-- UI/domain DTOs remain in dto/
-  (AdviceCompletionDto, Options, OptionEntries)
-
-Import sites updated: AkilimoApi, NetworkUtils, GeocodingService, LocationIqApi,
-WeatherApi, RecommendationBuilder, GetRecommendationViewModel.
-
-Build and all unit tests pass.
-
-Co-Authored-By: munywele-sonar <noreply@sonar.com>
-
-- Refactor(dto): consolidate recommendation response structure
-
-- extract shared recommendation data into dedicated class
-- update request model to include language field
-- improve type safety and validation
-
-- Refactor(ui): consolidate recommendations screen components
-
-- extract advice options and navigation logic into dedicated composable
-- remove duplicated navigation handlers and route mappings
-- improve component reusability and maintainability
-
-- Refactor(dto): consolidate paged response wrappers
-
-
-### Documentation
-
-- Docs: update changelog
-
-- Docs: remove obsolete settings.json configuration
-
-- Docs: remove unused integer resource
-
-- Docs: add architecture cleanup plan
-
-Introduce a comprehensive roadmap for refactoring the Android app
-structure to improve maintainability and reduce package sprawl.
-
-Closes #256
-
-- Docs: remove architecture cleanup and audit plans
-
-Delete `ARCHITECTURE_CLEANUP_PLAN.md`, `PACKAGE_AUDIT_CHECKLIST.md`, and
-`UI_REDESIGN_PLAN.md` to reflect the completion of the structural
-reorganization.
-
-These documents were used to track the migration to feature-oriented
-packaging and navigation splitting which are now finalized.
-
-- Docs: update architecture and development guides
-
-Update documentation to reflect the completed Jetpack Compose migration,
-Room v5 schema changes, and standardized ViewModel state patterns.
-
-Closes #475
-
-- Docs: create package structure improvement plan
-
-Add a detailed four-phase execution plan to resolve structural issues
-in the package layout and align with target architecture.
-
-- Docs: add Mapbox to MapLibre migration guide
-
-
-### Features
-
-- Feat: migrate from XML-based layouts to Jetpack Compose 
+- **gradle:** add Google Maven Central mirror to plugin management (472f04f)
+- **deps:** bump gradle/actions from 4 to 6 (753f3ba)
+- **deps:** bump actions/create-github-app-token from 3.3.0 to 3.4.0 (305190e)
+- **deps:** bump actions/setup-java from 4 to 6 (9aa6f42)
+- **deps:** bump actions/upload-artifact from 4 to 7 (24d0bcd)
+- **deps:** bump actions/checkout from 4 to 7 (5ce37ce)
+- **test:** add screengrab and start WorkManager in the test runner (189ad9f)
+- **deps:** bump devops-infra/action-pull-request from 0.6.0 to 1.4.0 (914faf7)
+- **deps:** bump actions/setup-java from 6.2.0 to 6.3.0 (36b7f35)
+- **deps:** bump actions/cache from 4.3.0 to 6.1.0 (524f2ab)
+- **deps:** bump gradle/actions from 4.4.3 to 6.4.1 (0283a40)
+- **deps:** bump android-actions/setup-android from 3.2.2 to 4.0.4 (3aa2ddc)
 
 ## Summary
 
@@ -362,6 +237,376 @@ Group related string resources into logical categories using XML comments. This 
 Reorganize string resources into logical sections and improve grouping
 to enhance maintainability and translation workflow.
 
+## [33.0.4] - 2026-11-25
+
+### ✨ Features
+
+- **recommendations:** show the server error body as formatted JSON in the technical details (454cb60)
+- **recommendations:** calm, specific error screen with technical details and tracking (2f351f1)
+
+### 🐛 Bug fixes
+
+- **recommendations:** recognise the API's outside_coverage answer (ae1b591)
+
+### 📝 Documentation
+
+- **release:** update the English what's-new notes for the error screen hotfix (08dca2f)
+
+## [33.0.3] - 2026-11-21
+
+### ✨ Features
+
+- **settings:** add settings screen string resources (da07fc0)
+- **location:** add location and field unit strings (480474d)
+- **strings_feedback:** add feedback and rating string resources (cdfbe2f)
+- **strings_usecases:** add Swahili (Tanzania) translations for use cases (3cdb79e)
+- **strings_settings:** add Swahili (Tanzania) settings strings (1535a7b)
+- **strings_onboarding:** add Swahili (Tanzania) onboarding strings (778aab2)
+- **strings_location_units:** add Swahili (Tanzania) location and unit strings (d03bfc5)
+- **strings_feedback:** add Swahili (Tanzania) feedback strings (a57445f)
+- **i18n:** add Kinyarwanda (rw-RW) translations for use-case strings (fe25a74)
+- **strings_settings:** add Kinyarwanda (rw-rRW) settings strings (20c1f3d)
+- **strings_onboarding:** add Kinyarwanda onboarding string resources (97d715d)
+- **strings_location_units:** add Kinyarwanda location unit strings (c4a9090)
+- **strings_feedback:** add Kinyarwanda translations for feedback strings (fb8c785)
+- **ui:** offer the PDF reports on the result screen and in saved advice (6e3d1ca)
+- **network:** parse PDF report links and fetch fresh ones for saved advice (8a4a6da)
+- **legal:** serve privacy policy and terms from akilimo.org with an offline copy (fef9d9c)
+- **network:** stop reporting cancellations and expected network failures as errors (99222fc)
+- **network:** add DNS fallback, shared client and call hardening (37c4025)
+
+### 🐛 Bug fixes
+
+- **location:** Skip map when Mapbox token is missing (43f4062)
+- **dao:** add @Transaction to relation queries (a829029)
+
+### ♿ Accessibility
+
+- **strings:** Add content descriptions for list and grid view toggles (de62ec0)
+
+### 🗑️ Removed
+
+- **strings:** remove most Kinyarwanda translation strings (ea5b3db)
+
+### ♻️ Refactoring
+
+- **resources:** Move maize performance strings to usecases resources (c39adbc)
+- **network:** generate Moshi adapters for weather and geocode responses (573ddc2)
+
+### 📝 Documentation
+
+- **strings_usecases:** update strings_usecases header comment (b9061d6)
+- **strings_onboarding:** Update onboarding strings resource comment (b53056f)
+- Add CLAUDE.md referencing AGENTS.md (0f6d357)
+- **USER_GUIDE.md:** add section separator to USER_GUIDE.md (efd1bd9)
+- Hausa is not planned, so drop it from the language lists (f5ba65c)
+- **ui:** tick saved advice in the UI/UX checklist (6a6ce15)
+- drop the MapLibre migration plan (78ef61b)
+- update the architecture, user and developer guides, README and AGENTS.md (c995d69)
+- **prd:** bring the PRD in line with the app (da978ab)
+- trim the developer guide and PRD, remove the detekt plan snapshot (97f627e)
+- remove the finished Compose migration guide, package plan and old roadmap (6d5a40d)
+- **ui:** missing translations do not fail lint (c3e3e90)
+
+### 🛠️ Build
+
+- **lint:** update lint baseline to AGP 9.5.1 (fe01aa7)
+- **app:** report missing translations as lint warnings (bdd881e)
+- **dependencies:** Move desugar dependency to version catalog (e47d96e)
+- **gradle:** move to the new AGP DSL with built-in Kotlin (a958c2f)
+- **gradle:** clear deprecated and redundant build-script usage (c60c102)
+- **lint:** use AGP's default lint report path (85a8257)
+- **app:** enable resource shrinking in release builds (e479ba5)
+- **gradle:** Migrate Moshi codegen to KSP and tidy Gradle build (f2646ba)
+- **app:** bump compile and target SDK to 37 and pin Sentry version (e0e254a)
+- **gradle:** Upgrade Gradle, AGP, and KSP with compatibility flags (c801a61)
+- **deps:** bump actions/checkout from 4.4.0 to 7.0.1 (521abcf)
+- **deps:** bump actions/setup-java from 4.9.1 to 6.2.0 (7e17a46)
+- **deps:** bump sonarsource/sonarqube-quality-gate-action (937e545)
+- **deps:** bump actions/upload-artifact from 4.6.2 to 7.0.2 (7761a3e)
+- **deps:** bump softprops/action-gh-release from 2.6.2 to 3.0.4 (a06ad80)
+
+## [33.0.2] - 2026-11-13
+
+### ✨ Features
+
+- **account:** swipe left to share a saved advice (f595038)
+- **account:** swipe right to delete and multi-select on saved advice, with undo (5a5f9aa)
+- **account:** long histories: incremental sync, paged and filterable list, delete all saved advice (fe4e1fd)
+- **brand:** the reversed IITA and CGIAR logo for the dark theme, chosen from the app's own theme (4ed963a)
+- **brand:** About text and Nigeria link in Settings, logo alone on its own card at the bottom, credit line removed (4d9de49)
+- **brand:** AKILIMO powered by IITA, with the IITA and CGIAR logo on the home, account and About screens (210cce0)
+- **account:** the IITA and CGIAR logo for signed-in farmers, with colours taken from the full logo (07b6cb9)
+- **account:** say plainly when signed in, with an IITA-coloured theme for signed-in farmers (b98bb3b)
+- **account:** remind me tomorrow or in a week on the start-up prompt, and Google on by default (a20794e)
+- **account:** offer sign in once after start-up, and sign out under Settings (fc59a7a)
+- **account:** sign in, create account, Google, consent, reset password and saved advice screens (19e4f5a)
+- **account:** account API, encrypted session, saved advice in Room and the token on compute (8ae0b48)
+- **farm:** move location, field size and investment preference to a Your farm screen with its own hub card (8a275b3)
+- **location:** explain why the location is needed, say farm not cassava field, and show coverage as a chip (9d9c3ce)
+- **location:** open the manual map on the chosen country and skip the automatic GPS jump (0e39096)
+- **ui:** shared skeleton loading and a shared empty and error message (2db9181)
+- **hub:** show sync and offline status on the hub (1851b60)
+- **profile:** keep only about you, farm, field size and investment preference; add total weeding cost (fec3932)
+- **fertilizers:** show search and category filter only for lists over 10 items (602fe03)
+- **ui:** fertilizer search and category filter, app-wide text size and theme selector in Settings (1f861e6)
+- **dates:** start the planting picker on today and show the allowed date window (093ef70)
+- **hub:** overlap the Recommendations card on the header edge with clear space under the logo (3093e09)
+- **legal:** full-screen legal wizard with a page header, exit confirmation on Back and larger text (c6c43a2)
+- **launch:** branded green launch screen with the white logo via the SplashScreen API (5038d66)
+- **nav:** add the home hub and a standalone profile screen, make onboarding first-run only (3d79aba)
+- **theme:** start in the light theme and let the user choose system or dark (8b0f182)
+- **ui:** dates screen cards and onboarding section cards (ee8bf7f)
+- **ui:** grouped settings cards with icon tiles and tighter wizard bar buttons (ede488c)
+- **ui:** label-above form fields, grouped form cards and investment option cards (51b5580)
+- **ui:** raised selectable option cards and a segmented market choice (8436560)
+- **ui:** shorter home hero and raised advice cards (2cee73b)
+- **ui:** apply logo palette, tighter corners, quieter back arrow, progress summary and step cards (758e82f)
+- **ui:** add shared status chip, accent card, stat and progress summary, segmented tabs and sync banner (093b11c)
+- **recommendations:** hide the app bar on scroll and system bars in landscape for more reading space (1f71a5d)
+- **recommendations:** remember the landscape choice across visits (0e83faa)
+- **recommendations:** let the reader switch the advice screen to landscape (77b1a8f)
+- **recommendations:** make advice text readable with size control and adaptive layout (563ad76)
+- **sync:** pull down to refresh the fertilizer, cassava market and investment lists (89e4a14)
+- **prices:** store the fertilizer category and sync maize units (0f9b88b)
+- **onboarding:** country code picker on the phone number, any country (02ba87e)
+- **recommendations:** confirm before Back exits the app (0961705)
+- **onboarding:** no toolbar on first-run pages, a page header instead (4dc18fe)
+- **onboarding:** show the AKILIMO logo in the welcome header (f8f74fb)
+- **onboarding:** welcome message lives in the collapsing header (c118909)
+- **onboarding:** keep the page-1 title hidden behind the welcome banner (48b1ad2)
+- **onboarding:** collapsing top bar on the onboarding pages (94bb2cf)
+- **onboarding:** use the same pages when editing the profile (bf556da)
+- **onboarding:** split first-run onboarding into steps (304a077)
+- **location:** highlight the supported area and check the farm against it (abb6be2)
+- **ci:** remove the release and tag when the APK build fails (62c296d)
+
+### 🐛 Bug fixes
+
+- **auto-approve:** tell the action which pull request to approve (it runs after a workflow, not on a pull_request event) (21d928b)
+- **country:** clear all choices and completed steps when the country changes (8261c1e)
+- **dates:** offer only harvest dates 235 to 452 days after planting (8b12b19)
+- **hub:** centre the logo and stop the Recommendations card overlapping the header (fad7e94)
+- **launch:** build the splash head from the main logo and scale it to fill the splash circle (cfa9039)
+- **launch:** use the head-only AKILIMO mark on the launch screen so it is not clipped by the round mask (b146f77)
+- **ui:** equal-size segmented selector that handles wrapped labels (acce89b)
+- **recommendations:** return to portrait when landscape is switched off or the screen is left (9ea51c3)
+- **sync:** drop rows the API stops serving and survive renumbered starch factories (87fd810)
+- **prices:** stop parsing price limits and keep saved picks when pruning (b0e16b4)
+- **locale:** make "Override system language" work on all Android versions (76934ea)
+- **prices:** drop cached price options the API no longer serves (4e6987d)
+- **usecases:** consistent save flow, validation, states and accessibility (b4bbc59)
+- **onboarding:** show failing fields, keep farm size, defer country changes (182051e)
+- **settings:** tri-state theme, accessible rows, system bars and web pages (5426812)
+- **location:** recover from map, GPS and permission failures (1ae10b3)
+- **ui:** accessibility, contrast and IME fixes in shared components (35bd175)
+- **ci:** stop setup-android requesting the removed "tools" package (ca084e2)
+- **nav:** prevent blank screens, double pops and lost edits on rotation (7038e9a)
+
+### ♻️ Refactoring
+
+- **.github/workflows/auto-approve.yml:** Refactor PR author check in auto-approve workflow (32f9850)
+- **.github/workflows/unit-test.yml:** move branch trigger from push to pull_request (115c790)
+- **hub:** drop the welcome text from the hub header (12db136)
+- **drawables:** make ic_akilimo_head the black twin of ic_akilimo_head_white, same size and position (891711a)
+- **launch:** rename the splash drawable to ic_akilimo_head_white (485e415)
+- **recommendations:** keep the title above the text in every orientation and show the orientation switch icon (adfe838)
+- **recommendations:** move text size and landscape controls into the app bar (147941f)
+- **DataRefresher.kt:** Refactor timeout duration to use Kotlin time (441d4bf)
+- **prices:** prune stale options with a plain delete (1082d07)
+- **onboarding:** emoji flags in the country code picker (8ed6213)
+- **onboarding:** drop the duplicate top-bar back arrow (3723e18)
+
+### 📝 Documentation
+
+- **account:** the delete texts say the request may be kept without the farmer's name, for statistics (8a110da)
+- **theme:** AKILIMO is an IITA product and IITA is a CGIAR centre (924db42)
+- **ui:** record the deferred app-wide text size and the sync strip in the UI/UX checklist (f632a37)
+- **ui:** record where profile data is edited and tick the weeding total (95aced5)
+- **ui:** tick off completed backlog items in the UI/UX checklist (d469380)
+- **ui:** add a UI/UX checklist for building and reviewing screens (aa294ce)
+- bring AGENTS.md architecture, navigation, theme and database notes in line with the code (ee47fa4)
+
+### Other changes
+
+- **onboarding:** remove the logo from the welcome header (7cabd80)
+
+## [33.0.1] - 2026-11-13
+
+### ✨ Features
+
+- **workflow:** enable upload steps for beta and production releases (4664047)
+
+### 🐛 Bug fixes
+
+- **inputs:** stop silently dropping cost and price entries (9da4538)
+- **sync:** stop duplicate and cancelled syncs, retry transient failures (26a3842)
+- prevent silent loss of user selections and profile data (7543030)
+- **AndroidManifest.xml:** disable default PII sending in Sentry (04d4322)
+
+### ♻️ Refactoring
+
+- Disable AKILIMO API key for WeatherService (a406764)
+- Disable AKILIMO API key for GeocodingService (6b94723)
+- Add optional AKILIMO API key parameter to Retrofit client (1384da5)
+
+### Other changes
+
+- `feat(workflow): add concurrency group for publish workflow` (8bb2efe)
+- `refactor(viewmodel): remove Sentry logging for recommendation fetch errors` (7c5b93f)
+- `refactor(repos): rename parameter in saveAll method for clarity` (dc102bc)
+- `refactor(ui): replace clickable modifier with onClick in Card components` (d66761f)
+
+## [33.0.0] - 2026-07-25
+
+### ⚠️ BREAKING CHANGES
+
+- feat!(ci): redesign release workflow to trigger on PR merge instead of push — Trigger changes from `push` (with path-ignore) to
+
+### ✨ Features
+
+- **workflow:** add telegram message ID input for notifications (6b30de9)
+- **build:** add WEATHER_API_KEY to BuildConfig (5207675)
+- **network:** integrate Sentry for error tracking in NetworkUtils (ce757e4)
+- **ci:** add Play Store upload webhook notifications (5da755f)
+- **ci:** add build and lint CI workflow (18dd308)
+
+### 🐛 Bug fixes
+
+- use Locale.ROOT in String.format for locale-independent output (2b46ade)
+- correct lint xmlOutput path in build configuration (47f53da)
+- add missing Kinyarwanda translation for recommendation language label (7576d78)
+- mark English and Swahili strings as non-translatable (a463c40)
+- update Swahili strings and format lint-baseline.xml (fe689fa)
+- **ci:** sync trigger paths across workflows for consistency (df7e2cb)
+- **ci:** include GitHub workflows in unit-test trigger paths (3b3e640)
+- **ci:** update tdg-github-action to use @master branch in todo-check workflow (9da1e32)
+- **ci:** use correct 'tracks' parameter name for upload-google-play action (dbcfeef)
+- **ci:** correct Play Store upload tag filtering and action parameter (80293c6)
+- **ci:** correct branch trigger and pin action versions in todo-check workflow (00f5c8d)
+
+### ♻️ Refactoring
+
+- **network:** remove redundant private modifier in NetworkMonitor constructor (65674ba)
+- remove unused imports in GeocodingService (d325300)
+- migrate to Play Services Priority API and add timeout handling (cd64e98)
+- remove unused code and dead imports (8f268ed)
+- enhance LocationHelper with Sentry error tracking and improved error handling (f8296c4)
+- extract magic numbers as named constants across UI screens (6d21227)
+- reformat long SQL queries in DAO interfaces for readability (9dc227d)
+- **ci:** replace GITHUB_TOKEN with GitHub App token in PR workflows (f83a2e6)
+
+### 📝 Documentation
+
+- update whatsnew content with generic release notes (84b0990)
+- add detekt remediation plan (f01ac68)
+- update changelog (c336417)
+
+### 🛠️ Build
+
+- switched to specific version added masgeek to allow list (898f77a)
+- added parallel tooling flag (541963a)
+- configure detekt with custom ruleset and XML report output (74e6a9b)
+
+### Other changes
+
+- 🔧chore(workflow): update TODO label in todo-check workflow (05c33ea)
+- 🔧chore(workflow): enhance auto-approve workflow for better PR handling (e28e399)
+- 🔧chore(workflow): refactor GitHub release workflow for improved concurrency (7073025)
+- 🔧chore(workflow): update changed-files action to v47 (e817550)
+- 🔧chore(workflow): add YAML files to changed files detection (e377e11)
+- 🔧chore(auto-approve): refactor workflow to auto-approve PRs based on CI checks (aadea2d)
+- 🔧chore(publish): streamline release asset download process (661cfaf)
+- 🚀feat(upload): implement upload of signed binaries to GitHub Release (ded32ed)
+- 🔧chore(setup): update upload steps in Play Store approval workflow (55047fb)
+- 🔧chore(workflow): comment out changelog commit step (64855d1)
+- ✨feat(publish): add workflow for publishing to Play Store (7a4e161)
+- 🔧chore(build): update build workflow to include release track determination (6311310)
+- ✨feat(setup): add Play Store Publish Approval setup guide (41f9a9b)
+- 🔧chore(playstore): update Play Store approval workflow (7d9f5f2)
+- ✨feat(playstore): add Play Store Publish Approval workflow (bc1c711)
+- 🔧chore(ci): comment out notify job in unit-test workflow (9e4c942)
+- feat!(ci): redesign release workflow to trigger on PR merge instead of push (eb75fba)
+
+## [32.0.0] - 2026-05-04
+
+### ⚠️ BREAKING CHANGES
+
+- feat!(network): add required X-Api-Key authentication header — All API requests now include X-Api-Key header.
+
+### ✨ Features
+
+- **dto:** add cis and cim availability flags (e1b196f)
+- **onboarding:** add recommendation language preference (c748320)
+- **onboarding:** add recommendation language field (bb914b9)
+- **i18n:** add recommendation language strings (b0182ea)
+- **db:** add recommendation language preference to user entity (8600b85)
+- **recommendation:** add language preference (695666e)
+- **db:** add recommendation_language column to akilimo_users table (38903e1)
+- **db:** update database schema version 6 with new user fields (f22285f)
+- **build.gradle.kts:** add AndroidX Compose UI test dependencies (263078d)
+- **viewmodel:** implement fertilizer viewmodel with assisted injection (6955252)
+- **package-audit:** implement concrete package audit checklist for helper, utils, interfaces, extensions, wizard, network, and rest packages. (977f3eb)
+- **i18n:** add generic swahili locale support (7c19579)
+- **drawable:** update ic_akilimo_head.xml color value to use a hex code instead of a color resource (5d1a3fe)
+- **assets:** add MapBox terms link (c9bfc86)
+- migrate from XML-based layouts to Jetpack Compose (#509) (ec84bf3)
+
+### 🐛 Bug fixes
+
+- **db:** correct migration version range (4932b90)
+- **repo:** restore CIM/CIS DAO filtering and fix rec language default (353046d)
+- **fertilizer:** correct repository DAO method calls (b30f01e)
+- **di:** correct context annotation targeting (d1d5ae4)
+- **ui:** correct typo and add error strings (1186795)
+- **drawable:** update ic_grid.xml tint color (363e636)
+- **icon:** invert launcher icon to Gmail-style green symbol on white (b1c2ef0)
+- **html:** update terms page copyright information (52ff6b3)
+
+### ♻️ Refactoring
+
+- **dto:** consolidate paged response wrappers (28698b0)
+- **ui:** consolidate recommendations screen components (fa7877f)
+- **dto:** consolidate recommendation response structure (0a8e485)
+- **packages:** consolidate remote-data layer — phase 4 (dd920e3)
+- **packages:** consolidate package structure — phases 1–3 (d36deea)
+- **viewmodel:** remove unused FertilizerViewModel (d3739b8)
+- **navigation:** modularize nav host with feature graphs (138bb12)
+- **service:** use string resources for worker errors (5586aa9)
+- **viewmodels:** extract validation and worker messages (fa77662)
+- **settings:** extract weather summary strings (854fe23)
+- **ui:** extract recommendation feedback copy (1eea61c)
+- **theme:** strip XML theme to minimal base; improve adaptive app icon (383f037)
+- **repository:** move AdviceCompletionDto to dto package (ab39eed)
+- **repository:** move produce market repo to own file (039f781)
+- **repository:** move maize performance repo to its own file (ba2316b)
+
+### 📝 Documentation
+
+- add Mapbox to MapLibre migration guide (91e8fe8)
+- update ci status badges in readme (222e823)
+- create package structure improvement plan (baa2eca)
+- update architecture and development guides (69ec92f)
+- remove architecture cleanup and audit plans (74fe003)
+- **viewmodel:** update architecture cleanup plan (5d56701)
+- update architecture cleanup plan (7624632)
+- add package placement guardrails (eac54cc)
+- add architecture cleanup plan (08ade32)
+- remove unused integer resource (621d356)
+- remove obsolete settings.json configuration (c25ab0b)
+- update changelog (5e7cde0)
+
+### Other changes
+
+- feat!(network): add required X-Api-Key authentication header (41c46a7)
+- update kinyarwanda and swahili translations (ac30197)
+- add swahili and kinyarwanda translations (cc5fda4)
+- **i18n:** remove french and swahili translations (d4bc931)
+- update locale configurations (8d936ef)
+- add french and swahili translations (b713587)
+- **i18n:** remove Swahili language support (d4a9948)
+- add Swahili translations (87c64d5)
+- add Kinyarwanda translations for core UI (28ff29c)
 
 ## [31.2.0] - 2026-03-21
 
@@ -406,8 +651,7 @@ Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
 
 Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
 
-- Feat: context-aware BPP screens and onboarding step status pre-fill 
-
+- Feat: context-aware BPP screens and onboarding step status pre-fill
 
 ## [31.1.0] - 2026-03-21
 
@@ -832,13 +1076,11 @@ RecommendationsBackNavigationTest (ActivityScenario, on-device):
 
 Co-Authored-By: munywele-sonar <munywele-sonar@users.noreply.github.com>
 
-
 ## [31.0.1] - 2026-03-18
 
 ### Documentation
 
 - Docs: update changelog
-
 
 ## [31.0.0] - 2026-03-18
 
@@ -1174,7 +1416,6 @@ Introduce a path-filtering gate and enable Gradle configuration caching
 for faster execution. These changes ensure tests trigger only when
 relevant files change to optimize resource usage.
 
-
 ## [30.0.1] - 2026-03-04
 
 ### Bug Fixes
@@ -1431,7 +1672,6 @@ strings.xml
 - Add lbl_network_connected = "Connected"
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
-
 
 ## [30.0.0] - 2026-02-23
 
@@ -1710,7 +1950,6 @@ Co-authored-by: masgeek <barsamms@gmail.com>
 Include the AD_ID permission to comply with Google Play policies for
 apps targeting Android 13 and above.
 
-
 ## [29.0.2] - 2026-01-09
 
 ### Documentation
@@ -1805,7 +2044,6 @@ Closes #42
 Stash local changelog changes before pulling from remote to avoid rebase
 conflicts during the release process.
 
-
 ## [29.0.1] - 2025-12-30
 
 ### Miscellaneous Tasks
@@ -1857,7 +2095,6 @@ Refine the release workflow to prevent empty commits and ensure the changelog br
 
 Correct a spelling mistake in a code comment to improve readability.
 
-
 ## [29.0.0] - 2025-12-30
 
 ### Miscellaneous Tasks
@@ -1888,7 +2125,6 @@ after the main branch CI succeeds or when triggered manually.
 
 Simplify the release workflow by triggering it directly on pushes to the main branch, instead of waiting for the "Android CI" workflow to complete. This removes complexity and potential delays in the release process.
 
-
 ## [28.1.1] - 2025-12-28
 
 ### Miscellaneous Tasks
@@ -1905,7 +2141,6 @@ consistency across different workflows.
 
 Co-authored-by: masgeekw <barsamms@gail.com>
 Co-authored-by: Sammy M <barsamms@gmail.com>
-
 
 ## [28.1.0] - 2025-12-28
 
@@ -2708,7 +2943,6 @@ change was made to align with an updated release strategy.
 
 Remove unnecessary import statements across various files to improve code cleanliness.
 
-
 ## [26.3.0] - 2025-06-05
 
 ### Code Refactoring
@@ -2958,7 +3192,6 @@ Streamlined code by adopting ViewBinding, reducing error-prone manual references
 
 - Replaced wildcard imports with a specific import for `Calendar`
 - Enhanced `Toast` context by explicitly specifying `this@DatesActivity` for better clarity
-
 
 ## [26.2.0] - 2025-05-29
 
@@ -3858,7 +4091,6 @@ Merge ci/sonar to develop
 - Added `paths-ignore` to prevent workflow execution for changes in documentation, configuration files, and GitHub-specific files.
 - The workflow will now only trigger for relevant code changes on the `main` branch.
 
-
 ## [25.0.1] - 2025-02-19
 
 ## [25.0.0] - 2024-07-22
@@ -3872,7 +4104,6 @@ Merge ci/sonar to develop
 - Docs: updated documentatoin for releases 
 
 Co-authored-by: Sammy Barasa <barsamms@gmail.com>
-
 
 ## [24.2.0] - 2023-09-14
 
@@ -4788,7 +5019,6 @@ These changes enhance code maintainability without altering functionality.
 
 The assertions for area conversions in `MathHelperTest` have been updated to reflect more accurate values. Specifically, `convertAcreToHa`, `convertAcreToSQM`, and `convertAcreToAre` test assertions have been revised.
 
-
 ## [23.0.1] - 2023-08-03
 
 ### Bug Fixes
@@ -4814,7 +5044,6 @@ updated-dependencies:
 ...
 
 Signed-off-by: dependabot[bot] <support@github.com>
-
 
 ## [23.0.0] - 2023-07-05
 
@@ -4890,7 +5119,6 @@ this new action automatically bumps and tags the release
 ### Styling
 
 - Style: corrected typo
-
 
 ## [22.0.0] - 2023-05-18
 
@@ -5085,7 +5313,6 @@ Ci/notes eneration
 
 revised email regex pattern and added new tests to ensure that the validation is correct
 
-
 ## [21.5.0] - 2023-04-12
 
 ### Code Refactoring
@@ -5141,13 +5368,11 @@ set map zoom factor to 17
 
 ci: change concurrency id for bunp and tag
 
-
 ## [21.4.4] - 2023-04-04
 
 ### Features
 
 - Feat: added new ui revisions
-
 
 ## [21.4.3] - 2022-10-04
 
@@ -5161,7 +5386,6 @@ ci: change concurrency id for bunp and tag
 ### Features
 
 - Feat: updated remote config logic
-
 
 ## [21.4.1] - 2022-08-03
 
@@ -5184,7 +5408,6 @@ removed accidnetla comment in code and change test results agent for github acti
 ### Testing
 
 - Test: added teste for computing ivestment amount
-
 
 ## [21.4.0] - 2022-07-29
 
@@ -5214,7 +5437,6 @@ new layout style for biodata page
 
 revision of biodata UI
 
-
 ## [21.3.0] - 2022-04-05
 
 ### Features
@@ -5222,7 +5444,6 @@ revision of biodata UI
 - Feat: added burundi
 
 added burundi to list of DST countries
-
 
 ## [21.2.4] - 2022-02-02
 
@@ -5236,7 +5457,6 @@ added proper filter for loading intercrop fertilizers prices
 
 fixed selected prie evaluation
 
-
 ## [21.2.3] - 2022-02-01
 
 ### Bug Fixes
@@ -5244,7 +5464,6 @@ fixed selected prie evaluation
 - Fix: updated endpoint
 
 updated endpoint for getting intercrop fertilizers
-
 
 ## [21.2.2] - 2021-11-25
 
@@ -5259,7 +5478,6 @@ updated endpoint for getting intercrop fertilizers
 
 - Ci: updated concurrency group to use github ref
 
-
 ## [21.2.1] - 2021-11-25
 
 ### Bug Fixes
@@ -5272,7 +5490,6 @@ updated endpoint for getting intercrop fertilizers
 ### Miscellaneous Tasks
 
 - Ci: updated concurrency group to use github ref
-
 
 ## [21.2.0] - 2021-11-24
 
@@ -5352,7 +5569,6 @@ BREAKING CHANGE:
 
 - Style: removed extra blank lines
 
-
 ## [21.1.0] - 2021-11-23
 
 ### Bug Fixes
@@ -5370,7 +5586,6 @@ BREAKING CHANGE:
 - Ci: added beta release channels
 
 - Ci: updated build step java version
-
 
 ## [21.0.2] - 2021-11-18
 
@@ -5439,7 +5654,6 @@ added actions to open issues when todo comments are detected
 - Merge pull request #153 from IITA-AKILIMO/ci/releases
 
 ci: added release status in google uploader
-
 
 ## [21.0.0] - 2021-11-09
 
